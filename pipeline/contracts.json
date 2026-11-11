@@ -1,0 +1,7456 @@
+{
+"source": "https://docs.google.com/spreadsheets/d/1Y7k5kQ2AegbuyiGwEPsa62e883FYVtHqr6UVut9RC4o/pubhtml",
+"fetched": "2026-11-11",
+"updated": {
+"AME": "Oct 27, 2026 11:52:20 PT",
+"CN": "2026/8/5 12:43",
+"EMEA": "9/9/2026 7:26:51",
+"KR": "Nov 3, 2026 0:15:46 PT",
+"LCP": "11/2/2026"
+},
+"contracts": [
+{
+"tab": "AME",
+"league": "LCS",
+"team": "Cloud9",
+"name": "Thanatos",
+"role": "Top",
+"end": "2028-11-20",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "LCS",
+"team": "Cloud9",
+"name": "Blaber",
+"role": "Jungle",
+"end": "2028-11-20",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "LCS",
+"team": "Cloud9",
+"name": "Loki",
+"role": "Mid",
+"end": "2027-11-15",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "LCS",
+"team": "Cloud9",
+"name": "Tactical",
+"role": "Bot",
+"end": "2028-11-20",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "LCS",
+"team": "Cloud9",
+"name": "Vulcan",
+"role": "Support",
+"end": "2029-11-15",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "LCS",
+"team": "Dignitas",
+"name": "Denathor",
+"role": "Top",
+"end": "2028-11-20",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "LCS",
+"team": "Dignitas",
+"name": "FBI",
+"role": "Bot",
+"end": "2027-11-15",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "LCS",
+"team": "Disguised",
+"name": "Srtty",
+"role": "Top",
+"end": "2026-11-16",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "LCS",
+"team": "Disguised",
+"name": "Kryra",
+"role": "Jungle",
+"end": "2026-11-16",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "LCS",
+"team": "Disguised",
+"name": "Callme",
+"role": "Mid",
+"end": "2026-11-16",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "LCS",
+"team": "Disguised",
+"name": "Sajed",
+"role": "Bot",
+"end": "2026-11-16",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "LCS",
+"team": "Disguised",
+"name": "Lyonz",
+"role": "Support",
+"end": "2026-11-16",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "LCS",
+"team": "FlyQuest",
+"name": "Gakgos",
+"role": "Top",
+"end": "2027-11-15",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "LCS",
+"team": "FlyQuest",
+"name": "Gryffinn",
+"role": "Jungle",
+"end": "2027-11-15",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "LCS",
+"team": "FlyQuest",
+"name": "Quad",
+"role": "Mid",
+"end": "2026-11-17",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "LCS",
+"team": "FlyQuest",
+"name": "Massu",
+"role": "Bot",
+"end": "2026-11-17",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "LCS",
+"team": "FlyQuest",
+"name": "Cryogen",
+"role": "Support",
+"end": "2028-11-20",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "LCS",
+"team": "LYON",
+"name": "Dhokla",
+"role": "Top",
+"end": "2027-11-15",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "LCS",
+"team": "LYON",
+"name": "Inspired",
+"role": "Jungle",
+"end": "2027-11-15",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "LCS",
+"team": "LYON",
+"name": "Saint",
+"role": "Mid",
+"end": "2026-11-17",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "LCS",
+"team": "LYON",
+"name": "Berserker",
+"role": "Bot",
+"end": "2026-11-16",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "LCS",
+"team": "LYON",
+"name": "Isles",
+"role": "Support",
+"end": "2027-11-15",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "LCS",
+"team": "LYON",
+"name": "Castle",
+"role": "Top",
+"end": "2027-11-16",
+"status": "Inactive"
+},
+{
+"tab": "AME",
+"league": "LCS",
+"team": "Sentinels",
+"name": "Impact",
+"role": "Top",
+"end": "2027-11-15",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "LCS",
+"team": "Sentinels",
+"name": "Hambak",
+"role": "Jungle",
+"end": "2026-11-17",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "LCS",
+"team": "Sentinels",
+"name": "DARKWINGS",
+"role": "Mid",
+"end": "2027-11-15",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "LCS",
+"team": "Sentinels",
+"name": "Rahel",
+"role": "Bot",
+"end": "2027-11-15",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "LCS",
+"team": "Sentinels",
+"name": "Huhi",
+"role": "Support",
+"end": "2027-11-15",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "LCS",
+"team": "Shopify Rebellion",
+"name": "Fudge",
+"role": "Top",
+"end": "2026-11-17",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "LCS",
+"team": "Shopify Rebellion",
+"name": "Contractz",
+"role": "Jungle",
+"end": "2026-11-17",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "LCS",
+"team": "Shopify Rebellion",
+"name": "Zinie",
+"role": "Mid",
+"end": "2026-11-17",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "LCS",
+"team": "Shopify Rebellion",
+"name": "Bvoy",
+"role": "Bot",
+"end": "2026-11-17",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "LCS",
+"team": "Shopify Rebellion",
+"name": "Zeyzal",
+"role": "Support",
+"end": "2026-11-14",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "LCS",
+"team": "Team Liquid",
+"name": "Morgan",
+"role": "Top",
+"end": "2028-11-20",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "LCS",
+"team": "Team Liquid",
+"name": "Josedeodo",
+"role": "Jungle",
+"end": "2027-11-15",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "LCS",
+"team": "Team Liquid",
+"name": "Quid",
+"role": "Mid",
+"end": "2027-11-15",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "LCS",
+"team": "Team Liquid",
+"name": "Yeon",
+"role": "Bot",
+"end": "2026-11-17",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "LCS",
+"team": "Team Liquid",
+"name": "CoreJJ",
+"role": "Support",
+"end": "2026-11-17",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "NACL",
+"team": "NRG",
+"name": "Zamudo",
+"role": "Top",
+"end": "2026-11-16",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "NACL",
+"team": "NRG",
+"name": "Kisno",
+"role": "Jungle",
+"end": "2026-11-16",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "NACL",
+"team": "NRG",
+"name": "Sushee",
+"role": "Bot",
+"end": "2026-11-16",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "NACL",
+"team": "NRG",
+"name": "Spica",
+"role": "Support",
+"end": "2026-11-16",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "NACL",
+"team": "NRG",
+"name": "Phymini",
+"role": "Mid",
+"end": "2026-11-16",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "Fluxo W7M",
+"name": "Zothve",
+"role": "Top",
+"end": "2026-11-16",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "Fluxo W7M",
+"name": "curty",
+"role": "Top",
+"end": "2026-11-16",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "Fluxo W7M",
+"name": "Peach",
+"role": "Jungle",
+"end": "2026-11-16",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "Fluxo W7M",
+"name": "hauz",
+"role": "Mid",
+"end": "2026-11-16",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "Fluxo W7M",
+"name": "cody",
+"role": "Mid",
+"end": "2026-11-16",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "Fluxo W7M",
+"name": "BAO",
+"role": "Bot",
+"end": "2026-11-16",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "Fluxo W7M",
+"name": "ProDelta",
+"role": "Support",
+"end": "2026-11-16",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "Fluxo W7M",
+"name": "Momochi",
+"role": "Support",
+"end": "2026-11-16",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "FURIA",
+"name": "Guigo",
+"role": "Top",
+"end": "2026-11-16",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "FURIA",
+"name": "Tatu",
+"role": "Jungle",
+"end": "2027-11-15",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "FURIA",
+"name": "Tutsz",
+"role": "Mid",
+"end": "2027-11-15",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "FURIA",
+"name": "Ayu",
+"role": "Bot",
+"end": "2026-11-16",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "FURIA",
+"name": "JoJo",
+"role": "Support",
+"end": "2026-11-16",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "LEVIATÁN",
+"name": "Devost",
+"role": "Top",
+"end": "2026-11-16",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "LEVIATÁN",
+"name": "Booki",
+"role": "Jungle",
+"end": "2026-11-16",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "LEVIATÁN",
+"name": "Enga",
+"role": "Mid",
+"end": "2026-11-16",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "LEVIATÁN",
+"name": "Strensh",
+"role": "Bot",
+"end": "2026-11-16",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "LEVIATÁN",
+"name": "Shiku",
+"role": "Support",
+"end": "2026-11-16",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "LOS",
+"name": "Zest",
+"role": "Top",
+"end": "2026-11-16",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "LOS",
+"name": "Curse",
+"role": "Jungle",
+"end": "2027-11-15",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "LOS",
+"name": "Feisty",
+"role": "Mid",
+"end": "2026-11-16",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "LOS",
+"name": "Duduhh",
+"role": "Bot",
+"end": "2027-11-15",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "LOS",
+"name": "Ackerman",
+"role": "Support",
+"end": "2026-11-16",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "LOUD",
+"name": "Xyno",
+"role": "Top",
+"end": "2026-11-16",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "LOUD",
+"name": "Sinatra",
+"role": "Jungle",
+"end": "2028-11-20",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "LOUD",
+"name": "Kaze",
+"role": "Mid",
+"end": "2027-11-15",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "LOUD",
+"name": "Mago",
+"role": "Mid",
+"end": "2026-11-16",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "LOUD",
+"name": "Rabelo",
+"role": "Bot",
+"end": "2028-11-20",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "LOUD",
+"name": "uZent",
+"role": "Support",
+"end": "2027-11-15",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "paiN Gaming",
+"name": "Boal",
+"role": "Top",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "paiN Gaming",
+"name": "CarioK",
+"role": "Jungle",
+"end": "2026-11-16",
+"status": "Two-Way"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "paiN Gaming",
+"name": "Samkz",
+"role": "Jungle",
+"end": "2027-11-15",
+"status": "Two-Way"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "paiN Gaming",
+"name": "Keine",
+"role": "Mid",
+"end": "2026-11-16",
+"status": "Two-Way"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "paiN Gaming",
+"name": "Namiru",
+"role": "Mid",
+"end": "2027-11-15",
+"status": "Two-Way"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "paiN Gaming",
+"name": "Trigger",
+"role": "Bot",
+"end": "2026-11-16",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "paiN Gaming",
+"name": "Marvin",
+"role": "Bot",
+"end": "2026-11-16",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "paiN Gaming",
+"name": "Kuri",
+"role": "Support",
+"end": "2026-11-16",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "RED Canids Kalunga",
+"name": "zynts",
+"role": "Top",
+"end": "2026-11-16",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "RED Canids Kalunga",
+"name": "STEPZ",
+"role": "Jungle",
+"end": "2027-11-15",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "RED Canids Kalunga",
+"name": "Fuuu",
+"role": "Mid",
+"end": "2026-11-16",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "RED Canids Kalunga",
+"name": "Morttheus",
+"role": "Bot",
+"end": "2026-11-16",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "RED Canids Kalunga",
+"name": "frosty",
+"role": "Support",
+"end": "2027-11-15",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "RED Canids Kalunga",
+"name": "jmz",
+"role": "Top",
+"end": "2026-09-21",
+"status": "Two-Way"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "RED Canids Kalunga",
+"name": "smooth",
+"role": "Jungle",
+"end": "2026-09-21",
+"status": "Two-Way"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "RED Canids Kalunga",
+"name": "Nukenin",
+"role": "Mid",
+"end": "2026-09-30",
+"status": "Two-Way"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "RED Canids Kalunga",
+"name": "Nanashi",
+"role": "Bot",
+"end": "2026-09-21",
+"status": "Two-Way"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "RED Canids Kalunga",
+"name": "Manel",
+"role": "Support",
+"end": "2027-11-15",
+"status": "Two-Way"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "RED Canids Kalunga",
+"name": "Mago",
+"role": "Mid",
+"end": "2026-11-16",
+"status": "Inactive"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "Vivo Keyd Stars",
+"name": "Zekas",
+"role": "Top",
+"end": "2028-11-20",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "Vivo Keyd Stars",
+"name": "Disamis",
+"role": "Jungle",
+"end": "2028-11-20",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "Vivo Keyd Stars",
+"name": "Mireu",
+"role": "Mid",
+"end": "2027-11-15",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "Vivo Keyd Stars",
+"name": "ceo",
+"role": "Bot",
+"end": "2026-11-16",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "Vivo Keyd Stars",
+"name": "scamber",
+"role": "Support",
+"end": "2027-11-15",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "Vivo Keyd Stars",
+"name": "SUPERCLEBER",
+"role": "Top",
+"end": "2027-11-15",
+"status": "Two-Way"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "Vivo Keyd Stars",
+"name": "sarolu",
+"role": "Jungle",
+"end": "2026-11-16",
+"status": "Two-Way"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "Vivo Keyd Stars",
+"name": "Qats",
+"role": "Mid",
+"end": "2027-11-15",
+"status": "Two-Way"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "Vivo Keyd Stars",
+"name": "BUERO",
+"role": "Bot",
+"end": "2028-11-20",
+"status": "Two-Way"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "Vivo Keyd Stars",
+"name": "zay",
+"role": "Support",
+"end": "2028-11-20",
+"status": "Two-Way"
+},
+{
+"tab": "AME",
+"league": "CBLOL",
+"team": "Vivo Keyd Stars",
+"name": "Xyno",
+"role": "Top",
+"end": "2026-11-16",
+"status": "Inactive"
+},
+{
+"tab": "AME",
+"league": "Circuito Desafiante",
+"team": "7REX Team",
+"name": "Hakari",
+"role": "Top",
+"end": "2026-11-05",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "Circuito Desafiante",
+"team": "7REX Team",
+"name": "Hirotto",
+"role": "Jungle",
+"end": "2026-11-05",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "Circuito Desafiante",
+"team": "7REX Team",
+"name": "lolo",
+"role": "Mid",
+"end": "2026-11-05",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "Circuito Desafiante",
+"team": "7REX Team",
+"name": "aikawa",
+"role": "Bot",
+"end": "2026-11-05",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "Circuito Desafiante",
+"team": "7REX Team",
+"name": "Bulas",
+"role": "Support",
+"end": "2026-11-05",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "Circuito Desafiante",
+"team": "Ei Nerd Esports",
+"name": "Makes",
+"role": "Top",
+"end": "2026-10-10",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "Circuito Desafiante",
+"team": "Ei Nerd Esports",
+"name": "Drakehero",
+"role": "Jungle",
+"end": "2027-11-15",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "Circuito Desafiante",
+"team": "Ei Nerd Esports",
+"name": "Pilot",
+"role": "Mid",
+"end": "2026-10-10",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "Circuito Desafiante",
+"team": "Ei Nerd Esports",
+"name": "Kog",
+"role": "Bot",
+"end": "2027-11-15",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "Circuito Desafiante",
+"team": "Ei Nerd Esports",
+"name": "Elkinhoo",
+"role": "Support",
+"end": "2027-11-15",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "Circuito Desafiante",
+"team": "Ei Nerd Esports",
+"name": "Damage",
+"role": "Support",
+"end": "2026-10-27",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "Circuito Desafiante",
+"team": "Estral Esports",
+"name": "Bwipo",
+"role": "Top",
+"end": "2026-11-16",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "Circuito Desafiante",
+"team": "Estral Esports",
+"name": "Oddie",
+"role": "Jungle",
+"end": "2026-11-16",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "Circuito Desafiante",
+"team": "Estral Esports",
+"name": "Envy",
+"role": "Mid",
+"end": "2026-11-16",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "Circuito Desafiante",
+"team": "Estral Esports",
+"name": "Kisee",
+"role": "Mid",
+"end": "2026-11-16",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "Circuito Desafiante",
+"team": "Estral Esports",
+"name": "Brance",
+"role": "Bot",
+"end": "2026-11-16",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "Circuito Desafiante",
+"team": "Estral Esports",
+"name": "Telas",
+"role": "Support",
+"end": "2026-11-16",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "Circuito Desafiante",
+"team": "INTZ",
+"name": "Kiari",
+"role": "Top",
+"end": "2029-11-19",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "Circuito Desafiante",
+"team": "INTZ",
+"name": "StineR",
+"role": "Jungle",
+"end": "2027-11-15",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "Circuito Desafiante",
+"team": "INTZ",
+"name": "Leleko",
+"role": "Mid",
+"end": "2026-10-31",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "Circuito Desafiante",
+"team": "INTZ",
+"name": "Netuno",
+"role": "Bot",
+"end": "2026-10-31",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "Circuito Desafiante",
+"team": "INTZ",
+"name": "konseki",
+"role": "Support",
+"end": "2029-11-19",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "Circuito Desafiante",
+"team": "KaBuM! Esports",
+"name": "Yupps",
+"role": "Top",
+"end": "2026-11-16",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "Circuito Desafiante",
+"team": "KaBuM! Esports",
+"name": "Scary",
+"role": "Jungle",
+"end": "2027-11-15",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "Circuito Desafiante",
+"team": "KaBuM! Esports",
+"name": "Grevthar",
+"role": "Mid",
+"end": "2027-11-15",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "Circuito Desafiante",
+"team": "KaBuM! Esports",
+"name": "Kojima",
+"role": "Bot",
+"end": "2027-11-15",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "Circuito Desafiante",
+"team": "KaBuM! Esports",
+"name": "Guigs",
+"role": "Support",
+"end": "2027-11-15",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "Circuito Desafiante",
+"team": "paiN Gaming Academy",
+"name": "Zoen",
+"role": "Top",
+"end": "2027-11-15",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "Circuito Desafiante",
+"team": "paiN Gaming Academy",
+"name": "Gatovisck",
+"role": "Support",
+"end": "2028-11-20",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "Circuito Desafiante",
+"team": "RMD Gaming",
+"name": "Hidan",
+"role": "Top",
+"end": "2026-10-08",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "Circuito Desafiante",
+"team": "RMD Gaming",
+"name": "Nero",
+"role": "Jungle",
+"end": "2026-10-08",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "Circuito Desafiante",
+"team": "RMD Gaming",
+"name": "BLACKY",
+"role": "Mid",
+"end": "2026-11-10",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "Circuito Desafiante",
+"team": "RMD Gaming",
+"name": "Celo",
+"role": "Bot",
+"end": "2026-11-10",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "Circuito Desafiante",
+"team": "RMD Gaming",
+"name": "murilao",
+"role": "Support",
+"end": "2026-10-08",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "Circuito Desafiante",
+"team": "Team Solid",
+"name": "Tyrin",
+"role": "Top",
+"end": "2026-11-16",
+"status": "Active"
+},
+{
+"tab": "AME",
+"league": "Circuito Desafiante",
+"team": "Team Solid",
+"name": "Aegis",
+"role": "Jungle",
+"end": "2026-11-16",
+"status": "Active"
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "Xi'an Team WE",
+"name": "Cube",
+"role": "TOP",
+"end": "2027-11-16",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "Xi'an Team WE",
+"name": "About",
+"role": "ADC",
+"end": "2027-11-16",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "Xi'an Team WE",
+"name": "Karis",
+"role": "MID",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "Xi'an Team WE",
+"name": "Monki",
+"role": "JUG",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "Xi'an Team WE",
+"name": "Dorian",
+"role": "SUP",
+"end": "2028-11-21",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "Xi'an Team WE",
+"name": "Erha",
+"role": "SUP",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "WeiboGaming",
+"name": "Elk",
+"role": "ADC",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "WeiboGaming",
+"name": "Xiaohu",
+"role": "MID",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "WeiboGaming",
+"name": "Zika",
+"role": "TOP",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "WeiboGaming",
+"name": "jiejie",
+"role": "JUG",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "",
+"team": "WeiboGaming",
+"name": "Hang",
+"role": "SUP",
+"end": "2027-11-16",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "Ultra Prime",
+"name": "Liangchen",
+"role": "TOP",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "Ultra Prime",
+"name": "climber",
+"role": "JUG",
+"end": "2027-11-16",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "Ultra Prime",
+"name": "Saber",
+"role": "MID",
+"end": "2027-11-16",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "Ultra Prime",
+"name": "Xiaoxia",
+"role": "SUP",
+"end": "2027-11-16",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "Ultra Prime",
+"name": "Hena",
+"role": "ADC",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "THUNDER TALK GAMING",
+"name": "Keshi",
+"role": "TOP",
+"end": "2026-09-30",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "THUNDER TALK GAMING",
+"name": "Junhao",
+"role": "JUG",
+"end": "2026-09-30",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "THUNDER TALK GAMING",
+"name": "Ryan3",
+"role": "ADC",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "THUNDER TALK GAMING",
+"name": "Feather",
+"role": "SUP",
+"end": "2027-11-16",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "THUNDER TALK GAMING",
+"name": "Heru",
+"role": "MID",
+"end": "2026-09-30",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "THUNDER TALK GAMING",
+"name": "Ahn",
+"role": "ADC",
+"end": "2026-07-01",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "TOP ESPORTS",
+"name": "369",
+"role": "TOP",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "TOP ESPORTS",
+"name": "JackeyLove",
+"role": "ADC",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "TOP ESPORTS",
+"name": "fengyue",
+"role": "SUP",
+"end": "2028-11-21",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "TOP ESPORTS",
+"name": "Creme",
+"role": "MID",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "TOP ESPORTS",
+"name": "Tian",
+"role": "JUG",
+"end": "2028-11-21",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "TOP ESPORTS",
+"name": "ZUIAN",
+"role": "TOP",
+"end": "2027-11-16",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "Oh My God",
+"name": "Juhan",
+"role": "JUG",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "Oh My God",
+"name": "Hery",
+"role": "TOP",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "Oh My God",
+"name": "Moham",
+"role": "SUP",
+"end": "2025-11-18",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "Oh My God",
+"name": "haichao",
+"role": "MID",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "Oh My God",
+"name": "Starry",
+"role": "ADC",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "Oh My God",
+"name": "re0",
+"role": "JUG",
+"end": "2027-11-16",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "Shenzhen NINJAS IN PYJAMAS",
+"name": "Zhuo",
+"role": "SUP",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "Shenzhen NINJAS IN PYJAMAS",
+"name": "Guwon",
+"role": "JUG",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "Shenzhen NINJAS IN PYJAMAS",
+"name": "Assum",
+"role": "ADC",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "Shenzhen NINJAS IN PYJAMAS",
+"name": "Care",
+"role": "MID",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "Shenzhen NINJAS IN PYJAMAS",
+"name": "HOYA",
+"role": "TOP",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "Suzhou LNG Esports",
+"name": "MISSING",
+"role": "SUP",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "Suzhou LNG Esports",
+"name": "1xn",
+"role": "ADC",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "Suzhou LNG Esports",
+"name": "sheer",
+"role": "TOP",
+"end": "2027-11-16",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "Suzhou LNG Esports",
+"name": "BuLLDoG",
+"role": "MID",
+"end": "2027-11-16",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "Suzhou LNG Esports",
+"name": "Croco",
+"role": "JUG",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "LGD GAMING",
+"name": "Shaoye",
+"role": "ADC",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "LGD GAMING",
+"name": "sasi",
+"role": "TOP",
+"end": "2027-11-16",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "LGD GAMING",
+"name": "Ycx",
+"role": "SUP",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "LGD GAMING",
+"name": "Tangyuan",
+"role": "MID",
+"end": "2028-11-21",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "LGD GAMING",
+"name": "Heng",
+"role": "JUG",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "Beijing JDG Esports",
+"name": "JunJia",
+"role": "JUG",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "Beijing JDG Esports",
+"name": "Xiaoxu",
+"role": "TOP",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "Beijing JDG Esports",
+"name": "HongQ",
+"role": "MID",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "Beijing JDG Esports",
+"name": "Vampire",
+"role": "SUP",
+"end": "2027-11-16",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "Beijing JDG Esports",
+"name": "GALA",
+"role": "ADC",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "Invictus Gaming",
+"name": "Photic",
+"role": "ADC",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "Invictus Gaming",
+"name": "Meiko",
+"role": "SUP",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "Invictus Gaming",
+"name": "Rookie",
+"role": "MID",
+"end": "2027-11-16",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "Invictus Gaming",
+"name": "Wei",
+"role": "JUG",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "Invictus Gaming",
+"name": "Jwei",
+"role": "SUP",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "Invictus Gaming",
+"name": "Renard",
+"role": "MID",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "Invictus Gaming",
+"name": "Soboro",
+"role": "TOP",
+"end": "2027-11-16",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "EDWARD GAMING",
+"name": "Xiaohao",
+"role": "JUG",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "EDWARD GAMING",
+"name": "Parukia",
+"role": "SUP",
+"end": "2028-11-21",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "EDWARD GAMING",
+"name": "Leave",
+"role": "ADC",
+"end": "2027-11-16",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "EDWARD GAMING",
+"name": "Angel",
+"role": "MID",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "EDWARD GAMING",
+"name": "Zdz",
+"role": "TOP",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "BILIBILI GAMING",
+"name": "Xun",
+"role": "JUG",
+"end": "2027-11-16",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "BILIBILI GAMING",
+"name": "knight",
+"role": "MID",
+"end": "2027-11-16",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "BILIBILI GAMING",
+"name": "ON",
+"role": "SUP",
+"end": "2027-11-16",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "BILIBILI GAMING",
+"name": "Viper",
+"role": "ADC",
+"end": "2027-11-16",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "BILIBILI GAMING",
+"name": "Bin",
+"role": "TOP",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "Anyone's Legend",
+"name": "Tarzan",
+"role": "JUG",
+"end": "2027-11-16",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "Anyone's Legend",
+"name": "Flandre",
+"role": "TOP",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "Anyone's Legend",
+"name": "Kael",
+"role": "SUP",
+"end": "2027-11-16",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "Anyone's Legend",
+"name": "Shanks",
+"role": "MID",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "CN",
+"league": "LPL",
+"team": "Anyone's Legend",
+"name": "Hope",
+"role": "ADC",
+"end": "2027-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "GIANTX",
+"name": "Jackies",
+"role": "MID",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "GIANTX",
+"name": "Jun",
+"role": "SUPPORT",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "GIANTX",
+"name": "Noah",
+"role": "ADC",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "GIANTX",
+"name": "Lot",
+"role": "TOP",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "GIANTX",
+"name": "ISMA",
+"role": "JUNGLE",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "GIANTX",
+"name": "Oscarinin",
+"role": "TOP",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "GIANTX",
+"name": "Flakked",
+"role": "ADC",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "Fnatic",
+"name": "Razork",
+"role": "JUNGLE",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "Fnatic",
+"name": "Upset",
+"role": "ADC",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "Fnatic",
+"name": "Lospa",
+"role": "SUPPORT",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "Fnatic",
+"name": "Vladi",
+"role": "MID",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "Fnatic",
+"name": "Soboro",
+"role": "TOP",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "G2 Esports",
+"name": "BrokenBlade",
+"role": "Top",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "G2 Esports",
+"name": "Caps",
+"role": "Mid",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "G2 Esports",
+"name": "SkewMond",
+"role": "JUNGLE",
+"end": "2028-11-20",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "G2 Esports",
+"name": "Hans Sama",
+"role": "ADC",
+"end": "2028-11-20",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "G2 Esports",
+"name": "Labrov",
+"role": "SUPPORT",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "Movistar KOI",
+"name": "Myrwn",
+"role": "Top",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "Movistar KOI",
+"name": "Elyoya",
+"role": "Jungle",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "Movistar KOI",
+"name": "Supa",
+"role": "Bot",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "Movistar KOI",
+"name": "Alvaro",
+"role": "Support",
+"end": "2027-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "Movistar KOI",
+"name": "Jojopyun",
+"role": "MID",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "Movistar KOI",
+"name": "Sr Antonio",
+"role": "JUNGLE",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "Movistar KOI",
+"name": "NightSlayer",
+"role": "Top",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "Natus Vincere",
+"name": "Maynter",
+"role": "TOP",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "Natus Vincere",
+"name": "Rhilech",
+"role": "JUNGLE",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "Natus Vincere",
+"name": "Poby",
+"role": "MID",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "Natus Vincere",
+"name": "Larssen",
+"role": "MID",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "Natus Vincere",
+"name": "SamD",
+"role": "ADC",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "Natus Vincere",
+"name": "Parus",
+"role": "SUPPORT",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "Team Heretics",
+"name": "Tracyn",
+"role": "TOP",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "Team Heretics",
+"name": "Serin",
+"role": "MID",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "Team Heretics",
+"name": "Hype",
+"role": "ADC",
+"end": "2028-11-20",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "Team Heretics",
+"name": "Daglas",
+"role": "Jungle",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "Karmine Corp",
+"name": "Canna",
+"role": "TOP",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "Karmine Corp",
+"name": "Yike",
+"role": "JUNGLE",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "Karmine Corp",
+"name": "kyeahoo",
+"role": "MID",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "Karmine Corp",
+"name": "Caliste",
+"role": "BOT",
+"end": "2028-11-20",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "Karmine Corp",
+"name": "Busio",
+"role": "SUPPORT",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "SK Gaming",
+"name": "Jopa",
+"role": "ADC",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "SK Gaming",
+"name": "Mikyx",
+"role": "SUPPORT",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "SK Gaming",
+"name": "Skeanz",
+"role": "JUNGLE",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "SK Gaming",
+"name": "Wunder",
+"role": "TOP",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "SK Gaming",
+"name": "Lider",
+"role": "MID",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "SK Gaming",
+"name": "SlowQ",
+"role": "MID",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "Shifters",
+"name": "Striker",
+"role": "HEAD COACH",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "Shifters",
+"name": "Rooster",
+"role": "TOP",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "Shifters",
+"name": "nuc",
+"role": "MID",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "Shifters",
+"name": "Boukada",
+"role": "JUNGLE",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "Shifters",
+"name": "Paduck",
+"role": "ADC",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "Shifters",
+"name": "Trymbi",
+"role": "SUPPORT",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "Shifters",
+"name": "Stend",
+"role": "SUPPORT",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "Shifters",
+"name": "Sheo",
+"role": "JUNGLE",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "Team Vitality",
+"name": "Naak Nako",
+"role": "TOP",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "Team Vitality",
+"name": "Lyncas",
+"role": "JUNGLE",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "Team Vitality",
+"name": "Carzzy",
+"role": "ADC",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "Team Vitality",
+"name": "Fleshy",
+"role": "SUPPORT",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "Team Vitality",
+"name": "Pad",
+"role": "HEAD COACH",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LEC",
+"team": "Team Vitality",
+"name": "FIESTA",
+"role": "MID",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "Solary",
+"name": "Gine",
+"role": "Coach",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "Solary",
+"name": "Dandan",
+"role": "Coach",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "Solary",
+"name": "Kryze",
+"role": "Top",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "Solary",
+"name": "Zicssi",
+"role": "Jungle",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "Solary",
+"name": "Jool",
+"role": "Mid",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "Solary",
+"name": "Aetinoth",
+"role": "Bot",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "Solary",
+"name": "Piero",
+"role": "Support",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "Galions",
+"name": "Xani",
+"role": "Coach",
+"end": "2027-11-14",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "Galions",
+"name": "Carlsen",
+"role": "Top",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "Galions",
+"name": "Thayger",
+"role": "Jungle",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "Galions",
+"name": "OMON",
+"role": "Mid",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "Galions",
+"name": "Harpoon",
+"role": "Bot",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "Galions",
+"name": "Zoelys",
+"role": "Support",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "Galions",
+"name": "Karot",
+"role": "Coach",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "Galions",
+"name": "Marty",
+"role": "Sub",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "Galions",
+"name": "Dream",
+"role": "Sub",
+"end": "2026-08-02",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "Galions",
+"name": "SwiT",
+"role": "Sub",
+"end": "2026-08-02",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "KCB",
+"name": "Tao",
+"role": "Top",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "KCB",
+"name": "Yukino",
+"role": "Jungle",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "KCB",
+"name": "Kamiloo",
+"role": "Mid",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "KCB",
+"name": "Hazel",
+"role": "Bot",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "KCB",
+"name": "Prime",
+"role": "Support",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "KCB",
+"name": "Blidzy",
+"role": "Coach",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "KCB",
+"name": "Fara",
+"role": "Coach",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "VITB",
+"name": "Potent",
+"role": "Top",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "VITB",
+"name": "Dawciu",
+"role": "Jungle",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "VITB",
+"name": "Czajek",
+"role": "Mid",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "VITB",
+"name": "Vizzpers",
+"role": "Sub",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "VITB",
+"name": "Dekap",
+"role": "Support",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "VITB",
+"name": "Nahovsky",
+"role": "Coach",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "VITB",
+"name": "DevilPiotr",
+"role": "Coach",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "VITB",
+"name": "Yakkey",
+"role": "Bot",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "IJC",
+"name": "Badlulu",
+"role": "Top",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "IJC",
+"name": "Kaboom",
+"role": "Sub",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "IJC",
+"name": "Dajor",
+"role": "Mid",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "IJC",
+"name": "Soldier",
+"role": "Bot",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "IJC",
+"name": "Whiteinn",
+"role": "Support",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "IJC",
+"name": "Naruterador",
+"role": "Coach",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "IJC",
+"name": "Krakeer",
+"role": "Coach",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "IJC",
+"name": "Manaty",
+"role": "Jungle",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "JL",
+"name": "Vertigo",
+"role": "Sub",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "JL",
+"name": "Shift",
+"role": "Jungle",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "JL",
+"name": "Kofte",
+"role": "Mid",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "JL",
+"name": "HungryPanda",
+"role": "Sub",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "JL",
+"name": "Arkhe",
+"role": "Coach",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "JL",
+"name": "Yong",
+"role": "Coach",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "JL",
+"name": "Mersa",
+"role": "Support",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "JL",
+"name": "Ragner",
+"role": "Top",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "JL",
+"name": "Koba",
+"role": "Bot",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "ES",
+"name": "Archfiend",
+"role": "Top",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "ES",
+"name": "xKenzuke",
+"role": "Mid",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "ES",
+"name": "Yen",
+"role": "Bot",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "ES",
+"name": "Gordinho",
+"role": "Support",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "ES",
+"name": "Noàh",
+"role": "Sub",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "ES",
+"name": "Lulas",
+"role": "Jungle",
+"end": "2026-08-31",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "ES",
+"name": "Stifler",
+"role": "Coach",
+"end": "2026-09-01",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "ES",
+"name": "Fantomisto",
+"role": "Mid",
+"end": "2026-09-30",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "BKR",
+"name": "Boda",
+"role": "Top",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "BKR",
+"name": "Jeykup",
+"role": "Jungle",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "BKR",
+"name": "Sayn",
+"role": "Mid",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "BKR",
+"name": "Unforg1ven",
+"role": "Bot",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "BKR",
+"name": "Doss",
+"role": "Support",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "BKR",
+"name": "sPARKY",
+"role": "Manager",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "ZYB Esport",
+"name": "Adam",
+"role": "Top",
+"end": "2026-09-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "ZYB Esport",
+"name": "Manaty",
+"role": "Jungle",
+"end": "2026-09-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "ZYB Esport",
+"name": "SAKEN",
+"role": "Mid",
+"end": "2026-09-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "ZYB Esport",
+"name": "Jezu",
+"role": "Bot",
+"end": "2026-09-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "ZYB Esport",
+"name": "Riippp",
+"role": "Support",
+"end": "2026-09-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "ZYB Esport",
+"name": "Nisqy",
+"role": "Sub",
+"end": "2026-09-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "ZYB Esport",
+"name": "Booshi",
+"role": "Sub",
+"end": "2026-09-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "ZYB Esport",
+"name": "Kobs",
+"role": "Jungle",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "SC",
+"name": "Yeti",
+"role": "Top",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "SC",
+"name": "Spooky",
+"role": "Jungle",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "SC",
+"name": "Nafkelah",
+"role": "Mid",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "SC",
+"name": "Exofeng",
+"role": "Bot",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "SC",
+"name": "Steeelback",
+"role": "Support",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "SC",
+"name": "Eika",
+"role": "Coach",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "SC",
+"name": "Hairost",
+"role": "Coach",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LFL",
+"team": "SC",
+"name": "iFreeZzy",
+"role": "Coach",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "Eintracht Frankfurt",
+"name": "Addusto",
+"role": "Top",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "Eintracht Frankfurt",
+"name": "D4nKa",
+"role": "Jungle",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "Eintracht Frankfurt",
+"name": "Sencux",
+"role": "Mid",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "Eintracht Frankfurt",
+"name": "Devn",
+"role": "Bot",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "Eintracht Frankfurt",
+"name": "Richu",
+"role": "Support",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "Eintracht Frankfurt",
+"name": "Bleim",
+"role": "Coach",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "Eintracht Frankfurt",
+"name": "Kami",
+"role": "Coach",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "Eintracht Frankfurt",
+"name": "Notiko",
+"role": "Bot",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "Eintracht Frankfurt",
+"name": "Szygenda",
+"role": "Top",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "Berlin International Gaming",
+"name": "Irrelevant",
+"role": "Top",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "Berlin International Gaming",
+"name": "Habubu",
+"role": "Jungle",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "Berlin International Gaming",
+"name": "Reeker",
+"role": "Mid",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "Berlin International Gaming",
+"name": "Patrik",
+"role": "Bot",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "Berlin International Gaming",
+"name": "Kaiser",
+"role": "Support",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "Berlin International Gaming",
+"name": "Don Arts",
+"role": "Coach",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "Berlin International Gaming",
+"name": "Pandar",
+"role": "Coach",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "Berlin International Gaming",
+"name": "113",
+"role": "Jungle",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "Eintracht Spandau",
+"name": "Jenax",
+"role": "Top",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "Eintracht Spandau",
+"name": "Xagog",
+"role": "Jungle",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "Eintracht Spandau",
+"name": "PowerOfEvil",
+"role": "Mid",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "Eintracht Spandau",
+"name": "Seaz",
+"role": "Support",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "Eintracht Spandau",
+"name": "x4NTY",
+"role": "Coach",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "Eintracht Spandau",
+"name": "FUN k3y",
+"role": "Bot",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "Kaufland Hangry Knights",
+"name": "Venour",
+"role": "Top",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "Kaufland Hangry Knights",
+"name": "Densi",
+"role": "Jungle",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "Kaufland Hangry Knights",
+"name": "Abbedagge",
+"role": "Mid",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "Kaufland Hangry Knights",
+"name": "Unforgiven",
+"role": "Bot",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "Kaufland Hangry Knights",
+"name": "Leggifant",
+"role": "Coach",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "Kaufland Hangry Knights",
+"name": "Boda",
+"role": "Top",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "Kaufland Hangry Knights",
+"name": "Doss",
+"role": "Support",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "Kaufland Hangry Knights",
+"name": "Edward",
+"role": "Coach",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "Rossmann Centaurs",
+"name": "jokaa",
+"role": "Jungle",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "Rossmann Centaurs",
+"name": "Pasu",
+"role": "Jungle",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "Rossmann Centaurs",
+"name": "Fooneses",
+"role": "Mid",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "Rossmann Centaurs",
+"name": "c0st0m",
+"role": "Mid",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "Rossmann Centaurs",
+"name": "Infoneral",
+"role": "Support",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "Rossmann Centaurs",
+"name": "storm",
+"role": "Sub",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "Rossmann Centaurs",
+"name": "Hazel",
+"role": "Bot",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "Rossmann Centaurs",
+"name": "Leks",
+"role": "Top",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "TeamOrangeGaming",
+"name": "Zorenous",
+"role": "Top",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "TeamOrangeGaming",
+"name": "Woldjo",
+"role": "Jungle",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "TeamOrangeGaming",
+"name": "Sajator",
+"role": "Mid",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "TeamOrangeGaming",
+"name": "Ryuk",
+"role": "Bot",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "TeamOrangeGaming",
+"name": "Lilipp",
+"role": "Support",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "TeamOrangeGaming",
+"name": "Whiteknight",
+"role": "Top",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "TeamOrangeGaming",
+"name": "DeadShadow",
+"role": "Coach",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "E WIE EINFACH E-SPORTS",
+"name": "Vizicsacsi",
+"role": "Top",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "E WIE EINFACH E-SPORTS",
+"name": "Afroboi",
+"role": "Jungle",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "E WIE EINFACH E-SPORTS",
+"name": "Relative",
+"role": "Mid",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "E WIE EINFACH E-SPORTS",
+"name": "Noz2k",
+"role": "Bot",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "E WIE EINFACH E-SPORTS",
+"name": "Wildenbruch",
+"role": "Support",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "E WIE EINFACH E-SPORTS",
+"name": "Lothi",
+"role": "Coach",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "G2 NORD",
+"name": "Shelfmade",
+"role": "Top",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "G2 NORD",
+"name": "Markoon",
+"role": "Jungle",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "G2 NORD",
+"name": "Toasty",
+"role": "Mid",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "G2 NORD",
+"name": "Rin",
+"role": "Bot",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "G2 NORD",
+"name": "Tockimo",
+"role": "Support",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "G2 NORD",
+"name": "BliZarD",
+"role": "Sub",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "G2 NORD",
+"name": "Nico",
+"role": "Coach",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "G2 NORD",
+"name": "Michel",
+"role": "Sub",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "Unicorns of Love - Sexy Edition",
+"name": "FornoReason",
+"role": "Top",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "Unicorns of Love - Sexy Edition",
+"name": "White",
+"role": "Jungle",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "Unicorns of Love - Sexy Edition",
+"name": "Kanin",
+"role": "Mid",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "Unicorns of Love - Sexy Edition",
+"name": "DenVoksne",
+"role": "Bot",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "Unicorns of Love - Sexy Edition",
+"name": "Twiizt",
+"role": "Support",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "Unicorns of Love - Sexy Edition",
+"name": "Sheepy",
+"role": "Coach",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "Unicorns of Love - Sexy Edition",
+"name": "Sam",
+"role": "Coach",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "VfB Stuttgart",
+"name": "Sven",
+"role": "Top",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "VfB Stuttgart",
+"name": "Zwickl",
+"role": "Jungle",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "VfB Stuttgart",
+"name": "Luke",
+"role": "Mid",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "VfB Stuttgart",
+"name": "Tazaku",
+"role": "Bot",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "VfB Stuttgart",
+"name": "Jakobobbi",
+"role": "Support",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "VfB Stuttgart",
+"name": "MaxSchallah",
+"role": "Coach",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "VfB Stuttgart",
+"name": "GreenThor",
+"role": "Coach",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "PRM",
+"team": "VfB Stuttgart",
+"name": "Dizl",
+"role": "Bot",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LES",
+"team": "UCAM Esports Club",
+"name": "Kozi",
+"role": "Top",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LES",
+"team": "UCAM Esports Club",
+"name": "Bluerzor",
+"role": "Jungle",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LES",
+"team": "UCAM Esports Club",
+"name": "Escik",
+"role": "Mid",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LES",
+"team": "UCAM Esports Club",
+"name": "ANDARIEL",
+"role": "Bot",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LES",
+"team": "UCAM Esports Club",
+"name": "Passzi",
+"role": "Support",
+"end": "2026-11-22",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LES",
+"team": "UCAM Esports Club",
+"name": "Crusher",
+"role": "Coach",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LES",
+"team": "UCAM Esports Club",
+"name": "Gaio",
+"role": "Coach",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LES",
+"team": "Falke Esports",
+"name": "Bobsik",
+"role": "Top",
+"end": "2026-09-25",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LES",
+"team": "Falke Esports",
+"name": "Clicker",
+"role": "Jungle",
+"end": "2026-09-30",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LES",
+"team": "Falke Esports",
+"name": "Mentos",
+"role": "Mid",
+"end": "2026-09-25",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LES",
+"team": "Falke Esports",
+"name": "Marcv1",
+"role": "Bot",
+"end": "2026-09-30",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LES",
+"team": "Falke Esports",
+"name": "Deleted",
+"role": "Support",
+"end": "2026-09-30",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LES",
+"team": "Falke Esports",
+"name": "Murci",
+"role": "Coach",
+"end": "2026-09-25",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LES",
+"team": "Barça Esports",
+"name": "Selenex",
+"role": "Top",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LES",
+"team": "Barça Esports",
+"name": "Koldo",
+"role": "Jungle",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LES",
+"team": "Barça Esports",
+"name": "Macaquinho",
+"role": "Mid",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LES",
+"team": "Barça Esports",
+"name": "Legolas",
+"role": "Bot",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LES",
+"team": "Barça Esports",
+"name": "Oscure",
+"role": "Support",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LES",
+"team": "Barça Esports",
+"name": "Jandro",
+"role": "Coach",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LES",
+"team": "Barça Esports",
+"name": "Pauporter",
+"role": "Sub",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LES",
+"team": "Giantx Itero",
+"name": "Th3Antonio",
+"role": "Top",
+"end": "2026-11-18",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LES",
+"team": "Giantx Itero",
+"name": "Time",
+"role": "Jungle",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LES",
+"team": "Giantx Itero",
+"name": "Dyenn",
+"role": "Mid",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LES",
+"team": "Giantx Itero",
+"name": "Rayito",
+"role": "Bot",
+"end": "2026-09-30",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LES",
+"team": "Giantx Itero",
+"name": "Attila",
+"role": "Support",
+"end": "2026-11-18",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LES",
+"team": "Giantx Itero",
+"name": "F1re",
+"role": "Coach",
+"end": "2026-11-18",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LES",
+"team": "UB Alma Mater",
+"name": "Pasameelcelo",
+"role": "Top",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LES",
+"team": "UB Alma Mater",
+"name": "Ivama",
+"role": "Jungle",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LES",
+"team": "UB Alma Mater",
+"name": "Pauporter",
+"role": "Mid",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LES",
+"team": "UB Alma Mater",
+"name": "Adrianlaneitor",
+"role": "Bot",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LES",
+"team": "UB Alma Mater",
+"name": "Xixauxas",
+"role": "Support",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LES",
+"team": "UB Alma Mater",
+"name": "ORIZ0N",
+"role": "Sub",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LES",
+"team": "UB Alma Mater",
+"name": "Skiler99",
+"role": "Sub",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LES",
+"team": "Heretics Academy",
+"name": "Papiteero",
+"role": "Top",
+"end": "2026-09-30",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LES",
+"team": "Heretics Academy",
+"name": "Lurox",
+"role": "Jungle",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LES",
+"team": "Heretics Academy",
+"name": "Mercy9",
+"role": "Mid",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LES",
+"team": "Heretics Academy",
+"name": "Lure",
+"role": "Bot",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LES",
+"team": "Heretics Academy",
+"name": "Batuuu",
+"role": "Support",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LES",
+"team": "Heretics Academy",
+"name": "Kamikaze",
+"role": "Coach",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LES",
+"team": "Heretics Academy",
+"name": "Dan",
+"role": "Coach",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LES",
+"team": "LUA",
+"name": "NIQKL",
+"role": "Top",
+"end": "2026-08-30",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LES",
+"team": "LUA",
+"name": "Pegaso",
+"role": "Jungle",
+"end": "2026-09-30",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LES",
+"team": "LUA",
+"name": "Hydra",
+"role": "Mid",
+"end": "2026-09-30",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LES",
+"team": "LUA",
+"name": "Kaii",
+"role": "Bot",
+"end": "2026-09-30",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LES",
+"team": "LUA",
+"name": "TIMR",
+"role": "Support",
+"end": "2026-09-30",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LES",
+"team": "LUA",
+"name": "Sliezzan",
+"role": "Coach",
+"end": "2026-09-30",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "",
+"team": "LUA",
+"name": "Dani",
+"role": "Sub",
+"end": "2026-09-30",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LES",
+"team": "Movistar KOI Fénix",
+"name": "Slayer",
+"role": "Top",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LES",
+"team": "Movistar KOI Fénix",
+"name": "XnS",
+"role": "Jungle",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LES",
+"team": "Movistar KOI Fénix",
+"name": "Fresskowy",
+"role": "Mid",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LES",
+"team": "Movistar KOI Fénix",
+"name": "13",
+"role": "Bot",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LES",
+"team": "Movistar KOI Fénix",
+"name": "Myrtus",
+"role": "Support",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LES",
+"team": "Movistar KOI Fénix",
+"name": "Disgrace",
+"role": "Coach",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "LES",
+"team": "Movistar KOI Fénix",
+"name": "Nae",
+"role": "Sub",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "Shark Attack",
+"name": "Twenty7",
+"role": "Coach",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "Shark Attack",
+"name": "Sangrod",
+"role": "Top",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "Shark Attack",
+"name": "NightyNN",
+"role": "Jungle",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "Shark Attack",
+"name": "Hades",
+"role": "Mid",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "Shark Attack",
+"name": "Stansfield",
+"role": "Bot",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "Shark Attack",
+"name": "Revanche",
+"role": "Support",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "PCIFIC Esports",
+"name": "Chonocleas",
+"role": "Coach",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "PCIFIC Esports",
+"name": "Zeus",
+"role": "Coach",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "PCIFIC Esports",
+"name": "Bayonetta",
+"role": "Top",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "PCIFIC Esports",
+"name": "stalken",
+"role": "Jungle",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "PCIFIC Esports",
+"name": "FireAscept",
+"role": "Mid",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "PCIFIC Esports",
+"name": "Scorth",
+"role": "Bot",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "PCIFIC Esports",
+"name": "monkaS",
+"role": "Support",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "Team Phoenix",
+"name": "Shiguro",
+"role": "Coach",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "Team Phoenix",
+"name": "Çayır",
+"role": "Coach",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "Team Phoenix",
+"name": "Ersin",
+"role": "Top",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "Team Phoenix",
+"name": "Ruinez",
+"role": "Jungle",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "Team Phoenix",
+"name": "Creal",
+"role": "Mid",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "Team Phoenix",
+"name": "Raen1",
+"role": "Bot",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "Team Phoenix",
+"name": "Varin",
+"role": "Support",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "Team Phoenix",
+"name": "f0rzent",
+"role": "Jungle",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "Team Phoenix",
+"name": "f0rzent",
+"role": "Jungle",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "SU Esports",
+"name": "RAMES",
+"role": "Jungle",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "SU Esports",
+"name": "IlllIma",
+"role": "Top",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "SU Esports",
+"name": "Vetheo",
+"role": "Mid",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "SU Esports",
+"name": "Kakarot",
+"role": "Sub",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "SU Esports",
+"name": "Patch",
+"role": "Support",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "SU Esports",
+"name": "Basei",
+"role": "Coach",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "SU Esports",
+"name": "Nako",
+"role": "Bot",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "SU Esports",
+"name": "Kaboom",
+"role": "Sub",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "Boostgate Esports",
+"name": "DooMBuLL",
+"role": "Coach",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "Boostgate Esports",
+"name": "Madly",
+"role": "Top",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "Boostgate Esports",
+"name": "Kireas",
+"role": "Jungle",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "Boostgate Esports",
+"name": "Kachanava",
+"role": "Mid",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "Boostgate Esports",
+"name": "Neramin",
+"role": "Bot",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "Boostgate Esports",
+"name": "Berebo",
+"role": "Support",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "Dark Passage",
+"name": "Real Homie",
+"role": "Coach",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "Dark Passage",
+"name": "fabFabulous",
+"role": "Top",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "Dark Passage",
+"name": "Typhoon",
+"role": "Jungle",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "Dark Passage",
+"name": "LynxCerezz",
+"role": "Mid",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "Dark Passage",
+"name": "GRRave",
+"role": "Bot",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "Dark Passage",
+"name": "BEPLUSH",
+"role": "Support",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "Dark Passage",
+"name": "Crystal",
+"role": "Sub",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "Bushido Wildcats",
+"name": "Warner",
+"role": "Mid",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "Bushido Wildcats",
+"name": "Ruep",
+"role": "Bot",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "Bushido Wildcats",
+"name": "Astro",
+"role": "Coach",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "Bushido Wildcats",
+"name": "Camana",
+"role": "Mid",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "Bushido Wildcats",
+"name": "Aytekn",
+"role": "Top",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "Bushido Wildcats",
+"name": "Carry",
+"role": "Support",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "Bushido Wildcats",
+"name": "Osman123",
+"role": "Jungle",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "Bushido Wildcats",
+"name": "Pades",
+"role": "Coach",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "DIA Ozarox Esports",
+"name": "Jeyrus",
+"role": "Bot",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "DIA Ozarox Esports",
+"name": "Carve",
+"role": "Support",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "DIA Ozarox Esports",
+"name": "Hamsi",
+"role": "Top",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "DIA Ozarox Esports",
+"name": "Aspect",
+"role": "Jungle",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "DIA Ozarox Esports",
+"name": "Yuros",
+"role": "Mid",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "EMEA",
+"league": "TCL",
+"team": "DIA Ozarox Esports",
+"name": "Wuju",
+"role": "Coach",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "Hanwha Life Esports",
+"name": "Zeus",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "Hanwha Life Esports",
+"name": "Kanavi",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "Hanwha Life Esports",
+"name": "Zeka",
+"role": "",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "Hanwha Life Esports",
+"name": "Gumayusi",
+"role": "",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "Hanwha Life Esports",
+"name": "Delight",
+"role": "",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "Hanwha Life Esports",
+"name": "Panther",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "Hanwha Life Esports",
+"name": "Jackal",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "Hanwha Life Esports",
+"name": "Cracker",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "Hanwha Life Esports",
+"name": "Valiant",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "Hanwha Life Esports",
+"name": "Pyeonsik",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "Hanwha Life Esports",
+"name": "Bluffing",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "Hanwha Life Esports",
+"name": "Homme",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "Hanwha Life Esports",
+"name": "Sin",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "Hanwha Life Esports",
+"name": "Mowgli",
+"role": "",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "Hanwha Life Esports",
+"name": "Sensation",
+"role": "",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "Dplus Kia",
+"name": "Siwoo",
+"role": "",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "Dplus Kia",
+"name": "Lucid",
+"role": "",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "Dplus Kia",
+"name": "ShowMaker",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "Dplus Kia",
+"name": "Smash",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "Dplus Kia",
+"name": "Career",
+"role": "",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "Dplus Kia",
+"name": "Jaehyuk",
+"role": "",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "Dplus Kia",
+"name": "Nevid",
+"role": "",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "Dplus Kia",
+"name": "Solid",
+"role": "",
+"end": "2029-11-19",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "Dplus Kia",
+"name": "Garden",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "Dplus Kia",
+"name": "Wayne",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "Dplus Kia",
+"name": "Loopy",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "Dplus Kia",
+"name": "cvMax",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "Dplus Kia",
+"name": "PoohManDu",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "Dplus Kia",
+"name": "Hachani",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "Dplus Kia",
+"name": "Woong",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "Dplus Kia",
+"name": "Sungmin",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "kt Rolster",
+"name": "PerfecT",
+"role": "",
+"end": "2028-11-20",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "kt Rolster",
+"name": "Cuzz",
+"role": "",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "kt Rolster",
+"name": "Bdd",
+"role": "",
+"end": "2028-11-20",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "kt Rolster",
+"name": "Jiwoo",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "kt Rolster",
+"name": "Effort",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "kt Rolster",
+"name": "Sero",
+"role": "",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "kt Rolster",
+"name": "Sylvie",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "kt Rolster",
+"name": "Hwichan",
+"role": "",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "kt Rolster",
+"name": "FenRir",
+"role": "",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "kt Rolster",
+"name": "Ghost",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "kt Rolster",
+"name": "Pollu",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "kt Rolster",
+"name": "Score",
+"role": "",
+"end": "2029-11-19",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "kt Rolster",
+"name": "Museong",
+"role": "",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "kt Rolster",
+"name": "Sonstar",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "kt Rolster",
+"name": "Spark",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "kt Rolster",
+"name": "Lilac",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "HANJIN BRION",
+"name": "Casting",
+"role": "",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "HANJIN BRION",
+"name": "GIDEON",
+"role": "",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "HANJIN BRION",
+"name": "Roamer",
+"role": "",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "HANJIN BRION",
+"name": "Pungyeon",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "HANJIN BRION",
+"name": "Teddy",
+"role": "",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "HANJIN BRION",
+"name": "Namgung",
+"role": "",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "HANJIN BRION",
+"name": "DDahyuk",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "HANJIN BRION",
+"name": "Tempester",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "HANJIN BRION",
+"name": "OddEye",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "HANJIN BRION",
+"name": "PlanB",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "HANJIN BRION",
+"name": "Ssong",
+"role": "",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "HANJIN BRION",
+"name": "Duke",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "HANJIN BRION",
+"name": "Ssumday",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "T1",
+"name": "Doran",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "T1",
+"name": "Oner",
+"role": "",
+"end": "2028-11-20",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "T1",
+"name": "Faker",
+"role": "",
+"end": "2029-11-19",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "T1",
+"name": "Peyz",
+"role": "",
+"end": "2028-11-20",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "T1",
+"name": "Keria",
+"role": "",
+"end": "2029-11-19",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "T1",
+"name": "Haetae",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "T1",
+"name": "Guardian",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "T1",
+"name": "Painter",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "T1",
+"name": "Carim",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "T1",
+"name": "Guti",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "T1",
+"name": "Cypher",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "T1",
+"name": "Eclipse",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "T1",
+"name": "Cloud",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "T1",
+"name": "Jinbeom",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "T1",
+"name": "kkOma",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "T1",
+"name": "Tom",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "T1",
+"name": "Mata",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "T1",
+"name": "Easyhoon",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "T1",
+"name": "DooTi",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "T1",
+"name": "Nagne",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "Gen.G",
+"name": "Kiin",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "Gen.G",
+"name": "Canyon",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "Gen.G",
+"name": "Chovy",
+"role": "",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "Gen.G",
+"name": "Ruler",
+"role": "",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "Gen.G",
+"name": "Duro",
+"role": "",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "Gen.G",
+"name": "Ripple",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "Gen.G",
+"name": "Courage",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "Gen.G",
+"name": "Kemish",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "Gen.G",
+"name": "MUDAI",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "Gen.G",
+"name": "Lumos",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "Gen.G",
+"name": "SIRIUSS",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "Gen.G",
+"name": "Ryu",
+"role": "",
+"end": "2028-11-20",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "Gen.G",
+"name": "Lyn",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "Gen.G",
+"name": "Nova",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "Gen.G",
+"name": "Jerry",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "DN SOOPers",
+"name": "DuDu",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "DN SOOPers",
+"name": "Sharvel",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "DN SOOPers",
+"name": "Pyosik",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "DN SOOPers",
+"name": "Clozer",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "DN SOOPers",
+"name": "deokdam",
+"role": "",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "DN SOOPers",
+"name": "Peter",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "DN SOOPers",
+"name": "Life",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "DN SOOPers",
+"name": "Lancer",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "DN SOOPers",
+"name": "DDoIV",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "DN SOOPers",
+"name": "Flip",
+"role": "",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "DN SOOPers",
+"name": "Enosh",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "DN SOOPers",
+"name": "Quantum",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "DN SOOPers",
+"name": "Ggoong",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "DN SOOPers",
+"name": "Minit",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "DN SOOPers",
+"name": "Millimas",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "DN SOOPers",
+"name": "RapidStar",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "DN SOOPers",
+"name": "Cube",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "KRX",
+"name": "Frog",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "KRX",
+"name": "Willer",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "KRX",
+"name": "Vincenzo",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "KRX",
+"name": "Ucal",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "KRX",
+"name": "Aiming",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "KRX",
+"name": "Andil",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "KRX",
+"name": "Rich",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "KRX",
+"name": "Winner",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "KRX",
+"name": "AKaJe",
+"role": "",
+"end": "2028-11-20",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "KRX",
+"name": "LazyFeel",
+"role": "",
+"end": "2028-11-18",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "KRX",
+"name": "Minous",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "KRX",
+"name": "Joker",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "KRX",
+"name": "Naehyun",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "KRX",
+"name": "Saroo",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "KRX",
+"name": "Frozen",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "KRX",
+"name": "Raise",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "KRX",
+"name": "Catch",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "NS REDFORCE",
+"name": "Kingen",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "NS REDFORCE",
+"name": "Sponge",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "NS REDFORCE",
+"name": "Scout",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "NS REDFORCE",
+"name": "Calix",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "NS REDFORCE",
+"name": "Diable",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "NS REDFORCE",
+"name": "Lehends",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "NS REDFORCE",
+"name": "Janus",
+"role": "",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "NS REDFORCE",
+"name": "MihawK",
+"role": "",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "NS REDFORCE",
+"name": "SeTab",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "NS REDFORCE",
+"name": "Lucy",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "NS REDFORCE",
+"name": "Pleata",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "NS REDFORCE",
+"name": "DanDy",
+"role": "",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "NS REDFORCE",
+"name": "Chelly",
+"role": "",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "NS REDFORCE",
+"name": "Crazy",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "NS REDFORCE",
+"name": "bonO",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "BNK FEARX",
+"name": "Clear",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "BNK FEARX",
+"name": "Raptor",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "BNK FEARX",
+"name": "VicLa",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "BNK FEARX",
+"name": "Daystar",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "BNK FEARX",
+"name": "Taeyoon",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "BNK FEARX",
+"name": "Kellin",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "BNK FEARX",
+"name": "Kangin",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "BNK FEARX",
+"name": "Zephyr",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "BNK FEARX",
+"name": "Grizzly",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "BNK FEARX",
+"name": "MG",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "BNK FEARX",
+"name": "Slayer",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "BNK FEARX",
+"name": "Luon",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "BNK FEARX",
+"name": "Edo",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "BNK FEARX",
+"name": "Rather",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "BNK FEARX",
+"name": "Lira",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "KR",
+"league": "LCK",
+"team": "BNK FEARX",
+"name": "Key",
+"role": "",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "GAM Esports",
+"name": "Kiaya",
+"role": "Top",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "GAM Esports",
+"name": "Artemis",
+"role": "Bot",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "GAM Esports",
+"name": "Taki",
+"role": "Support",
+"end": "2027-11-16",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "GAM Esports",
+"name": "Gloryy",
+"role": "Sub/Mid",
+"end": "2027-11-16",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "GAM Esports",
+"name": "Naul",
+"role": "Head Coach",
+"end": "2027-11-16",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "GAM Esports",
+"name": "Hype",
+"role": "Analyst",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "MGN Vikings Esports",
+"name": "Kratos",
+"role": "Top",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "MGN Vikings Esports",
+"name": "Gury",
+"role": "Jungle",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "MGN Vikings Esports",
+"name": "Chika",
+"role": "Mid",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "MGN Vikings Esports",
+"name": "Harky",
+"role": "Bot",
+"end": "2028-11-21",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "MGN Vikings Esports",
+"name": "SiuLoong",
+"role": "Support",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "MGN Vikings Esports",
+"name": "SanSan",
+"role": "Sub/Jug",
+"end": "2028-11-21",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "MGN Vikings Esports",
+"name": "SofM",
+"role": "Head Coach",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "MGN Vikings Esports",
+"name": "BigKoro",
+"role": "Assistant Coach",
+"end": "2028-11-21",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "MGN Vikings Esports",
+"name": "Suga",
+"role": "Analyst",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "MGN Vikings Esports",
+"name": "Zuko",
+"role": "Analyst",
+"end": "2028-11-21",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "Team Secret Whales",
+"name": "Pun",
+"role": "Top",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "Team Secret Whales",
+"name": "Hizto",
+"role": "Jug",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "Team Secret Whales",
+"name": "Dire",
+"role": "Mid",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "Team Secret Whales",
+"name": "Eddie",
+"role": "Bot",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "Team Secret Whales",
+"name": "Bie",
+"role": "Support",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "Team Secret Whales",
+"name": "WarHorse",
+"role": "Head Coach",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "Team Secret Whales",
+"name": "Ciel",
+"role": "Assistant Coach",
+"end": "2027-11-15",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "Deep Cross Gaming",
+"name": "Flauren",
+"role": "Top",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "Deep Cross Gaming",
+"name": "Pop9",
+"role": "Jungle",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "Deep Cross Gaming",
+"name": "HongSuo",
+"role": "Mid",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "Deep Cross Gaming",
+"name": "Feng",
+"role": "Bot",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "Deep Cross Gaming",
+"name": "ShiauC",
+"role": "Support",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "Deep Cross Gaming",
+"name": "XiaoXiang",
+"role": "Sub/Mid",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "Deep Cross Gaming",
+"name": "REFRA1N",
+"role": "Head Coach",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "Deep Cross Gaming",
+"name": "Lxz",
+"role": "Assistant Coach",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "Ground Zero Gaming",
+"name": "1Jiang",
+"role": "Top",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "Ground Zero Gaming",
+"name": "Husha",
+"role": "Jungle",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "Ground Zero Gaming",
+"name": "Uniboy",
+"role": "Mid",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "Ground Zero Gaming",
+"name": "Betty",
+"role": "Bot",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "Ground Zero Gaming",
+"name": "Kaiwing",
+"role": "Support",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "Ground Zero Gaming",
+"name": "Skywalk",
+"role": "Head Coach",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "Ground Zero Gaming",
+"name": "Ratis",
+"role": "Assistant Coach",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "CTBC Flying Oyster",
+"name": "Rest",
+"role": "Top",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "CTBC Flying Oyster",
+"name": "Shad0w",
+"role": "Jungle",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "CTBC Flying Oyster",
+"name": "POUT",
+"role": "Mid",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "CTBC Flying Oyster",
+"name": "Doggo",
+"role": "Bot",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "CTBC Flying Oyster",
+"name": "Kino",
+"role": "Support",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "CTBC Flying Oyster",
+"name": "Chawy",
+"role": "Head Coach",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "CTBC Flying Oyster",
+"name": "Wulala",
+"role": "Assistant Coach",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "DetonatioN FocusMe",
+"name": "Momo",
+"role": "Top",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "DetonatioN FocusMe",
+"name": "Citrus",
+"role": "Jungle",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "DetonatioN FocusMe",
+"name": "Fisher",
+"role": "Mid",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "DetonatioN FocusMe",
+"name": "Kakkun",
+"role": "Bot",
+"end": "2027-11-16",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "DetonatioN FocusMe",
+"name": "Woody",
+"role": "Support",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "DetonatioN FocusMe",
+"name": "Paz",
+"role": "Head Coach",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "DetonatioN FocusMe",
+"name": "TaNa",
+"role": "Assistant Coach",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "DetonatioN FocusMe",
+"name": "Gismo",
+"role": "Assistant Coach",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "Fukuoka SoftBank HAWKS gaming",
+"name": "Evi",
+"role": "Top",
+"end": "2027-11-16",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "Fukuoka SoftBank HAWKS gaming",
+"name": "Van1",
+"role": "Jungle",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "Fukuoka SoftBank HAWKS gaming",
+"name": "Aria",
+"role": "Mid",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "Fukuoka SoftBank HAWKS gaming",
+"name": "Marble",
+"role": "Bot",
+"end": "2027-11-16",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "Fukuoka SoftBank HAWKS gaming",
+"name": "Vsta",
+"role": "Support",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "Fukuoka SoftBank HAWKS gaming",
+"name": "Corgi",
+"role": "Head Coach",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "LCP",
+"team": "Fukuoka SoftBank HAWKS gaming",
+"name": "Maru",
+"role": "Assistant Coach",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "PCS",
+"team": "CTBC Flying Oyster Academy",
+"name": "Zkai",
+"role": "LI-KAI",
+"end": "2027-11-16",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "PCS",
+"team": "CTBC Flying Oyster Academy",
+"name": "Xin",
+"role": "SHANG-HSIN",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "PCS",
+"team": "CTBC Flying Oyster Academy",
+"name": "Yuhe",
+"role": "XING-WEI",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "PCS",
+"team": "CTBC Flying Oyster Academy",
+"name": "Tracy",
+"role": "HONG-LIN",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "PCS",
+"team": "CTBC Flying Oyster Academy",
+"name": "2274",
+"role": "CHANG-AN",
+"end": "2028-11-14",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "PCS",
+"team": "CTBC Flying Oyster Academy",
+"name": "Leaky",
+"role": "Tsu-Chia",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "PCS",
+"team": "CTBC Flying Oyster Academy",
+"name": "DPower",
+"role": "shang",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "PCS",
+"team": "FRANK Esports",
+"name": "YSKM",
+"role": "Shu Tak",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "PCS",
+"team": "FRANK Esports",
+"name": "Holo",
+"role": "TAK LAM",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "PCS",
+"team": "FRANK Esports",
+"name": "Pretender",
+"role": "Cheuk Lun Jason",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "PCS",
+"team": "FRANK Esports",
+"name": "MnM",
+"role": "Ka Chun",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "PCS",
+"team": "FRANK Esports",
+"name": "kingpo54",
+"role": "CHUN PAN",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "PCS",
+"team": "FRANK Esports",
+"name": "MoonBlack",
+"role": "Chung Hong",
+"end": "2026-11-17",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "PCS",
+"team": "SillySilly Gaming",
+"name": "Tianzhen",
+"role": "QI FAN",
+"end": "2026-10-31",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "PCS",
+"team": "SillySilly Gaming",
+"name": "Hermes",
+"role": "YU JU",
+"end": "2026-10-31",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "PCS",
+"team": "SillySilly Gaming",
+"name": "Endless",
+"role": "HAO",
+"end": "2026-10-31",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "PCS",
+"team": "Ground Zero Academy",
+"name": "Adizai",
+"role": "KUAN TING",
+"end": "2026-09-20",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "PCS",
+"team": "Ground Zero Academy",
+"name": "RenYe",
+"role": "YU JEN",
+"end": "2026-06-30",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "PCS",
+"team": "Ground Zero Academy",
+"name": "Chain",
+"role": "SIH HAN",
+"end": "2026-09-20",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "PCS",
+"team": "Ground Zero Academy",
+"name": "131",
+"role": "KING KI",
+"end": "2026-09-20",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "PCS",
+"team": "Ground Zero Academy",
+"name": "Bob",
+"role": "SHAO-TZU",
+"end": "2026-09-20",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "PCS",
+"team": "Equinox Core",
+"name": "Yuji",
+"role": "XIQI",
+"end": "2027-01-11",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "PCS",
+"team": "Equinox Core",
+"name": "Epic",
+"role": "CHUN HIN",
+"end": "2027-01-11",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "PCS",
+"team": "Equinox Core",
+"name": "Zoey",
+"role": "PO-YAN",
+"end": "2027-01-11",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "PCS",
+"team": "Equinox Core",
+"name": "Lucifer",
+"role": "JAEWON",
+"end": "2027-01-11",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "PCS",
+"team": "Equinox Core",
+"name": "Mese",
+"role": "HSU-CHENG",
+"end": "2027-01-11",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "PCS",
+"team": "Equinox Core",
+"name": "XI LAI",
+"role": "CHANG",
+"end": "2027-01-11",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "PCS",
+"team": "Equinox Core",
+"name": "Hanli",
+"role": "JIAN-CHENG",
+"end": "2027-01-11",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "PCS",
+"team": "Equinox Core",
+"name": "LeiShan",
+"role": "MING WEI",
+"end": "2027-01-11",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "PCS",
+"team": "Equinox Core",
+"name": "Medica",
+"role": "BANG YING",
+"end": "2027-01-11",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "PCS",
+"team": "Viper Night Raider",
+"name": "Zartheit1",
+"role": "LUN FUNG",
+"end": "2026-01-07",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "PCS",
+"team": "Viper Night Raider",
+"name": "ANKS",
+"role": "SHENG SYIN",
+"end": "2026-01-07",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "PCS",
+"team": "Viper Night Raider",
+"name": "BuLuKaKa",
+"role": "KA KIT",
+"end": "2026-01-07",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "PCS",
+"team": "Viper Night Raider",
+"name": "MadDogg9",
+"role": "TSZ CHUNG KELVIN",
+"end": "2026-01-07",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "PCS",
+"team": "Viper Night Raider",
+"name": "Keres",
+"role": "CHI KIT",
+"end": "2026-01-07",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "PCS",
+"team": "Viper Night Raider",
+"name": "Masuhana",
+"role": "YA CHUN",
+"end": "2026-01-07",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "PCS",
+"team": "Viper Night Raider",
+"name": "Listo",
+"role": "WOO-SEOK",
+"end": "2026-01-07",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "PCS",
+"team": "Viper Night Raider",
+"name": "XDDCC",
+"role": "",
+"end": "2026-01-07",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "VCS",
+"team": "Saigon 9gaming Esports",
+"name": "SCP",
+"role": "Tấn Tỷ",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "VCS",
+"team": "Saigon 9gaming Esports",
+"name": "GiaQui",
+"role": "Gia Qui",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "VCS",
+"team": "Saigon 9gaming Esports",
+"name": "Charlington",
+"role": "Tiêu Minh",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "VCS",
+"team": "Saigon 9gaming Esports",
+"name": "Zin",
+"role": "Tuấn Thọ",
+"end": "2026-11-16",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "VCS",
+"team": "Saigon 1TAP Dino",
+"name": "Nanaue",
+"role": "Đức Tài",
+"end": "2026-12-01",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "VCS",
+"team": "Saigon 1TAP Dino",
+"name": "Tiphat",
+"role": "Tiến Phát",
+"end": "2026-12-01",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "VCS",
+"team": "Saigon 1TAP Dino",
+"name": "Wady",
+"role": "Quang Duy",
+"end": "2026-12-01",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "VCS",
+"team": "Saigon 1TAP Dino",
+"name": "TT",
+"role": "Thanh",
+"end": "2026-12-01",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "VCS",
+"team": "Saigon 1TAP Dino",
+"name": "Easylove",
+"role": "Thành An",
+"end": "2026-12-01",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "VCS",
+"team": "Saigon 1TAP Dino",
+"name": "Vinboiz",
+"role": "Vinh",
+"end": "2026-12-01",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "VCS",
+"team": "Saigon 1TAP Dino",
+"name": "Tahahy",
+"role": "Huy",
+"end": "2026-12-01",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "VCS",
+"team": "Saigon 1TAP Dino",
+"name": "JackieWind",
+"role": "Phong",
+"end": "2026-12-01",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "VCS",
+"team": "TPHCM SN CyberCore Esports",
+"name": "Sparda",
+"role": "Võ Anh Hoàng",
+"end": "2026-10-30",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "VCS",
+"team": "TPHCM SN CyberCore Esports",
+"name": "Rikk",
+"role": "Hữu Nam",
+"end": "2026-10-30",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "VCS",
+"team": "TPHCM SN CyberCore Esports",
+"name": "Vin",
+"role": "Hoài Vinh",
+"end": "2026-10-30",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "VCS",
+"team": "TPHCM SN CyberCore Esports",
+"name": "Yashiro",
+"role": "Viết Huy",
+"end": "2026-10-30",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "VCS",
+"team": "TPHCM SN CyberCore Esports",
+"name": "Kairi",
+"role": "Văn Phi",
+"end": "2026-10-30",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "VCS",
+"team": "TPHCM SN CyberCore Esports",
+"name": "Yongbel",
+"role": "Hữu Duy",
+"end": "2026-10-30",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "VCS",
+"team": "TPHCM SN CyberCore Esports",
+"name": "PhanVanTa",
+"role": "Nguyễn Thiện Quân",
+"end": "2026-10-30",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "VCS",
+"team": "TPHCM SN CyberCore Esports",
+"name": "Hieu3",
+"role": "Minh Hiếu",
+"end": "2026-10-30",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "VCS",
+"team": "TPHCM SN CyberCore Esports",
+"name": "Kyo",
+"role": "Bảo Quốc",
+"end": "2026-10-30",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "VCS",
+"team": "TPHCM SN CyberCore Esports",
+"name": "Peachy",
+"role": "Doanh Doanh",
+"end": "2026-10-30",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "VCS",
+"team": "TPHCM SN CyberCore Esports",
+"name": "Martinelli",
+"role": "Duy Cường",
+"end": "2026-10-30",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "VCS",
+"team": "Saigon MVK Academy",
+"name": "Umi",
+"role": "Thế Dương",
+"end": "2028-05-19",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "VCS",
+"team": "Saigon MVK Academy",
+"name": "Steller",
+"role": "Quang Bình",
+"end": "2028-11-16",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "VCS",
+"team": "Saigon MVK Academy",
+"name": "NPC",
+"role": "Phan Thành Nhân",
+"end": "2028-11-16",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "VCS",
+"team": "Saigon MVK Academy",
+"name": "Seany",
+"role": "Hữu Hải",
+"end": "2028-11-16",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "VCS",
+"team": "Saigon MVK Academy",
+"name": "Hy",
+"role": "Hoàng Huy",
+"end": "2028-11-16",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "VCS",
+"team": "Saigon MVK Academy",
+"name": "Nuna",
+"role": "Quốc Anh",
+"end": "2028-11-16",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "VCS",
+"team": "Saigon MVK Academy",
+"name": "Callian",
+"role": "Lê Cao Tấn",
+"end": "2028-11-16",
+"status": ""
+},
+{
+"tab": "LCP",
+"league": "VCS",
+"team": "Saigon MVK Academy",
+"name": "RonOP",
+"role": "Thiên Hàn",
+"end": "2028-11-16",
+"status": ""
+}
+]
+}
