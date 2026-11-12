@@ -71,7 +71,8 @@ STYLE = ['earnedgoldshare', 'damageshare', 'kshare', 'ka15', 'p15', 'dth_pm', 'd
 PRETTY = {'WLDs': 'Worlds', 'FST': 'First Stand', 'EM': 'EMEA Masters', 'LCKC': 'LCK Challengers', 'LAS': 'LCK Academy Series',
           'AM': 'Asia Masters', 'DCup': 'Demacia Cup', 'NL': 'Nexus League', 'PRM': 'Prime League', 'AL': 'Arabian League',
           'CD': 'Circuito Desafiante', 'HM': 'Hitpoint Masters', 'HC': 'Hitpoint Challengers', 'RL': 'Rift Legends',
-          'ROL': 'Road of Legends', 'LTA': 'LTA Championship'}
+          'ROL': 'Road of Legends', 'LTA': 'LTA Championship', 'DCGI': 'Demacia Cup Global Invitational',
+          'WSCI': 'World Star Challengers Invitational', 'HW': 'Hitpoint Winter'}
 TIER_NAMES = ['Ligue majeure', 'Deuxième niveau', 'Troisième niveau']
 
 
@@ -283,18 +284,34 @@ def season(year, prior):
     ok = ~np.isnan(rv)
     p['c'] = np.where(ok, rv * wmat, 0).sum(1) / np.where(ok, wmat, 0).sum(1).clip(min=1e-9)
     p.loc[(np.where(ok, wmat, 0).sum(1) < 0.5), 'c'] = np.nan
-    p['big'] = (p.playoffs == 1) | p.league.isin(cups)
-    p['event'] = np.where(p.league.isin(cups) | p.split.isna(), p.league.map(lambda x: PRETTY.get(x, x)),
-                          p.league.map(lambda x: PRETTY.get(x, x)) + ' ' + p.split.fillna('').astype(str))
+    pretty = p.league.map(lambda x: PRETTY.get(x, x))
+    # le segment fait partie du nom, y compris pour les tournois qui ont plusieurs éditions par an (EMEA Masters Winter...)
+    p['event'] = np.where(p.split.isna() | p.split.astype(str).isin(['Season', 'nan']), pretty, pretty + ' ' + p.split.fillna('').astype(str))
     p['event'] = p.event.str.strip()
-    # Un tournoi dont les qualifications régionales se jouent des semaines avant (EWC...) : on sépare les deux,
-    # sinon la note du « tournoi » mélange des matchs de ligue et le tournoi lui-même.
+    # chaque partie : entre deux équipes de la même ligue, ou de ligues différentes ?
+    p['inter'] = p.tid.map(team_home).fillna('?') != p.opp.map(team_home).fillna('?')
+    reg = lambda t: META['region'].get(team_home.get(t), '?')
+    p['inter_reg'] = p.tid.map(reg) != p.opp.map(reg)        # entre deux régions (Corée, Chine, EMEA...)
+    MOIS = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre']
+    # Un tournoi joué en deux temps séparés de plusieurs semaines. Deux cas seulement justifient de le couper :
+    #  - d'abord des matchs entre équipes d'une même ligue, puis le tournoi entre ligues : ce sont des qualifications régionales ;
+    #  - deux phases entre ligues : ce sont deux éditions, on nomme la première par son mois.
     for ev in p.loc[p.league.isin(cups), 'event'].unique():
-        days = np.sort(p.loc[p.event == ev, 'date'].dt.normalize().unique())
+        m = p.event == ev
+        days = np.sort(p.loc[m, 'date'].dt.normalize().unique())
         gaps = np.where(np.diff(days) > np.timedelta64(QUALIF_GAP_DAYS, 'D'))[0]
-        if len(gaps):
-            cut = days[gaps[-1] + 1]
-            p.loc[(p.event == ev) & (p.date < cut), 'event'] = ev + ', qualifications'
+        if not len(gaps): continue
+        cut = days[gaps[-1] + 1]
+        early, late = m & (p.date < cut), m & (p.date >= cut)
+        if p.loc[late, 'inter_reg'].mean() < 0.3: continue                 # la fin n'est pas un tournoi entre régions : on ne coupe pas
+        if p.loc[early, 'inter_reg'].mean() < 0.1: p.loc[early, 'event'] = ev + ', qualifications régionales'
+        else: p.loc[early, 'event'] = ev + ', ' + MOIS[p.loc[early, 'date'].min().month - 1]
+    # portée de chaque événement : international (entre régions), entre ligues d'une même région, coupe ou qualification
+    # d'une seule ligue ou région, ou ligue
+    share = p.groupby('event').inter.mean(); share_r = p.groupby('event').inter_reg.mean(); is_cup = p.groupby('event').league.first().isin(cups)
+    scope = pd.Series(np.where(~is_cup, 'ligue', np.where(share_r >= 0.3, 'monde', np.where(share >= 0.3, 'region', 'coupe'))), index=share.index)
+    p['scope'] = p.event.map(scope)
+    p['big'] = (p.playoffs == 1) | p.scope.isin(['monde', 'region'])
 
     # ligue et équipe actuelles du joueur
     dom = p[~p.league.isin(cups)].sort_values('date')
@@ -405,7 +422,7 @@ def event_table(S):
     g = p.groupby(['pid', 'event'])
     E = g.agg(n=('c', 'size'), csum=('c', 'sum'), cn=('c', 'count'), win=('result', 'mean'), wins=('result', 'sum'), Ropp=('R_opp', 'mean'),
               Rown=('R_own', 'mean'), T=('R_ev', 'mean'), k=('kills', 'sum'), d=('deaths', 'sum'), a=('assists', 'sum'), start=('date', 'min'),
-              end=('date', 'max'), team=('teamname', 'last'), league=('league', 'last')).reset_index()
+              end=('date', 'max'), team=('teamname', 'last'), league=('league', 'last'), scope=('scope', 'last')).reset_index()
     E = E[E.n >= MIN_EVENT]
     E = E[E.pid.isin(A.index)]
     cs = A.c_s.reindex(E.pid).values; role = A.role.reindex(E.pid).values
@@ -535,7 +552,7 @@ def main():
                 for _, e in ev_by[pid].sort_values('start').iterrows():
                     evs.append({'e': e.event, 'n': int(e.n), 'w': r1(e.win, 3), 'kda': r1((e.k + e.a) / max(e.d, 1), 2),
                                 'note': r1(to_note(e.pts, a, b)), 'team': e.team, 'd': str(e.end.date()),
-                                'cup': bool(e.league in S['cups'])})
+                                'cup': bool(e.league in S['cups']), 'sc': e.scope})
             sz = S['Sz'].loc[pid] if pid in S['Sz'].index else None
             players.append({
                 'id': pid.replace('oe:player:', ''), 'name': r['name'], 'team': r.team, 'tid': str(r.tid).replace('oe:team:', ''), 'league': r.league,

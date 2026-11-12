@@ -182,7 +182,7 @@
     const leagues = {}, regions = new Set(), events = {};
     for (const p of S.players) {
       leagues[p.league] = p.tier; regions.add(p.region);
-      for (const e of p.ev) events[e.e] = (events[e.e] || { n: 0, cup: e.cup, d: e.d }), events[e.e].n++, events[e.e].d = e.d > events[e.e].d ? e.d : events[e.e].d;
+      for (const e of p.ev) events[e.e] = (events[e.e] || { n: 0, sc: e.sc, d: e.d }), events[e.e].n++, events[e.e].d = e.d > events[e.e].d ? e.d : events[e.e].d;
     }
     const lgOpts = (sel) => '<option value="">Toutes</option>' + [0, 1, 2].map((t) => `<optgroup label="${TIERS[t]}">` +
       Object.keys(leagues).filter((l) => leagues[l] === t).sort((a, b) => (S.leagues[b] || 0) - (S.leagues[a] || 0))
@@ -193,9 +193,9 @@
     const rs = {}; for (const p of S.players) if (p.res) rs[p.res] = (rs[p.res] || 0) + 1;
     $('#s-res').innerHTML = '<option value="">Toutes</option>' + Object.keys(rs).sort((a, b) => rs[b] - rs[a]).map((r) => `<option value="${h(r)}"${r === state.sc.res ? ' selected' : ''}>${h(resid(r))}</option>`).join('');
     const evs = Object.keys(events).filter((e) => events[e].n >= 20);
-    const grp = (cup) => evs.filter((e) => events[e].cup === cup).sort((a, b) => (cup ? events[b].n - events[a].n : a.localeCompare(b)));
-    $('#f-event').innerHTML = '<option value="">Saison entière</option><optgroup label="Tournois internationaux et coupes">' + grp(true).map((e) => `<option${e === state.event ? ' selected' : ''}>${h(e)}</option>`).join('') +
-      '</optgroup><optgroup label="Ligues, par segment">' + grp(false).map((e) => `<option${e === state.event ? ' selected' : ''}>${h(e)}</option>`).join('') + '</optgroup>';
+    const grp = (sc) => evs.filter((e) => events[e].sc === sc).sort((a, b) => (sc === 'monde' ? events[b].n - events[a].n : a.localeCompare(b)));
+    const og = (label, sc) => { const L = grp(sc); return L.length ? `<optgroup label="${label}">` + L.map((e) => `<option${e === state.event ? ' selected' : ''}>${h(e)}</option>`).join('') + '</optgroup>' : ''; };
+    $('#f-event').innerHTML = '<option value="">Saison entière</option>' + og('Tournois internationaux', 'monde') + og('Tournois entre ligues d\'une même région', 'region') + og('Coupes et qualifications régionales', 'coupe') + og('Ligues, par segment', 'ligue');
     if (state.event && !events[state.event]) state.event = '';
   }
 
