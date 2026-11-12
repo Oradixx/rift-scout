@@ -268,3 +268,6 @@ div.row{cursor:pointer}
   .cmp-row{grid-template-columns:92px 1fr 36px 40px;gap:8px}
   .scout-table .row{grid-template-columns:26px 44px 1fr 74px}
 }
+
+.seg-wide{display:flex;width:100%}
+.seg-wide button{flex:1;font-size:13px;padding:7px 6px}

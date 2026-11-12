@@ -46,7 +46,7 @@
   const ageTxt = (p) => (hasMeta() && p.age ? `, ${p.age} ans` : '');
   const cMatch = (p, v) => !v || !hasCT() || (v === 'free' ? isFree(p) : v === 'signed' ? !!p.c && !isFree(p) : !p.c);
 
-  const state = { season: Object.keys(D.seasons).sort().pop(), view: 'rank', role: '', tier: '0', region: '', league: '', event: '', contract: '', minG: 15, q: '', shown: 100,
+  const state = { season: Object.keys(D.seasons).sort().pop(), view: 'rank', role: '', tier: '0', region: '', league: '', event: '', contract: '', lgMode: 'season', minG: 15, q: '', shown: 100,
     sc: { plan: {}, contract: '', maxAge: 0, res: '', tid: null, role: 'Mid', tier: '', region: '', league: '', minNote: 0, minG: 20, sort: 'score', shown: 60, ref: null, reach: true } };
   let S, byId, med;
 
@@ -123,12 +123,14 @@
   function topTxt(pc) { const t = Math.max(1, Math.round((1 - pc) * 100)); return t <= 50 ? `top ${t} %` : `${t}e centile`; }
 
   /* ------------------------------------------------------------ classement */
-  /* Ligue choisie sans événement : on note chaque joueur sur ses seules parties de cette ligue, et on liste tous ceux
-     qui y ont joué (même s'ils sont partis depuis). Avec un événement, c'est la note de l'événement qui s'affiche,
-     et les filtres région / ligue / niveau désignent alors la ligue actuelle du joueur. */
+  /* Trois façons de noter, jamais mélangées :
+       - par défaut, la note de toute la saison ; les filtres (niveau, région, ligue) ne font que choisir les joueurs,
+         d'après leur ligue actuelle, sans rien changer à leur note ;
+       - ligue choisie + « parties de la ligue seulement » : la note sur ces seules parties, pour tous ceux qui y ont joué ;
+       - événement choisi : la note de l'événement, pour les joueurs retenus par les autres filtres. */
   function filtered(ignoreRole) {
     const q = state.q.trim().toLowerCase();
-    const lgOnly = state.league && !state.event;
+    const lgOnly = !!state.league && !state.event && state.lgMode === 'league';
     let L = S.players.filter((p) =>
       (ignoreRole || !state.role || p.role === state.role) &&
       (q || state.tier === '' || p.tier === +state.tier) &&
@@ -173,7 +175,7 @@
     renderFive();
     const L = filtered(false);
     const el = $('#rows');
-    $('#count').textContent = L.length ? `${fmt(L.length)} joueur${L.length > 1 ? 's' : ''}` + (state.event ? `, notés sur ${state.event}` : state.league ? `, notés sur leurs seules parties de ${lgName(state.league)}` : ', notés sur toute la saison') : '';
+    $('#count').textContent = L.length ? `${fmt(L.length)} joueur${L.length > 1 ? 's' : ''}` + (state.event ? `, notés sur ${state.event}` : state.league && state.lgMode === 'league' ? `, notés sur leurs seules parties de ${lgName(state.league)}` : ', notés sur toute la saison') : '';
     if (!L.length) { el.innerHTML = '<p class="none">Aucun joueur ne correspond à ces filtres. Élargissez le niveau de ligue ou baissez le nombre minimum de parties.</p>'; return; }
     let html = '';
     L.slice(0, state.shown).forEach((p, i) => {
@@ -189,7 +191,9 @@
     if (L.length > state.shown) html += `<button class="more" id="more">Afficher 100 joueurs de plus</button>`;
     el.innerHTML = html;
     $('#f-contract').disabled = !hasCT(); $('#f-contract').value = hasCT() ? state.contract : '';
-    $('#th-trend').textContent = state.event || state.league ? 'Écart saison' : 'Forme';
+    $('#th-trend').textContent = state.event || (state.league && state.lgMode === 'league') ? 'Écart saison' : 'Forme';
+    const box = $('#lg-mode'); box.hidden = !state.league || !!state.event;
+    if (!box.hidden) { $('#lg-mode-only').textContent = lgName(state.league) + ' seulement'; box.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', b.dataset.lgmode === state.lgMode)); }
   }
   function fillSelects() {
     const leagues = {}, regions = new Set(), events = {};
@@ -455,16 +459,17 @@
       else if (b.dataset.p) openSheet(b.dataset.p, b.dataset.cmp);
       else if (b.hasAttribute('data-close')) closeSheet();
       else if (b.dataset.tid) { $('#suggest').hidden = true; setTeam(b.dataset.tid); }
+      else if (b.dataset.lgmode) { state.lgMode = b.dataset.lgmode; state.shown = 100; renderRank(); }
       else if (b.id === 'more') { state.shown += 100; renderRank(); }
       else if (b.id === 'scout-more') { state.sc.shown += 60; renderScout(); }
-      else if (b.id === 'reset') { Object.assign(state, { role: '', tier: '0', region: '', league: '', event: '', contract: '', minG: 15, q: '', shown: 100 }); syncFilters(); fillSelects(); renderRank(); }
+      else if (b.id === 'reset') { Object.assign(state, { role: '', tier: '0', region: '', league: '', event: '', contract: '', lgMode: 'season', minG: 15, q: '', shown: 100 }); syncFilters(); fillSelects(); renderRank(); }
       else if (b.id === 'clear-team') { state.sc.plan = {}; state.sc.tid = null; state.sc.ref = null; $('#team-input').value = ''; renderScout(); }
       else if (b.closest('#f-roles')) { state.role = b.dataset.role; state.shown = 100; syncFilters(); renderRank(); }
       else if (b.closest('#s-roles') || b.closest('#lineup')) { state.sc.role = b.dataset.role; state.sc.ref = null; state.sc.shown = 60; renderScout(); }
     });
     const bind = (id, fn) => $(id).addEventListener('input', (e) => { fn(e.target.value); state.shown = 100; state.sc.shown = 60; state.view === 'rank' ? renderRank() : renderScout(); });
     bind('#f-tier', (v) => { state.tier = v; }); bind('#f-region', (v) => { state.region = v; if (v) { state.league = ''; $('#f-league').value = ''; } });
-    bind('#f-league', (v) => { state.league = v; if (v) { state.tier = ''; state.region = ''; syncFilters(); } });
+    bind('#f-league', (v) => { state.league = v; state.lgMode = 'season'; if (v) { state.tier = ''; state.region = ''; syncFilters(); } });
     bind('#f-event', (v) => { state.event = v; if (v) { state.tier = ''; state.minG = 0; syncFilters(); } else { state.minG = 15; state.tier = '0'; syncFilters(); } });
     bind('#f-contract', (v) => { state.contract = v; }); bind('#s-contract', (v) => { state.sc.contract = v; });
     bind('#s-age', (v) => { state.sc.maxAge = +v || 0; }); bind('#s-res', (v) => { state.sc.res = v; });

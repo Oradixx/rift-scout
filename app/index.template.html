@@ -39,6 +39,8 @@
           <select id="f-tier"><option value="">Tous</option><option value="0">Ligues majeures</option><option value="1">Deuxième niveau</option><option value="2">Troisième niveau</option></select></div>
         <div><label for="f-region">Région</label><select id="f-region"></select></div>
         <div><label for="f-league">Ligue</label><select id="f-league"></select></div>
+        <div class="field wide" id="lg-mode" hidden><span>Noter les joueurs sur</span>
+          <div class="seg seg-wide"><button data-lgmode="season">Toute la saison</button><button data-lgmode="league" id="lg-mode-only">Cette ligue seulement</button></div></div>
         <div><label for="f-event">Événement</label><select id="f-event"></select></div>
         <div><label for="f-contract">Contrat</label><select id="f-contract"><option value="">Tous</option><option value="free">En fin de contrat</option><option value="signed">Sous contrat au-delà</option><option value="none">Non renseigné</option></select></div>
         <div><label for="f-min">Parties jouées, au moins</label><input id="f-min" type="number" min="0" max="200" step="5"></div>
@@ -119,7 +121,7 @@
       <p>Un joueur avec peu de parties est ramené vers le niveau moyen (l'équivalent de 12 parties moyennes est ajouté à chacun).</p>
       <h2>Les lectures complémentaires</h2>
       <ul>
-        <li><b>Note par ligue</b> : quand vous filtrez sur une ligue, la note est recalculée sur les seules parties de cette ligue (saison régulière et playoffs), sans les tournois ni les coupes. Tous les joueurs qui y ont joué sont listés, même s'ils l'ont quittée depuis. La colonne « Écart saison » donne la différence avec la note sur toute la saison.</li>
+        <li><b>Note par ligue</b> : filtrer sur une ligue ne change pas la note, qui reste celle de toute la saison. Un choix apparaît alors sous le filtre : « Toute la saison » ou la ligue seulement. Dans le second cas, la note est recalculée sur les seules parties de cette ligue (saison régulière et playoffs), sans les tournois ni les coupes, et tous les joueurs qui y ont joué sont listés, même s'ils l'ont quittée depuis. La colonne « Écart saison » donne la différence avec la note sur toute la saison.</li>
         <li><b>Note par événement</b> : le niveau de chaque équipe est réestimé sur les seules parties de l'événement, toutes équipes ensemble. Battre une équipe compte donc selon ce que cette équipe a fait dans ce même événement, pas selon sa ligue. Le niveau de saison ne sert que de point de départ et pèse l'équivalent de deux à trois parties. L'écart individuel est calculé sur les parties de l'événement, complété par cinq parties de saison. Quand un tournoi international a des qualifications régionales jouées des semaines plus tôt, elles sont notées à part, région par région, et rangées avec les coupes régionales. Les stats y sont comparées à celles de la ligue de la région (les qualifications EMEA de l'EWC sont jugées comme de la LEC).</li>
         <li><b>Weakside et strongside</b> (top, mid, ADC) : une partie est comptée « weakside » quand le joueur participe peu aux kills de son équipe avant 15 minutes, « strongside » quand il y participe beaucoup. C'est une approximation : les données ne disent pas où passe le jungler.</li>
         <li><b>Grands matchs</b> : écart entre ses parties de playoffs ou de tournoi entre ligues, et ses autres parties. Les coupes et qualifications d'une seule ligue ou région n'y comptent pas.</li>
