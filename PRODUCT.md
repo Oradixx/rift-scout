@@ -24,6 +24,7 @@ La note doit coller au ressenti d'un observateur averti. Une note que personne n
 - **Poids de l'écart individuel calé sur les données** (environ 100 points par écart-type), pas choisi à la main.
 - **Échelle** : 80 = joueur médian des ligues majeures, plafond tassé vers 97 pour que 99 reste hors d'atteinte.
 - **Style séparé du niveau.** Le vecteur de style (ressources, activité avant 15 minutes, risque, vision, type de champions) sert à comparer des profils, jamais à noter.
+- **Stats attendues estimées par niveau de ligue**, affinées par compétition et plafonnées pour les gros écarts de niveau. Estimées globalement, elles pénalisaient les joueurs des équipes qui dominent une ligue majeure (G2, Karmine Corp) et gonflaient ceux des équipes faibles.
 - **Niveaux de ligue de départ** repris du projet LoL Ratings 3.0, seul élément hérité de l'ancien modèle.
 
 ## Limites connues
@@ -37,10 +38,11 @@ La note doit coller au ressenti d'un observateur averti. Une note que personne n
 
 ## Sources
 
-- Matchs : Oracle's Elixir (fichiers annuels).
+- Matchs : Oracle's Elixir (fichiers annuels). Reste la source des notes.
+- Leaguepedia (compte requis) : âge, pays, résidence, contrats en complément. Il donne aussi, pour chaque partie hors LPL, le fichier complet de Riot et la chronologie (kills avec position, position de chaque joueur toutes les minutes). Couverture mesurée sur 2026 : 11 377 parties sur 12 405, soit tout sauf la LPL et quelques coupes chinoises (0 %).
 - Contrats : base publique des contrats reconnus par Riot.
 
 ## Suite envisagée
 
-- Mieux créditer les supports et junglers dont le rôle est d'initier.
-- Âge et nationalité des joueurs pour le scouting.
+- À partir des chronologies Leaguepedia : morts inutiles et objectifs disputés (mieux créditer ceux qui initient), proximité du jungler (vrai weakside et strongside). La LPL n'étant pas couverte, ces mesures devront rester facultatives par joueur.
+- Il reste un écart individuel négatif chez G2 et Karmine Corp après correction : à réexaminer avec ces nouvelles mesures.

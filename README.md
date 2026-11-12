@@ -11,6 +11,7 @@ La page est un seul fichier : `docs/index.html` (ouvrable directement dans un na
 - **Scouting** : on choisit une équipe et un poste ; les candidats sont classés par note, par ressemblance de style avec le titulaire et par ce qu'ils apportent aux quatre autres joueurs.
 - **Contrats** : date de fin de contrat sur chaque joueur, filtre « en fin de contrat » dans le classement et le scouting, tri par fin de contrat la plus proche. Source : la [base publique des contrats reconnus par Riot](https://docs.google.com/spreadsheets/d/1Y7k5kQ2AegbuyiGwEPsa62e883FYVtHqr6UVut9RC4o/pubhtml).
 - **Avant et après** : dans le scouting, on essaie un ou plusieurs joueurs dans une équipe et on compare l'effectif obtenu à l'actuel (niveau, chances de victoire, rang estimé dans la ligue, profil par facette).
+- **Âge, nationalité, résidence** : sur la fiche et en filtres dans le scouting (source : Leaguepedia).
 - **Méthode** : le calcul expliqué, les poids par poste, le niveau des ligues.
 
 ## La note
