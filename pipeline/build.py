@@ -289,9 +289,21 @@ def season(year, prior):
     p['event'] = np.where(p.split.isna() | p.split.astype(str).isin(['Season', 'nan']), pretty, pretty + ' ' + p.split.fillna('').astype(str))
     p['event'] = p.event.str.strip()
     # chaque partie : entre deux équipes de la même ligue, ou de ligues différentes ?
-    p['inter'] = p.tid.map(team_home).fillna('?') != p.opp.map(team_home).fillna('?')
-    reg = lambda t: META['region'].get(team_home.get(t), '?')
-    p['inter_reg'] = p.tid.map(reg) != p.opp.map(reg)        # entre deux régions (Corée, Chine, EMEA...)
+    # (une équipe sans ligue connue, invitée ou vue seulement en coupe, ne suffit pas à rendre un match « entre ligues »)
+    h_own, h_opp = p.tid.map(team_home), p.opp.map(team_home)
+    p['inter'] = h_own.notna() & h_opp.notna() & (h_own != h_opp)
+    r_own, r_opp = h_own.map(META['region']), h_opp.map(META['region'])
+    p['inter_reg'] = r_own.notna() & r_opp.notna() & (r_own != r_opp)      # entre deux régions (Corée, Chine, EMEA...)
+    p['game_reg'] = r_own.fillna(r_opp).map(lambda x: {'Brésil & Amérique latine': 'Brésil'}.get(x, x))
+    p['own_reg'] = r_own; p['own_home'] = h_own
+
+    def scope_of(q):
+        """portée d'un ensemble de parties d'après les équipes présentes : 'monde' (plusieurs régions), 'region' (plusieurs
+        ligues d'une région) ou 'coupe' (une seule ligue ; une équipe invitée isolée ne change rien)."""
+        def spread(col):
+            v = q[col].dropna().value_counts(normalize=True); v = v[v >= 0.05]
+            return len(v) >= 3 or (len(v) == 2 and v.min() >= 0.25)
+        return 'monde' if spread('own_reg') else 'region' if spread('own_home') else 'coupe'
     MOIS = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre']
     # Un tournoi joué en deux temps séparés de plusieurs semaines. Deux cas seulement justifient de le couper :
     #  - d'abord des matchs entre équipes d'une même ligue, puis le tournoi entre ligues : ce sont des qualifications régionales ;
@@ -303,13 +315,13 @@ def season(year, prior):
         if not len(gaps): continue
         cut = days[gaps[-1] + 1]
         early, late = m & (p.date < cut), m & (p.date >= cut)
-        if p.loc[late, 'inter_reg'].mean() < 0.3: continue                 # la fin n'est pas un tournoi entre régions : on ne coupe pas
-        if p.loc[early, 'inter_reg'].mean() < 0.1: p.loc[early, 'event'] = ev + ', qualifications régionales'
+        if scope_of(p[late]) != 'monde': continue                          # la fin n'est pas un tournoi entre régions : on ne coupe pas
+        if p.loc[early, 'inter_reg'].mean() < 0.1: p.loc[early, 'event'] = ev + ', qualifications ' + p.loc[early, 'game_reg'].fillna('régionales')
         else: p.loc[early, 'event'] = ev + ', ' + MOIS[p.loc[early, 'date'].min().month - 1]
     # portée de chaque événement : international (entre régions), entre ligues d'une même région, coupe ou qualification
     # d'une seule ligue ou région, ou ligue
-    share = p.groupby('event').inter.mean(); share_r = p.groupby('event').inter_reg.mean(); is_cup = p.groupby('event').league.first().isin(cups)
-    scope = pd.Series(np.where(~is_cup, 'ligue', np.where(share_r >= 0.3, 'monde', np.where(share >= 0.3, 'region', 'coupe'))), index=share.index)
+    is_cup = p.groupby('event').league.first().isin(cups)
+    scope = pd.Series({ev: (scope_of(q) if is_cup[ev] else 'ligue') for ev, q in p.groupby('event')})
     p['scope'] = p.event.map(scope)
     p['big'] = (p.playoffs == 1) | p.scope.isin(['monde', 'region'])
 
