@@ -25,6 +25,7 @@ La note doit coller au ressenti d'un observateur averti. Une note que personne n
 - **Échelle** : 80 = joueur médian des ligues majeures, plafond tassé vers 97 pour que 99 reste hors d'atteinte.
 - **Style séparé du niveau.** Le vecteur de style (ressources, activité avant 15 minutes, risque, vision, type de champions) sert à comparer des profils, jamais à noter.
 - **Stats attendues estimées par niveau de ligue**, affinées par compétition et plafonnées pour les gros écarts de niveau. Estimées globalement, elles pénalisaient les joueurs des équipes qui dominent une ligue majeure (G2, Karmine Corp) et gonflaient ceux des équipes faibles.
+- **Note par événement = niveau d'équipe réestimé sur l'événement.** Le même modèle de victoire est relancé sur les seules parties de l'événement, toutes équipes ensemble, avec le niveau de saison comme point de départ faible (équivalent de deux à trois parties). Auparavant la note restait collée au niveau de saison quand l'équipe jouait peu de parties : à l'EWC 2026, Anyone's Legend (4 parties, battu 2-0 par Karmine Corp) restait devant. Les qualifications régionales d'un tournoi (coupure de plus de 21 jours) sont notées à part.
 - **Niveaux de ligue de départ** repris du projet LoL Ratings 3.0, seul élément hérité de l'ancien modèle.
 
 ## Limites connues

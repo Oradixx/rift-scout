@@ -28,6 +28,9 @@ K_SHRINK = 12            # parties « fictives » au niveau moyen ajoutées à c
 SIGMA_IND = 100.0        # points : un écart-type d'écart individuel
 SIGMA_FACET = 185.0      # points : un écart-type sur une facette
 MIN_GAMES = 10
+QUALIF_GAP_DAYS = 21     # jours sans match au-delà desquels un tournoi est coupé en « qualifications » puis tournoi
+SD_EVENT = 250.0         # points : à quel point le niveau d'une équipe peut s'écarter de sa saison sur un événement
+K_EVENT_IND = 5          # parties de saison ajoutées à l'écart individuel d'un événement
 GAP_SAT = 250.0          # points : au-delà, un écart de niveau plus grand ne change presque plus les stats attendues
 SLOPE_K = 1500           # parties : poids du niveau supérieur quand on estime le lien stats / écart de niveau d'une compétition
 MIN_EVENT = 3
@@ -284,6 +287,14 @@ def season(year, prior):
     p['event'] = np.where(p.league.isin(cups) | p.split.isna(), p.league.map(lambda x: PRETTY.get(x, x)),
                           p.league.map(lambda x: PRETTY.get(x, x)) + ' ' + p.split.fillna('').astype(str))
     p['event'] = p.event.str.strip()
+    # Un tournoi dont les qualifications régionales se jouent des semaines avant (EWC...) : on sépare les deux,
+    # sinon la note du « tournoi » mélange des matchs de ligue et le tournoi lui-même.
+    for ev in p.loc[p.league.isin(cups), 'event'].unique():
+        days = np.sort(p.loc[p.event == ev, 'date'].dt.normalize().unique())
+        gaps = np.where(np.diff(days) > np.timedelta64(QUALIF_GAP_DAYS, 'D'))[0]
+        if len(gaps):
+            cut = days[gaps[-1] + 1]
+            p.loc[(p.event == ev) & (p.date < cut), 'event'] = ev + ', qualifications'
 
     # ligue et équipe actuelles du joueur
     dom = p[~p.league.isin(cups)].sort_values('date')
@@ -363,19 +374,42 @@ def season(year, prior):
     return dict(p=p, A=A, R=R, lvl=lg_lvl, cups=cups, Sz=Sz, team_home=team_home, sd_c=sd_c, t=t, slopes=slopes, side=side_adv)
 
 
+def event_levels(p, R, side_adv):
+    """Niveau de chaque équipe sur chaque événement. Même modèle de victoire que sur la saison, relancé sur les seules
+    parties de l'événement : toutes les équipes sont estimées ensemble, donc battre une équipe compte selon ce que
+    cette équipe a fait dans ce même événement. Le niveau de saison ne sert que de point de départ, faible."""
+    out = {}
+    g = p.drop_duplicates(['gameid', 'tid'])
+    for ev, q in g.groupby('event'):
+        b = q[q.side == 'Blue'].set_index('gameid'); r = q[q.side == 'Red'].set_index('gameid').reindex(b.index)
+        ok = r.tid.notna().values; b, r = b[ok], r[ok]
+        teams = sorted(set(b.tid) | set(r.tid)); ti = {t: i for i, t in enumerate(teams)}
+        if not len(b): continue
+        X = np.zeros((len(b), len(teams))); rows = np.arange(len(b))
+        X[rows, b.tid.map(ti).values] = 1 / PTS_PER_LOGIT; X[rows, r.tid.map(ti).values] = -1 / PTS_PER_LOGIT
+        off = (b.tid.map(R).values - r.tid.map(R).values) / PTS_PER_LOGIT + side_adv
+        y = b.result.values.astype(float); d = np.zeros(len(teams))
+        for _ in range(25):
+            mu = 1 / (1 + np.exp(-(off + X @ d))); w = mu * (1 - mu)
+            H = X.T @ (X * w[:, None]) + np.eye(len(teams)) / SD_EVENT ** 2
+            step = np.linalg.solve(H, X.T @ (y - mu) - d / SD_EVENT ** 2); d += step
+            if np.abs(step).max() < 1e-6: break
+        for t, i in ti.items(): out[(ev, t)] = R[t] + d[i]
+    return out
+
+
 def event_table(S):
     p, A, R = S['p'], S['A'], S['R']
+    lv = event_levels(p, R, S['side'])
+    p = p.assign(R_ev=[lv.get(k, r) for k, r in zip(zip(p.event, p.tid), p.R_own)])
     g = p.groupby(['pid', 'event'])
     E = g.agg(n=('c', 'size'), csum=('c', 'sum'), cn=('c', 'count'), win=('result', 'mean'), wins=('result', 'sum'), Ropp=('R_opp', 'mean'),
-              Rown=('R_own', 'mean'), k=('kills', 'sum'), d=('deaths', 'sum'), a=('assists', 'sum'), start=('date', 'min'),
+              Rown=('R_own', 'mean'), T=('R_ev', 'mean'), k=('kills', 'sum'), d=('deaths', 'sum'), a=('assists', 'sum'), start=('date', 'min'),
               end=('date', 'max'), team=('teamname', 'last'), league=('league', 'last')).reset_index()
     E = E[E.n >= MIN_EVENT]
     E = E[E.pid.isin(A.index)]
     cs = A.c_s.reindex(E.pid).values; role = A.role.reindex(E.pid).values
-    kk = 8
-    E['I'] = ((E.csum + kk * cs) / (E.cn + kk)) / S['sd_c'].reindex(role).values
-    perf = E.Ropp + PTS_PER_LOGIT * np.log((E.wins + 1) / (E.n - E.wins + 1))
-    E['T'] = E.Rown + (E.n / (E.n + 12)) * (perf - E.Rown).clip(-400, 400)
+    E['I'] = ((E.csum + K_EVENT_IND * cs) / (E.cn + K_EVENT_IND)) / S['sd_c'].reindex(role).values
     E['pts'] = E['T'] + SIGMA_IND * E.I
     return E
 

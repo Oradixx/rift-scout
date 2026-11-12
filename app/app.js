@@ -227,7 +227,7 @@
       `<p class="legend">Trait noir : médiane des ${grp}. ${cmp && cmp.role === p.role ? `Cadre rouge : ${h(cmp.name)} (${nInt(cmp.note)}). ` : ''}Le classement à droite compare aux ${grp}.</p></section>`;
     if (p.ev.length) html += `<section><h3>Note par événement</h3><div class="events">` + p.ev.map((e) =>
       `<div class="ev"><span>${h(e.e)}</span><span class="rail" style="display:block;padding:0"><span class="bar" style="display:block"><i style="width:${Math.max(0, (e.note - 30) / 69 * 100)}%;background:${noteVar(e.note)}"></i><u style="left:${(p.note - 30) / 69 * 100}%"></u></span></span><b class="num ${noteCls(e.note)}" style="font-size:22px;text-align:right">${nInt(e.note)}</b><small>${e.n} parties, ${pctTxt(e.w)} vict.</small></div>`).join('') +
-      `</div><p class="legend">Trait noir : sa note sur la saison. Un événement de quelques parties est ramené vers la note de saison.</p></section>`;
+      `</div><p class="legend">Trait noir : sa note sur la saison. Avec peu de parties, la note d'un événement reste incertaine.</p></section>`;
     const st = p.st;
     html += `<section><h3>Statistiques moyennes</h3><div class="stats">
       <div><small>KDA</small><b>${fmt(st.kda, 2)}</b></div><div><small>Participation aux kills</small><b>${pctTxt(st.kp)}</b></div>
