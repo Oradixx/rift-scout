@@ -5,6 +5,11 @@
   const ROLES = ['Top', 'Jungle', 'Mid', 'ADC', 'Support'];
   const FAC = D.facets;
   const FLABEL = { lane: 'Phase de lane', early: 'Début de partie', fight: 'Teamfight', carry: 'Dégâts', eco: 'Farm et or', vision: 'Vision', safe: 'Survie', obj: 'Objectifs' };
+  /* un jungler n'a pas de lane : pour lui, la même mesure (or, XP et camps face à son vis-à-vis) porte un autre nom */
+  const JG = { label: 'Avance à 15 min', say: 'prend l\'avance sur le jungler adverse (or, XP et camps à 15 min)', low: 'en retard sur le jungler adverse à 15 min' };
+  const fLabel = (f, role) => (f === 'lane' && role === 'Jungle' ? JG.label : FLABEL[f]);
+  const fSay = (f, role) => (f === 'lane' && role === 'Jungle' ? JG.say : FSAY[f]);
+  const fLow = (f, role) => (f === 'lane' && role === 'Jungle' ? JG.low : FLOW[f]);
   const FSHORT = { lane: 'Lane', early: 'Début', fight: 'TF', carry: 'Dég.', eco: 'Or', vision: 'Vis.', safe: 'Surv.', obj: 'Obj.' };
   const FSAY = {
     lane: 'gagne sa lane (or, XP et sbires à 15 min)', early: 'pèse dans les 15 premières minutes', fight: 'présent et efficace dans les combats',
@@ -64,7 +69,7 @@
     return '<span class="strip" aria-hidden="true">' + p.f.map((v, i) => {
       if (v == null) return '<i style="height:3px;background:var(--line)"></i>';
       const hgt = Math.max(16, Math.min(100, 58 + (v - p.note) * 5.5)); // hauteur : écart à sa propre note, pour lire la forme du profil
-      return `<i title="${FLABEL[FAC[i]]} : ${nInt(v)}" style="height:${hgt}%;background:${noteVar(v)}"></i>`;
+      return `<i title="${fLabel(FAC[i], p.role)} : ${nInt(v)}" style="height:${hgt}%;background:${noteVar(v)}"></i>`;
     }).join('') + '</span>';
   }
   function evNote(p, ev) { const e = p.ev.find((x) => x.e === ev); return e || null; }
@@ -96,10 +101,10 @@
     const grp = ROLE_PL[p.role] + ' ' + TIER_OF[p.tier];
     const idx = FAC.map((f, i) => i).filter((i) => p.fp[i] != null && (w[FAC[i]] > 0 || FAC[i] === 'obj'));
     idx.slice().sort((a, b) => p.fp[b] - p.fp[a]).slice(0, 3).forEach((i) => {
-      if (p.fp[i] >= 0.7) plus.push(`<b>${FLABEL[FAC[i]]}</b> : ${FSAY[FAC[i]]} (${topTxt(p.fp[i])} des ${grp})`);
+      if (p.fp[i] >= 0.7) plus.push(`<b>${fLabel(FAC[i], p.role)}</b> : ${fSay(FAC[i], p.role)} (${topTxt(p.fp[i])} des ${grp})`);
     });
     idx.slice().sort((a, b) => p.fp[a] - p.fp[b]).slice(0, 2).forEach((i) => {
-      if (p.fp[i] <= 0.3) minus.push(`<b>${FLABEL[FAC[i]]}</b> : ${FLOW[FAC[i]]} (${nInt(p.f[i])}, pour une note générale de ${nInt(p.note)})`);
+      if (p.fp[i] <= 0.3) minus.push(`<b>${fLabel(FAC[i], p.role)}</b> : ${fLow(FAC[i], p.role)} (${nInt(p.f[i])}, pour une note générale de ${nInt(p.note)})`);
     });
     if (p.weak != null && p.strong != null) {
       if (p.weak_pc >= 0.75 && p.weak_pc >= p.strong_pc) plus.push(`<b>Weakside</b> : tient sa lane quand son équipe joue ailleurs (${topTxt(p.weak_pc)})`);
@@ -222,7 +227,7 @@
       <div class="tags">${arch ? `<span class="tag gold">${arch}</span>` : ''}${styleTags(p).map((t) => `<span class="tag">${t}</span>`).join('')}</div></section>`;
     if (ins.plus.length || ins.minus.length) html += `<section><div class="two"><div><h3>Forces</h3>${ins.plus.length ? `<ul class="say">${ins.plus.map((x) => `<li>${x}</li>`).join('')}</ul>` : '<p class="legend">Rien qui ressorte nettement par rapport à son poste.</p>'}</div>
       <div><h3>Points faibles</h3>${ins.minus.length ? `<ul class="say minus">${ins.minus.map((x) => `<li>${x}</li>`).join('')}</ul>` : '<p class="legend">Aucun point faible marqué par rapport à son poste.</p>'}</div></div></section>`;
-    html += `<section><h3>Profil par facette</h3>` + FAC.map((f, i) => rail(FLABEL[f], p.f[i], p.fp[i], m.f[i], cmp && cmp.role === p.role ? cmp.f[i] : null)).join('') +
+    html += `<section><h3>Profil par facette</h3>` + FAC.map((f, i) => rail(fLabel(f, p.role), p.f[i], p.fp[i], m.f[i], cmp && cmp.role === p.role ? cmp.f[i] : null)).join('') +
       (p.weak != null ? rail('Weakside', p.weak, p.weak_pc, null, cmp ? cmp.weak : null) : '') + (p.strong != null ? rail('Strongside', p.strong, p.strong_pc, null, cmp ? cmp.strong : null) : '') +
       `<p class="legend">Trait noir : médiane des ${grp}. ${cmp && cmp.role === p.role ? `Cadre rouge : ${h(cmp.name)} (${nInt(cmp.note)}). ` : ''}Le classement à droite compare aux ${grp}.</p></section>`;
     if (p.ev.length) html += `<section><h3>Note par événement</h3><div class="events">` + p.ev.map((e) =>
@@ -414,7 +419,7 @@
   function renderMethod() {
     const w = D.weights;
     $('#wtable').innerHTML = '<tr><th>Facette</th>' + ROLES.map((r) => `<th>${r}</th>`).join('') + '</tr>' +
-      FAC.map((f) => `<tr><td>${FLABEL[f]}</td>${ROLES.map((r) => `<td>${w[r][f] ? fmt(w[r][f] * 100) + ' %' : '–'}</td>`).join('')}</tr>`).join('');
+      FAC.map((f) => `<tr><td>${FLABEL[f]}${f === 'lane' ? ' (jungle : avance à 15 min)' : ''}</td>${ROLES.map((r) => `<td>${w[r][f] ? fmt(w[r][f] * 100) + ' %' : '–'}</td>`).join('')}</tr>`).join('');
     const L = Object.entries(S.leagues).filter(([l]) => S.players.some((p) => p.league === l)).sort((a, b) => b[1] - a[1]);
     $('#lgs').innerHTML = L.map(([l, v]) => `<div class="lg"><span>${h(l)}</span><span class="bar"><i style="width:${Math.max(2, (v - 30) / 69 * 100)}%;background:${noteVar(v)}"></i></span><b>${nInt(v)}</b></div>`).join('');
     $('#m-season').textContent = state.season;
