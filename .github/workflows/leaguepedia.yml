@@ -1,0 +1,32 @@
+name: Leaguepedia
+# Récupère les fiches joueurs (âge, nationalité, résidence, contrat) et mesure la couverture des données détaillées.
+# Lancement manuel ; committe pipeline/lp_players.json et pipeline/lp_coverage.json.
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: update
+  cancel-in-progress: false
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install requests
+      - run: python pipeline/fetch_leaguepedia.py
+        env:
+          LEAGUEPEDIA_USER: ${{ secrets.LEAGUEPEDIA_USER }}
+          LEAGUEPEDIA_PASSWORD: ${{ secrets.LEAGUEPEDIA_PASSWORD }}
+      - name: Enregistrer
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add pipeline/lp_players.json pipeline/lp_coverage.json
+          if git diff --cached --quiet; then echo "Rien de nouveau."; exit 0; fi
+          git commit -m "Leaguepedia : fiches joueurs et couverture au $(date -u +%F)"
+          git push

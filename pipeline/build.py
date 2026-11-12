@@ -28,6 +28,8 @@ K_SHRINK = 12            # parties « fictives » au niveau moyen ajoutées à c
 SIGMA_IND = 100.0        # points : un écart-type d'écart individuel
 SIGMA_FACET = 185.0      # points : un écart-type sur une facette
 MIN_GAMES = 10
+GAP_SAT = 250.0          # points : au-delà, un écart de niveau plus grand ne change presque plus les stats attendues
+SLOPE_K = 1500           # parties : poids du niveau supérieur quand on estime le lien stats / écart de niveau d'une compétition
 MIN_EVENT = 3
 ROLE = {'top': 'Top', 'jng': 'Jungle', 'mid': 'Mid', 'bot': 'ADC', 'sup': 'Support'}
 ROLES = ['Top', 'Jungle', 'Mid', 'ADC', 'Support']
@@ -247,14 +249,30 @@ def season(year, prior):
     F = zscores(p)
     facets = list(FACETS)
     resid = pd.DataFrame(index=p.index, columns=facets, dtype=float)
+    # Ce qu'on attend d'un joueur selon l'écart de niveau entre les deux équipes. Le lien n'est pas le même partout
+    # (plus fort dans les petites ligues, plus faible en LEC ou à l'international) et il plafonne pour les gros écarts :
+    # on l'estime donc par niveau de ligue, affiné par compétition, sur un écart de niveau tassé (tanh).
+    p['xR'] = GAP_SAT * np.tanh(p.dR / GAP_SAT)
+    p['grp'] = np.where(p.league.isin(cups), -1, p.league.map(tier_of))
     slopes = {}
+
+    def fit(x, yv):
+        m = yv.notna()
+        return (float(np.cov(x[m], yv[m])[0, 1] / x[m].var()), int(m.sum())) if m.sum() > 50 and x[m].var() > 0 else (None, int(m.sum()))
     for ro, q in p.groupby('role'):
         for f in facets:
-            m = F.loc[q.index, f].notna()
-            x = q.dR[m]; yv = F.loc[q.index, f][m]
-            b = float(np.cov(x, yv)[0, 1] / x.var()) if m.sum() > 50 else 0.0
-            slopes[(ro, f)] = b
-            resid.loc[q.index, f] = F.loc[q.index, f] - b * q.dR
+            b0, _ = fit(q.xR, F.loc[q.index, f]); b0 = b0 or 0.0
+            slopes[(ro, f)] = b0
+            b_row = pd.Series(b0, index=q.index)
+            for g_, qg in q.groupby('grp'):
+                bt, nt = fit(qg.xR, F.loc[qg.index, f])
+                bt = b0 if bt is None else (nt * bt + SLOPE_K * b0) / (nt + SLOPE_K)
+                slopes[(ro, f, int(g_))] = bt
+                b_row.loc[qg.index] = bt
+                for lg_, ql in qg.groupby('league'):
+                    bl, nl = fit(ql.xR, F.loc[ql.index, f])
+                    if bl is not None: b_row.loc[ql.index] = (nl * bl + SLOPE_K * bt) / (nl + SLOPE_K)
+            resid.loc[q.index, f] = F.loc[q.index, f] - b_row * q.xR
     for f in facets: p['r_' + f] = resid[f]; p['z_' + f] = F[f]
     W = pd.DataFrame(WEIGHTS).T
     wmat = W.loc[p.role, facets].values
