@@ -10,6 +10,7 @@ La page est un seul fichier : `docs/index.html` (ouvrable directement dans un na
 - **Fiche joueur** : note générale, niveau de l'équipe et écart individuel, forme récente, forces et points faibles rédigés, huit facettes (lane, début de partie, teamfight, dégâts, farm et or, vision, survie, objectifs), weakside et strongside, note par événement, champions, joueurs au style proche.
 - **Scouting** : on choisit une équipe et un poste ; les candidats sont classés par note, par ressemblance de style avec le titulaire et par ce qu'ils apportent aux quatre autres joueurs.
 - **Contrats** : date de fin de contrat sur chaque joueur, filtre « en fin de contrat » dans le classement et le scouting, tri par fin de contrat la plus proche. Source : la [base publique des contrats reconnus par Riot](https://docs.google.com/spreadsheets/d/1Y7k5kQ2AegbuyiGwEPsa62e883FYVtHqr6UVut9RC4o/pubhtml).
+- **Avant et après** : dans le scouting, on essaie un ou plusieurs joueurs dans une équipe et on compare l'effectif obtenu à l'actuel (niveau, chances de victoire, rang estimé dans la ligue, profil par facette).
 - **Méthode** : le calcul expliqué, les poids par poste, le niveau des ligues.
 
 ## La note
@@ -46,6 +47,10 @@ python build_page.py
 ```
 
 `fetch_contracts.py` met à jour `pipeline/contracts.json` (ligue, équipe, pseudo, poste, date de fin ; ni noms civils ni contacts). `build.py` écrit `app/data.json` ; `build_page.py` assemble `app/` en `docs/index.html`.
+
+## Mise à jour automatique
+
+Un workflow GitHub Actions (`.github/workflows/update.yml`) retélécharge les matchs et les contrats chaque mardi, recalcule les notes et republie la page. Il peut aussi être lancé à la main depuis l'onglet Actions.
 
 ## Limites connues
 

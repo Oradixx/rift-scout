@@ -18,8 +18,15 @@ pip install -r requirements.txt
 python pipeline/fetch_data.py          # CSV de matchs -> data/raw/ (environ 80 Mo par saison)
 python pipeline/fetch_contracts.py     # contrats -> pipeline/contracts.json
 python pipeline/build.py data/raw      # -> app/data.json
+python pipeline/check.py               # garde-fou sur le résultat
 python build_page.py                   # -> docs/index.html
 ```
+
+## Mise à jour automatique
+
+`.github/workflows/update.yml` relance tout chaque mardi à 05:17 UTC (ou à la demande depuis l'onglet Actions) et committe `docs/index.html` et `pipeline/contracts.json`. `pipeline/check.py` bloque la publication si le résultat est manifestement cassé. Si Google Drive refuse le téléchargement, la mise à jour est reportée sans erreur.
+
+À chaque nouvelle saison, il faut ajouter à la main : l'identifiant du fichier dans `pipeline/fetch_data.py`, l'année dans `SEASONS` (`pipeline/build.py`) et les niveaux de ligue de départ dans `pipeline/leagues.json`.
 
 ## Règles
 

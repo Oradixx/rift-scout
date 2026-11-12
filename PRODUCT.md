@@ -14,6 +14,7 @@ La note doit coller au ressenti d'un observateur averti. Une note que personne n
 - **Classement** : meilleur cinq et liste complète ; filtres poste, niveau de ligue, région, ligue, événement, contrat ; saisons 2025 et 2026.
 - **Fiche joueur** : note, niveau de l'équipe et écart individuel, forme récente, forces et points faibles rédigés, huit facettes, weakside et strongside, note par événement, statistiques, champions, joueurs au style proche, date de fin de contrat.
 - **Scouting** : une équipe et un poste à pourvoir ; candidats classés par note, ressemblance de style avec le titulaire et apport aux quatre autres joueurs ; filtre et tri par fin de contrat.
+- **Avant et après** (dans le scouting) : on essaie un ou plusieurs joueurs dans une équipe ; niveau de l'effectif, chances de victoire contre une équipe moyenne de la ligue, rang estimé et profil par facette sont recalculés et comparés à l'effectif actuel.
 - **Méthode** : le calcul expliqué simplement, avec ses limites.
 
 ## Choix de méthode et raisons
@@ -32,6 +33,8 @@ La note doit coller au ressenti d'un observateur averti. Une note que personne n
 - Weakside et strongside sont approchés par la participation aux kills avant 15 minutes ; les données ne disent pas où passe le jungler.
 - Une fin de contrat proche ne dit pas si le joueur a prolongé ou signé ailleurs. La base de Riot couvre les ligues majeures et les principales ligues régionales ; ses onglets ne sont pas mis à jour au même rythme.
 
+- La simulation avant et après suppose que chaque joueur joue dans sa nouvelle équipe comme il a joué cette saison : ni entente, ni langue, ni adaptation à une autre ligue.
+
 ## Sources
 
 - Matchs : Oracle's Elixir (fichiers annuels).
@@ -39,6 +42,5 @@ La note doit coller au ressenti d'un observateur averti. Une note que personne n
 
 ## Suite envisagée
 
-- Mise à jour hebdomadaire automatique des matchs et des contrats.
 - Mieux créditer les supports et junglers dont le rôle est d'initier.
 - Âge et nationalité des joueurs pour le scouting.

@@ -32,7 +32,7 @@
   const cMatch = (p, v) => !v || !hasCT() || (v === 'free' ? isFree(p) : v === 'signed' ? !!p.c && !isFree(p) : !p.c);
 
   const state = { season: Object.keys(D.seasons).sort().pop(), view: 'rank', role: '', tier: '0', region: '', league: '', event: '', contract: '', minG: 15, q: '', shown: 100,
-    sc: { contract: '', tid: null, role: 'Mid', tier: '', region: '', league: '', minNote: 0, minG: 20, sort: 'score', shown: 60, ref: null, reach: true } };
+    sc: { plan: {}, contract: '', tid: null, role: 'Mid', tier: '', region: '', league: '', minNote: 0, minG: 20, sort: 'score', shown: 60, ref: null, reach: true } };
   let S, byId, med;
 
   function load() {
@@ -228,10 +228,15 @@
     if (p.s) {
       const sims = S.players.filter((x) => x.role === p.role && x.id !== p.id && x.s && x.n >= 15 && x.note >= p.note - 20).map((x) => [similarity(p, x), x]).sort((a, b) => b[0] - a[0]).slice(0, 6);
       html += `<section><h3>Joueurs au style le plus proche</h3><div class="simlist">${sims.map(([s, x]) => `<button data-p="${x.id}"><span class="num ${noteCls(x.note)}">${nInt(x.note)}</span><span>${h(x.name)} <small>${h(x.team)}, ${h(lgName(x.league))}</small></span><small>${fmt(s)} % de similarité</small></button>`).join('')}</div>
-        <p style="margin-top:14px"><button class="cta" data-scout="${p.id}">Chercher un remplaçant à ${h(p.name)}</button></p></section>`;
+        <p style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">${tryBtn(p)}<button class="cta" data-scout="${p.id}">Chercher un remplaçant à ${h(p.name)}</button></p></section>`;
     }
     $('#sheet').innerHTML = html; $('#sheet').scrollTop = 0;
     $('#sheet-wrap').classList.add('open'); $('#sheet').focus();
+  }
+  function tryBtn(p) {
+    const t = state.view === 'scout' && state.sc.tid ? team(state.sc.tid) : null;
+    if (!t || p.tid === t.tid) return '';
+    return `<button class="cta" data-try="${p.id}" data-close>${state.sc.plan[p.role] === p.id ? 'Retirer de' : 'Essayer dans'} ${h(t.name)}</button>`;
   }
   function styleTags(p) {
     if (!p.s) return [];
@@ -245,9 +250,75 @@
 
   /* ------------------------------------------------------------ scouting */
   function team(tid) { return S.teams.find((t) => t.tid === tid); }
-  function setTeam(tid) { state.sc.tid = tid; state.sc.ref = null; const t = team(tid); if (t && !t.roster[state.sc.role]) state.sc.role = ROLES.find((r) => t.roster[r]) || 'Mid'; state.sc.shown = 60; renderScout(); }
-  function teamNeeds(t, role) {
-    const others = ROLES.filter((r) => r !== role).map((r) => byId.get(t.roster[r])).filter(Boolean);
+  function setTeam(tid) { state.sc.tid = tid; state.sc.ref = null; state.sc.plan = {}; const t = team(tid); if (t && !t.roster[state.sc.role]) state.sc.role = ROLES.find((r) => t.roster[r]) || 'Mid'; state.sc.shown = 60; renderScout(); }
+  /* effectif simulé : l'effectif réel, avec les joueurs essayés à la place des titulaires */
+  function lineupOf(t, plan) { const o = {}; ROLES.forEach((r) => { const id = (plan && plan[r]) || t.roster[r]; if (id && byId.get(id)) o[r] = id; }); return o; }
+  function toNote(pts) { let x = D.scale.a + D.scale.b * pts; if (x > 88) x = 88 + 11 * Math.tanh((x - 88) / 11); return Math.max(1, Math.min(99, x)); }
+  const mean = (a) => (a.length ? a.reduce((x, y) => x + y, 0) / a.length : null);
+  function squad(ros) {
+    const P = ROLES.map((r) => byId.get(ros[r])).filter(Boolean);
+    if (P.length < 3) return null;
+    return { P, pts: mean(P.map((p) => p.pts)), fac: FAC.map((_, i) => mean(P.map((p) => p.f[i]).filter((v) => v != null))),
+      gold: P.reduce((a, p) => a + (p.s ? p.s[0] : 0), 0), early: mean(P.map((p) => (p.s ? p.s[3] : 0))), risk: mean(P.map((p) => (p.s ? p.s[5] : 0))), vision: mean(P.map((p) => (p.s ? p.s[7] : 0))) };
+  }
+  let lgCache = {};
+  function leagueRef(lg) {
+    if (lgCache[lg]) return lgCache[lg];
+    const T = S.teams.filter((t) => t.league === lg).map((t) => ({ t, q: squad(lineupOf(t)) })).filter((x) => x.q);
+    return (lgCache[lg] = { T, pts: mean(T.map((x) => x.q.pts)), fac: FAC.map((_, i) => median(T.map((x) => x.q.fac[i]).filter((v) => v != null))) });
+  }
+  const ord = (n) => (n === 1 ? '1<sup>er</sup>' : n + '<sup>e</sup>');
+  function renderCompare(t) {
+    const el = $('#compare'); if (!t) { el.hidden = true; el.innerHTML = ''; return; }
+    const plan = state.sc.plan, changes = ROLES.filter((r) => plan[r] && plan[r] !== t.roster[r]);
+    const A = squad(lineupOf(t)), B = changes.length ? squad(lineupOf(t, plan)) : null, ref = leagueRef(t.league);
+    if (!A) { el.hidden = true; return; }
+    el.hidden = false;
+    const win = (q) => 1 / (1 + Math.exp(-(q.pts - ref.pts) / 200));
+    const rank = (q) => ref.T.filter((x) => x.t.tid !== t.tid && x.q.pts > q.pts).length + 1;
+    const arrow = (a, b, f) => (b == null ? `<b class="num">${f(a)}</b>` : `<span class="was">${f(a)}</span><b class="num">${f(b)}</b>`);
+    const dl = (d, unit) => (d == null ? '' : `<em class="${d > 0.05 ? 'up' : d < -0.05 ? 'down' : 'flat'}">${d > 0 ? '+' : ''}${fmt(d, 1)}${unit}</em>`);
+    const nA = toNote(A.pts), nB = B ? toNote(B.pts) : null;
+    let html = `<div class="cmp-kpis">
+      <div><small>Niveau de l'effectif</small><p>${arrow(nA, nB, (v) => fmt(v, 1))} ${dl(B ? nB - nA : null, '')}</p></div>
+      <div><small>Victoire contre une équipe moyenne de ${h(lgName(t.league))}</small><p>${arrow(win(A), B ? win(B) : null, (v) => fmt(v * 100) + ' %')} ${dl(B ? (win(B) - win(A)) * 100 : null, ' pts')}</p></div>
+      <div><small>Rang estimé en ${h(lgName(t.league))}, sur ${ref.T.length} équipes</small><p>${arrow(rank(A), B ? rank(B) : null, ord)}</p></div></div>`;
+    // profil par facette : une ligne par facette, même axe pour toutes
+    const vals = [].concat(A.fac, B ? B.fac : [], ref.fac).filter((v) => v != null);
+    const lo = Math.floor(Math.min.apply(null, vals) - 2), hi = Math.ceil(Math.max.apply(null, vals) + 2), x = (v) => (v - lo) / (hi - lo) * 100;
+    html += `<div class="cmp-body"><div><h3>Profil de l'équipe${B ? ', avant et après' : ''}</h3>
+      <p class="cmp-legend">${B ? '<span><i class="dot hollow"></i>Avant</span><span><i class="dot"></i>Après</span>' : '<span><i class="dot"></i>Effectif actuel</span>'}<span><i class="tick"></i>Équipe médiane de ${h(lgName(t.league))}</span></p>` +
+      FAC.map((f, i) => {
+        const a = A.fac[i], b = B ? B.fac[i] : null, m = ref.fac[i]; if (a == null) return '';
+        const d = b != null ? b - a : null;
+        return `<div class="cmp-row"><span>${FLABEL[f]}</span><span class="track">${m != null ? `<u style="left:${x(m)}%" title="Équipe médiane : ${fmt(m, 1)}"></u>` : ''}` +
+          (b != null ? `<i class="link ${d >= 0 ? 'gain' : 'loss'}" style="left:${x(Math.min(a, b))}%;width:${Math.abs(x(b) - x(a))}%"></i><i class="dot hollow" style="left:${x(a)}%" title="Avant : ${fmt(a, 1)}"></i><i class="dot" style="left:${x(b)}%" title="Après : ${fmt(b, 1)}"></i>`
+            : `<i class="dot" style="left:${x(a)}%" title="${FLABEL[f]} : ${fmt(a, 1)}"></i>`) +
+          `</span><b>${fmt(b != null ? b : a, 1)}</b>${b != null ? dl(d, '') : '<em></em>'}</div>`;
+      }).join('') + `<div class="cmp-row axis"><span></span><span class="track"><small>${lo}</small><small>${hi}</small></span><b></b><em></em></div></div><div>`;
+    if (!B) html += `<h3>Simuler un changement</h3><p class="legend" style="margin:0">Cliquez sur « Essayer » à côté d'un candidat pour le placer dans l'équipe. Le niveau de l'effectif, ses chances de victoire et son profil sont recalculés avec lui. Vous pouvez changer plusieurs postes.</p>`;
+    else {
+      html += '<h3>Changements essayés</h3><div class="swaps">' + changes.map((r) => {
+        const o = byId.get(t.roster[r]), n = byId.get(plan[r]);
+        return `<div class="swap"><span class="role">${r}</span><span>${o ? `${h(o.name)} <b>${nInt(o.note)}</b>` : 'Poste vacant'}, remplacé par <b>${h(n.name)} ${nInt(n.note)}</b>${o ? ' ' + dl(n.note - o.note, '') : ''}<small>${h(n.team)}, ${h(lgName(n.league))}${hasCT() ? (n.c ? (isFree(n) ? `, en fin de contrat (${cDate(n.c)})` : `, sous contrat jusqu'en ${cDate(n.c)} : transfert à négocier`) : ', contrat non renseigné') : ''}</small></span><button class="reset" data-untry="${r}">Retirer</button></div>`;
+      }).join('') + `</div>${changes.length > 1 ? '<button class="reset" data-untry="all">Annuler tous les changements</button>' : ''}`;
+      const say = [];
+      const word = (d, more, less) => (d >= 0.15 ? more : d <= -0.15 ? less : null);
+      [[B.early - A.early, 'Plus d\'activité avant 15 minutes.', 'Moins d\'activité avant 15 minutes.'], [B.risk - A.risk, 'Un effectif qui prend plus de risques (plus de morts).', 'Un effectif plus prudent (moins de morts).'],
+        [B.vision - A.vision, 'Plus d\'investissement dans la vision.', 'Moins d\'investissement dans la vision.']].forEach(([d, a, b]) => { const w = word(d, a, b); if (w) say.push(w); });
+      const hungry = (q) => q.P.filter((p) => p.s && p.s[0] >= 0.7).length;
+      if (hungry(B) >= 3 && hungry(B) > hungry(A)) say.push(`${hungry(B)} joueurs demandent beaucoup d'or : il faudra choisir qui est servi.`);
+      else if (B.gold - A.gold <= -1) say.push('Moins de joueurs gourmands en or : plus de ressources pour les carrys en place.');
+      const best = FAC.map((f, i) => [B.fac[i] - A.fac[i], f]).filter((v) => FAC.indexOf(v[1]) >= 0 && !isNaN(v[0])).sort((a, b) => b[0] - a[0]);
+      if (best.length && best[0][0] >= 0.5) say.unshift(`Gain le plus net : ${FLABEL[best[0][1]].toLowerCase()} (${dl(best[0][0], '').replace(/<[^>]+>/g, '')}).`);
+      const worst = best[best.length - 1]; if (worst && worst[0] <= -0.5) say.push(`Recul le plus net : ${FLABEL[worst[1]].toLowerCase()} (${fmt(worst[0], 1)}).`);
+      if (say.length) html += `<h3 style="margin-top:16px">Ce que ça change</h3><ul class="say plain">${say.map((x) => `<li>${x}</li>`).join('')}</ul>`;
+      html += '<p class="legend">Estimation à partir des notes de la saison : l\'entente entre joueurs, la langue et l\'adaptation à une nouvelle ligue ne sont pas mesurées.</p>';
+    }
+    el.innerHTML = html + '</div></div>';
+  }
+  function teamNeeds(ros, role) {
+    const others = ROLES.filter((r) => r !== role).map((r) => byId.get(ros[r])).filter(Boolean);
     if (!others.length) return null;
     const avgNote = others.reduce((a, p) => a + p.note, 0) / others.length;
     const fac = FAC.map((f, i) => { const v = others.map((p) => p.f[i]).filter((x) => x != null); return v.length ? v.reduce((a, b) => a + b, 0) / v.length : avgNote; });
@@ -271,14 +342,16 @@
     let inc = null, needs = null;
     if (t) {
       $('#team-input').value = t.name;
+      const eff = lineupOf(t, sc.plan);
       lineup.innerHTML = ROLES.map((r) => {
-        const p = byId.get(t.roster[r]);
-        return `<button data-role="${r}" aria-pressed="${r === sc.role}"><span class="role">${r}</span><span class="name">${p ? h(p.name) : 'Poste vacant'}</span><span class="num ${p ? noteCls(p.note) : 't-low'}">${p ? nInt(p.note) : '–'}</span><small>${p ? archetype(p) || '' : 'aucun titulaire récent'}</small></button>`;
+        const p = byId.get(eff[r]), o = byId.get(t.roster[r]), sw = p && eff[r] !== t.roster[r];
+        return `<button data-role="${r}" aria-pressed="${r === sc.role}" class="${sw ? 'swapped' : ''}"><span class="role">${r}${sw ? ', essai' : ''}</span><span class="name">${p ? h(p.name) : 'Poste vacant'}</span><span class="num ${p ? noteCls(p.note) : 't-low'}">${p ? nInt(p.note) : '–'}</span><small>${sw ? (o ? 'à la place de ' + h(o.name) : 'poste vacant jusqu\'ici') : p ? archetype(p) || '' : 'aucun titulaire récent'}</small></button>`;
       }).join('');
       lineup.hidden = false;
-      inc = byId.get(t.roster[sc.role]) || null; needs = teamNeeds(t, sc.role);
+      inc = byId.get(t.roster[sc.role]) || null; needs = teamNeeds(eff, sc.role);
     } else { lineup.hidden = true; lineup.innerHTML = ''; }
     if (sc.ref) inc = byId.get(sc.ref) || inc;
+    renderCompare(t);
     // texte de cadrage
     let txt = '';
     if (t && needs) {
@@ -308,9 +381,11 @@
       const p = x.p, ins = insights(p).plus.slice(0, 2).map((s) => s.replace(/<b>(.*?)<\/b>.*/, '$1'));
       const dl = x.delta == null ? '' : `<span class="trend ${x.delta >= 1 ? 'up' : x.delta <= -1 ? 'down' : 'flat'}">${x.delta > 0 ? '+' : ''}${fmt(x.delta, 1)}</span>`;
       const meter = (v) => v == null ? '<span class="meter"><span></span><b>–</b></span>' : `<span class="meter"><span class="bar"><i style="width:${v}%"></i></span><b>${fmt(v)}</b></span>`;
-      return `<button class="row" data-p="${p.id}" data-cmp="${inc ? inc.id : ''}"><span class="rank">${i + 1}</span><span class="num note ${noteCls(p.note)}">${nInt(p.note)}</span>
+      const tried = t && sc.plan[sc.role] === p.id;
+      return `<div class="row" role="button" tabindex="0" data-p="${p.id}" data-cmp="${inc ? inc.id : ''}"><span class="rank">${i + 1}</span><span class="num note ${noteCls(p.note)}">${nInt(p.note)}</span>
         <span class="who"><b>${h(p.name)}</b><small>${h(p.team)}, ${h(lgName(p.league))} ${cShort(p)}</small></span><span class="pos r">${dl}</span>
-        <span class="m-sim">${meter(x.sim)}</span><span>${meter(x.comp)}</span><span class="pos games"><small>${archetype(p) || ''}${ins.length ? '<br>' + ins.join(', ') : ''}</small></span></button>`;
+        <span class="m-sim">${meter(x.sim)}</span><span class="m-sim">${meter(x.comp)}</span><span class="pos games"><small>${archetype(p) || ''}${ins.length ? '<br>' + ins.join(', ') : ''}</small></span>
+        ${t ? `<button class="try" data-try="${p.id}" aria-pressed="${tried}">${tried ? 'Retirer' : 'Essayer'}</button>` : '<span></span>'}</div>`;
     }).join('') + (C.length > sc.shown ? '<button class="more" id="scout-more">Afficher 60 candidats de plus</button>' : '');
   }
   function suggest(q) {
@@ -343,17 +418,19 @@
     $('#season').innerHTML = Object.keys(D.seasons).sort().map((y) => `<button data-season="${y}">${y}</button>`).join('');
     load(); fillSelects();
     document.addEventListener('click', (e) => {
-      const b = e.target.closest('button'); if (!b) { if (e.target.classList.contains('scrim')) closeSheet(); return; }
+      const b = e.target.closest('button,[data-p]'); if (!b) { if (e.target.classList.contains('scrim')) closeSheet(); return; }
+      if (b.dataset.try) { const p = byId.get(b.dataset.try), pl = state.sc.plan; if (pl[p.role] === p.id) delete pl[p.role]; else pl[p.role] = p.id; state.sc.role = p.role; closeSheet(); renderScout(); return; }
+      if (b.dataset.untry) { if (b.dataset.untry === 'all') state.sc.plan = {}; else delete state.sc.plan[b.dataset.untry]; renderScout(); return; }
       if (b.dataset.view) { state.view = b.dataset.view; render(); window.scrollTo(0, 0); }
-      else if (b.dataset.season) { state.season = b.dataset.season; state.sc.tid = null; state.sc.ref = null; $('#team-input').value = ''; load(); fillSelects(); render(); }
-      else if (b.dataset.scout) { const p = byId.get(b.dataset.scout); closeSheet(); state.view = 'scout'; state.sc.role = p.role; state.sc.ref = p.id; const t = S.teams.find((x) => x.roster[p.role] === p.id); state.sc.tid = t ? t.tid : null; if (!t) $('#team-input').value = ''; render(); window.scrollTo(0, 0); }
+      else if (b.dataset.season) { state.season = b.dataset.season; lgCache = {}; state.sc.plan = {}; state.sc.tid = null; state.sc.ref = null; $('#team-input').value = ''; load(); fillSelects(); render(); }
+      else if (b.dataset.scout) { const p = byId.get(b.dataset.scout); closeSheet(); state.view = 'scout'; state.sc.plan = {}; state.sc.role = p.role; state.sc.ref = p.id; const t = S.teams.find((x) => x.roster[p.role] === p.id); state.sc.tid = t ? t.tid : null; if (!t) $('#team-input').value = ''; render(); window.scrollTo(0, 0); }
       else if (b.dataset.p) openSheet(b.dataset.p, b.dataset.cmp);
       else if (b.hasAttribute('data-close')) closeSheet();
       else if (b.dataset.tid) { $('#suggest').hidden = true; setTeam(b.dataset.tid); }
       else if (b.id === 'more') { state.shown += 100; renderRank(); }
       else if (b.id === 'scout-more') { state.sc.shown += 60; renderScout(); }
       else if (b.id === 'reset') { Object.assign(state, { role: '', tier: '0', region: '', league: '', event: '', contract: '', minG: 15, q: '', shown: 100 }); syncFilters(); fillSelects(); renderRank(); }
-      else if (b.id === 'clear-team') { state.sc.tid = null; state.sc.ref = null; $('#team-input').value = ''; renderScout(); }
+      else if (b.id === 'clear-team') { state.sc.plan = {}; state.sc.tid = null; state.sc.ref = null; $('#team-input').value = ''; renderScout(); }
       else if (b.closest('#f-roles')) { state.role = b.dataset.role; state.shown = 100; syncFilters(); renderRank(); }
       else if (b.closest('#s-roles') || b.closest('#lineup')) { state.sc.role = b.dataset.role; state.sc.ref = null; state.sc.shown = 60; renderScout(); }
     });
@@ -368,7 +445,8 @@
     bind('#s-note', (v) => { state.sc.minNote = +v || 0; }); bind('#s-min', (v) => { state.sc.minG = +v || 0; });
     $('#team-input').addEventListener('input', (e) => suggest(e.target.value));
     $('#team-input').addEventListener('focus', (e) => { e.target.select(); });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeSheet(); $('#suggest').hidden = true; } });
+    document.addEventListener('keydown', (e) => { if ((e.key === 'Enter' || e.key === ' ') && e.target.matches && e.target.matches('div.row[data-p]')) { e.preventDefault(); openSheet(e.target.dataset.p, e.target.dataset.cmp); }
+      if (e.key === 'Escape') { closeSheet(); $('#suggest').hidden = true; } });
     syncFilters(); render();
   }
   function syncFilters() {

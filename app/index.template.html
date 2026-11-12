@@ -73,6 +73,7 @@
       </div>
     </div>
     <div class="lineup" id="lineup" hidden></div>
+    <section class="cmp" id="compare" hidden aria-label="Comparaison de l'effectif avant et après"></section>
     <p class="brief" id="brief"></p>
     <div class="work" style="margin-top:18px">
       <aside class="filters" aria-label="Critères de recherche">
@@ -93,7 +94,7 @@
         <div class="thead" id="scout-head"><span>Rang</span><span>Note</span><span>Joueur</span><span class="r" title="Écart de note avec le joueur à remplacer">Écart</span>
           <span title="Ressemblance du style de jeu avec le joueur à remplacer">Style proche</span>
           <span title="Forces du candidat là où l'équipe est en retrait, et équilibre des ressources">Apport à l'équipe</span>
-          <span>Profil et forces</span></div>
+          <span>Profil et forces</span><span></span></div>
         <div id="scout-rows"></div>
       </div>
     </div>
@@ -123,6 +124,7 @@
       </ul>
       <h2>Le scouting</h2>
       <p><b>Style proche</b> mesure la ressemblance avec le joueur à remplacer. <b>Apport à l'équipe</b> combine deux choses : les forces du candidat sur les facettes où les quatre autres joueurs sont en retrait, et l'équilibre des ressources (un carry de plus dans une équipe qui en a déjà trois s'intègre moins bien). Le tri recommandé part de la note et la corrige de ces deux mesures.</p>
+      <p><b>Avant et après</b> : quand vous essayez un joueur dans une équipe, le niveau de l'effectif est la moyenne des niveaux de ses cinq joueurs. Les chances de victoire sont calculées contre une équipe moyenne de la même ligue, et le rang compare cet effectif à ceux des autres équipes de la ligue. Le profil par facette est la moyenne des cinq joueurs. C'est une estimation : elle suppose que chacun joue dans sa nouvelle équipe comme il a joué cette saison.</p>
       <h2>Les contrats</h2>
       <p>Les dates de fin de contrat viennent de la base publique des contrats reconnus par Riot (LCK, LPL, LEC, LCS, CBLOL, LCP et les principales ligues régionales). <span id="m-contracts"></span> Les joueurs absents de cette base apparaissent comme « non renseigné ».</p>
       <h2>Ce que la note ne sait pas</h2>

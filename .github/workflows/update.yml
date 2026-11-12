@@ -1,0 +1,55 @@
+name: Mise à jour hebdomadaire
+# Retélécharge les matchs (Oracle's Elixir) et les contrats (base publique de Riot),
+# recalcule les notes et republie la page (docs/index.html).
+on:
+  schedule:
+    - cron: '17 5 * * 2'      # chaque mardi à 05:17 UTC, après les matchs du week-end
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: update
+  cancel-in-progress: false
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Télécharger les matchs
+        id: data
+        run: |
+          set +e
+          python pipeline/fetch_data.py
+          code=$?
+          if [ $code -eq 3 ]; then
+            echo "::warning::Téléchargement des matchs refusé (quota Google Drive ?). Mise à jour reportée."
+            echo "skip=true" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          exit $code
+      - name: Télécharger les contrats
+        if: steps.data.outputs.skip != 'true'
+        run: python pipeline/fetch_contracts.py || echo "::warning::Contrats non mis à jour, on garde le dernier relevé."
+      - name: Calculer les notes
+        if: steps.data.outputs.skip != 'true'
+        run: python -W ignore pipeline/build.py data/raw
+      - name: Vérifier le résultat
+        if: steps.data.outputs.skip != 'true'
+        run: python pipeline/check.py
+      - name: Assembler la page
+        if: steps.data.outputs.skip != 'true'
+        run: python build_page.py
+      - name: Publier
+        if: steps.data.outputs.skip != 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/index.html pipeline/contracts.json
+          if git diff --cached --quiet; then echo "Rien de nouveau."; exit 0; fi
+          git commit -m "Mise à jour hebdomadaire : données au $(date -u +%F)"
+          git push
