@@ -452,6 +452,19 @@ def event_table(S):
     return E
 
 
+def league_table(S):
+    """note d'un joueur sur les seules parties d'une ligue (saison régulière et playoffs, hors tournois et coupes) :
+    même calcul que la note de saison, restreint à ces parties."""
+    p, A = S['p'], S['A']
+    q = p[p.scope == 'ligue']
+    g = q.groupby(['pid', 'league'])
+    L = g.agg(n=('c', 'size'), csum=('c', 'sum'), cn=('c', 'count'), T=('R_own', 'mean'), win=('result', 'mean'), team=('teamname', 'last')).reset_index()
+    L = L[(L.n >= 5) & L.pid.isin(A.index)]
+    L['I'] = (L.csum / (L.cn + K_SHRINK)) / S['sd_c'].reindex(A.role.reindex(L.pid).values).values
+    L['pts'] = L['T'] + SIGMA_IND * L.I
+    return L
+
+
 def form_table(S, last_n=15):
     p, A = S['p'], S['A']
     q = p.sort_values('date').groupby('pid').tail(last_n)
@@ -542,6 +555,7 @@ def main():
     for y, S in runs.items():
         A, p = S['A'], S['p']
         E = event_table(S); form = form_table(S)
+        lg_by = {k: v for k, v in league_table(S).groupby('pid')}
         A = A[A.n >= MIN_GAMES].copy()
         A['note'] = [to_note(v, a, b) for v in A.pts]
         ev_by = {k: v for k, v in E.groupby('pid')}
@@ -590,6 +604,7 @@ def main():
                 'st': {'win': r1(r.win, 3), 'kda': r1((r.k + r.a) / max(r.d, 1), 2), 'kp': r1(r.kp, 3), 'dpm': r1(r.dpm, 0), 'dsh': r1(r.dsh, 3),
                        'gsh': r1(r.gsh, 3), 'gd15': r1(r.gd15, 0), 'cd15': r1(r.cd15), 'xd15': r1(r.xd15, 0), 'cspm': r1(r.cspm, 2),
                        'vspm': r1(r.vspm, 2), 'dpg': r1(r.dpg, 2), 'fb': r1(r.fb, 3)},
+                'lg': {l.league: [r1(to_note(l.pts, a, b)), int(l.n), l.team, r1(l.win, 3)] for l in lg_by[pid].itertuples()} if pid in lg_by else {},
                 'c': contracts.get(pid), 'age': meta.get(pid, {}).get('age'), 'cty': meta.get(pid, {}).get('cty'), 'res': meta.get(pid, {}).get('res'), 'ev': evs,
                 'ch': [[c.champion, int(c.n), r1(c.w, 2)] for _, c in ch_by.get(pid, pd.DataFrame()).iterrows()],
             })

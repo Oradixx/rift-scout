@@ -123,18 +123,26 @@
   function topTxt(pc) { const t = Math.max(1, Math.round((1 - pc) * 100)); return t <= 50 ? `top ${t} %` : `${t}e centile`; }
 
   /* ------------------------------------------------------------ classement */
+  /* Ligue choisie sans événement : on note chaque joueur sur ses seules parties de cette ligue, et on liste tous ceux
+     qui y ont joué (même s'ils sont partis depuis). Avec un événement, c'est la note de l'événement qui s'affiche,
+     et les filtres région / ligue / niveau désignent alors la ligue actuelle du joueur. */
   function filtered(ignoreRole) {
     const q = state.q.trim().toLowerCase();
+    const lgOnly = state.league && !state.event;
     let L = S.players.filter((p) =>
       (ignoreRole || !state.role || p.role === state.role) &&
       (q || state.tier === '' || p.tier === +state.tier) &&
       (!state.region || p.region === state.region) &&
-      (!state.league || p.league === state.league) && cMatch(p, state.contract) &&
-      (q || p.n >= state.minG) &&
+      (!state.league || (lgOnly ? !!p.lg[state.league] : p.league === state.league)) && cMatch(p, state.contract) &&
+      (q || (lgOnly ? p.lg[state.league][1] : p.n) >= state.minG) &&
       (!q || p.name.toLowerCase().includes(q) || p.team.toLowerCase().includes(q)));
     if (state.event) {
       L = L.map((p) => ({ p, e: evNote(p, state.event) })).filter((x) => x.e).sort((a, b) => b.e.note - a.e.note);
       return L.map((x) => Object.assign({ _e: x.e }, x.p));
+    }
+    if (lgOnly) {
+      L = L.filter((p) => p.lg[state.league]).map((p) => { const v = p.lg[state.league]; return Object.assign({ _e: { note: v[0], n: v[1], team: v[2], w: v[3] } }, p); });
+      return L.sort((a, b) => b._e.note - a._e.note);
     }
     return L;
   }
@@ -165,7 +173,7 @@
     renderFive();
     const L = filtered(false);
     const el = $('#rows');
-    $('#count').textContent = L.length ? `${fmt(L.length)} joueur${L.length > 1 ? 's' : ''}` : '';
+    $('#count').textContent = L.length ? `${fmt(L.length)} joueur${L.length > 1 ? 's' : ''}` + (state.event ? `, notés sur ${state.event}` : state.league ? `, notés sur leurs seules parties de ${lgName(state.league)}` : ', notés sur toute la saison') : '';
     if (!L.length) { el.innerHTML = '<p class="none">Aucun joueur ne correspond à ces filtres. Élargissez le niveau de ligue ou baissez le nombre minimum de parties.</p>'; return; }
     let html = '';
     L.slice(0, state.shown).forEach((p, i) => {
@@ -175,13 +183,13 @@
       html += `<button class="row" data-p="${p.id}"><span class="rank">${i + 1}</span><span class="num note ${noteCls(n)}">${nInt(n)}</span>
         <span class="who"><b>${h(p.name)}</b><small>${h(p._e ? p._e.team : p.team)}, ${h(lgName(p.league))}${ageTxt(p)} ${cShort(p)}</small></span>
         <span class="pos">${p.role}</span>${strip(p)}
-        <span class="trend ${tc} r trend-cell" title="${p._e ? 'Écart avec sa note de saison' : 'Forme : 15 dernières parties par rapport à la saison'}">${d > 0 ? '+' : ''}${fmt(d, 1)}</span>
+        <span class="trend ${tc} r trend-cell" title="${p._e ? 'Écart avec sa note sur toute la saison' : 'Forme : 15 dernières parties par rapport à la saison'}">${d > 0 ? '+' : ''}${fmt(d, 1)}</span>
         <span class="r games">${p._e ? p._e.n : p.n}</span></button>`;
     });
     if (L.length > state.shown) html += `<button class="more" id="more">Afficher 100 joueurs de plus</button>`;
     el.innerHTML = html;
     $('#f-contract').disabled = !hasCT(); $('#f-contract').value = hasCT() ? state.contract : '';
-    $('#th-trend').textContent = state.event ? 'Écart saison' : 'Forme';
+    $('#th-trend').textContent = state.event || state.league ? 'Écart saison' : 'Forme';
   }
   function fillSelects() {
     const leagues = {}, regions = new Set(), events = {};
