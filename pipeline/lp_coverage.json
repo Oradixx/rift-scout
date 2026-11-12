@@ -1,0 +1,1371 @@
+{
+"fetched": "2026-11-12",
+"year": 2026,
+"total": {
+"games": 12405,
+"stats": 11377,
+"timeline": 11377
+},
+"tournaments": {
+"Demacia Cup 2025": {
+"games": 9,
+"stats": 0,
+"timeline": 0
+},
+"LIT 2026 Winter": {
+"games": 28,
+"stats": 28,
+"timeline": 28
+},
+"2026 Academic Esports World Tournament Sydney": {
+"games": 14,
+"stats": 6,
+"timeline": 6
+},
+"LCK CL 2026 Kickoff": {
+"games": 117,
+"stats": 117,
+"timeline": 117
+},
+"PRM 2nd Division 25-26 Winter": {
+"games": 123,
+"stats": 123,
+"timeline": 123
+},
+"Arabian League 2026 Winter": {
+"games": 91,
+"stats": 91,
+"timeline": 91
+},
+"Road Of Legends 2026 Winter": {
+"games": 55,
+"stats": 55,
+"timeline": 55
+},
+"LCK Cup 2026": {
+"games": 125,
+"stats": 125,
+"timeline": 125
+},
+"LPL 2026 Split 1": {
+"games": 137,
+"stats": 0,
+"timeline": 0
+},
+"HLL 2026 Winter": {
+"games": 56,
+"stats": 56,
+"timeline": 56
+},
+"NLC 2026 Winter": {
+"games": 43,
+"stats": 43,
+"timeline": 43
+},
+"LCP 2026 Split 1": {
+"games": 70,
+"stats": 70,
+"timeline": 70
+},
+"LEC 2026 Versus": {
+"games": 66,
+"stats": 66,
+"timeline": 66
+},
+"CBLOL Cup 2026": {
+"games": 68,
+"stats": 68,
+"timeline": 68
+},
+"Icelandic Esports League 2026 Spring": {
+"games": 55,
+"stats": 53,
+"timeline": 53
+},
+"TCL 2026 Kickoff": {
+"games": 57,
+"stats": 57,
+"timeline": 57
+},
+"Comedy Central Winter Snowdown": {
+"games": 40,
+"stats": 40,
+"timeline": 40
+},
+"LFL 2026 Invitational": {
+"games": 97,
+"stats": 97,
+"timeline": 97
+},
+"Hitpoint Winter 2026 Main Event": {
+"games": 103,
+"stats": 103,
+"timeline": 103
+},
+"HCC 2026 Winter": {
+"games": 89,
+"stats": 89,
+"timeline": 89
+},
+"LCS 2026 Lock-In": {
+"games": 59,
+"stats": 59,
+"timeline": 59
+},
+"LIT 2026 Winter Playoffs": {
+"games": 38,
+"stats": 38,
+"timeline": 38
+},
+"EBL 2026 Winter": {
+"games": 33,
+"stats": 33,
+"timeline": 33
+},
+"LJL 2026 Winter Series Qualifier": {
+"games": 104,
+"stats": 104,
+"timeline": 104
+},
+"LIT 2026 Spring Promotion": {
+"games": 30,
+"stats": 30,
+"timeline": 30
+},
+"LPL 2026 Split 1 Playoffs": {
+"games": 77,
+"stats": 0,
+"timeline": 0
+},
+"Road Of Legends 2026 Winter Playoffs": {
+"games": 14,
+"stats": 14,
+"timeline": 14
+},
+"PRM 1st Division 2026 Winter": {
+"games": 51,
+"stats": 51,
+"timeline": 51
+},
+"LCP 2026 Split 1 Playoffs": {
+"games": 32,
+"stats": 32,
+"timeline": 32
+},
+"LPLOL 2026 Winter": {
+"games": 39,
+"stats": 39,
+"timeline": 39
+},
+"LES 2026 Kick-off Tournament": {
+"games": 25,
+"stats": 25,
+"timeline": 25
+},
+"Rift Legends 2026 Winter": {
+"games": 51,
+"stats": 51,
+"timeline": 51
+},
+"LEC 2026 Versus Playoffs": {
+"games": 39,
+"stats": 39,
+"timeline": 39
+},
+"PRM 2nd Division 25-26 Winter Playoffs": {
+"games": 50,
+"stats": 50,
+"timeline": 50
+},
+"EBL 2026 Winter Playoffs": {
+"games": 33,
+"stats": 33,
+"timeline": 33
+},
+"Arabian League 2026 Winter Playoffs": {
+"games": 23,
+"stats": 23,
+"timeline": 23
+},
+"LJL 2026 Winter Series": {
+"games": 64,
+"stats": 64,
+"timeline": 64
+},
+"HCC 2026 Winter Playoffs": {
+"games": 10,
+"stats": 10,
+"timeline": 10
+},
+"Benelux Ascend Series 2026 Winter Split Final": {
+"games": 12,
+"stats": 12,
+"timeline": 12
+},
+"HLL 2026 Spring Promotion": {
+"games": 3,
+"stats": 3,
+"timeline": 3
+},
+"HLL 2026 Winter Playoffs": {
+"games": 12,
+"stats": 12,
+"timeline": 12
+},
+"CD 2026 Split 1 Open Qualifier": {
+"games": 16,
+"stats": 16,
+"timeline": 16
+},
+"VCS 2026 Spring": {
+"games": 53,
+"stats": 53,
+"timeline": 53
+},
+"LRN 2026 Split 1": {
+"games": 60,
+"stats": 60,
+"timeline": 60
+},
+"LRS 2026 Split 1": {
+"games": 63,
+"stats": 63,
+"timeline": 63
+},
+"MAGAMERS 2026": {
+"games": 3,
+"stats": 3,
+"timeline": 3
+},
+"NLC 2026 Winter Playoffs": {
+"games": 12,
+"stats": 12,
+"timeline": 12
+},
+"Americas Cup 2026": {
+"games": 19,
+"stats": 19,
+"timeline": 19
+},
+"IDL Kings Lendas Cup": {
+"games": 31,
+"stats": 31,
+"timeline": 31
+},
+"Nexus Tour 2026 Etape 2": {
+"games": 43,
+"stats": 43,
+"timeline": 43
+},
+"EM 2026 Winter": {
+"games": 174,
+"stats": 174,
+"timeline": 174
+},
+"Icelandic Esports League 2026 Spring Playoffs": {
+"games": 30,
+"stats": 26,
+"timeline": 26
+},
+"2026  Asia Masters Elite Invitational Tournament": {
+"games": 120,
+"stats": 0,
+"timeline": 0
+},
+"First Stand 2026": {
+"games": 45,
+"stats": 45,
+"timeline": 45
+},
+"Spring Dawn Tournament": {
+"games": 37,
+"stats": 37,
+"timeline": 37
+},
+"LCK AS 2026 1st Championship": {
+"games": 199,
+"stats": 199,
+"timeline": 199
+},
+"Play Córdoba Generation Cup 2026": {
+"games": 2,
+"stats": 2,
+"timeline": 2
+},
+"VCS 2026 Spring Playoffs": {
+"games": 23,
+"stats": 23,
+"timeline": 23
+},
+"NACL 2026 Spring": {
+"games": 103,
+"stats": 103,
+"timeline": 103
+},
+"HCC 2026 Spring": {
+"games": 60,
+"stats": 58,
+"timeline": 58
+},
+"LEC 2026 Spring": {
+"games": 111,
+"stats": 111,
+"timeline": 111
+},
+"CBLOL 2026 Split 1": {
+"games": 66,
+"stats": 66,
+"timeline": 66
+},
+"Arabian League 2026 Spring Promotion": {
+"games": 17,
+"stats": 17,
+"timeline": 17
+},
+"LCK CL 2026 Rounds 1-2": {
+"games": 221,
+"stats": 221,
+"timeline": 221
+},
+"CD 2026 Split 1": {
+"games": 53,
+"stats": 53,
+"timeline": 53
+},
+"HLL 2026 Spring": {
+"games": 56,
+"stats": 56,
+"timeline": 56
+},
+"Rift Legends 2026 Spring": {
+"games": 66,
+"stats": 66,
+"timeline": 66
+},
+"Road Of Legends 2026 Spring": {
+"games": 66,
+"stats": 66,
+"timeline": 66
+},
+"LCK 2026 Rounds 1-2": {
+"games": 204,
+"stats": 204,
+"timeline": 204
+},
+"PRM 1st Division 2026 Spring": {
+"games": 91,
+"stats": 91,
+"timeline": 91
+},
+"LIT 2026 Spring": {
+"games": 28,
+"stats": 28,
+"timeline": 28
+},
+"LPL 2026 Split 2": {
+"games": 171,
+"stats": 0,
+"timeline": 0
+},
+"LCP 2026 Split 2": {
+"games": 69,
+"stats": 69,
+"timeline": 69
+},
+"LCS 2026 Spring": {
+"games": 69,
+"stats": 69,
+"timeline": 69
+},
+"LES 2026 Spring": {
+"games": 63,
+"stats": 63,
+"timeline": 63
+},
+"LFL 2026 Spring": {
+"games": 45,
+"stats": 45,
+"timeline": 45
+},
+"TCL 2026 Spring": {
+"games": 64,
+"stats": 64,
+"timeline": 64
+},
+"Arabian League 2nd Division 2026 Spring": {
+"games": 62,
+"stats": 62,
+"timeline": 62
+},
+"Arabian League 2026 Spring": {
+"games": 89,
+"stats": 89,
+"timeline": 89
+},
+"LJL 2026 Spring Series Qualifier": {
+"games": 80,
+"stats": 80,
+"timeline": 80
+},
+"Nexus League 2026 Spring": {
+"games": 56,
+"stats": 56,
+"timeline": 56
+},
+"RIVALS LEAGUE Season 1": {
+"games": 4,
+"stats": 4,
+"timeline": 4
+},
+"Esports World Cup 2026 Online Qualifier: North America": {
+"games": 33,
+"stats": 33,
+"timeline": 33
+},
+"EBL 2026 Spring": {
+"games": 31,
+"stats": 31,
+"timeline": 31
+},
+"Benelux Ascend Series 2026 Spring": {
+"games": 47,
+"stats": 47,
+"timeline": 47
+},
+"Hitpoint Masters 2026 Spring": {
+"games": 61,
+"stats": 61,
+"timeline": 61
+},
+"LRN 2026 Split 1 Playoffs": {
+"games": 29,
+"stats": 29,
+"timeline": 29
+},
+"LRS 2026 Split 1 Playoffs": {
+"games": 28,
+"stats": 28,
+"timeline": 28
+},
+"Hitpoint 2nd Div Challengers 2026 Spring": {
+"games": 67,
+"stats": 67,
+"timeline": 67
+},
+"LIT 2026 Spring Playoffs": {
+"games": 34,
+"stats": 34,
+"timeline": 34
+},
+"LOL DK Ligaen 2026 Spring Playoffs": {
+"games": 8,
+"stats": 8,
+"timeline": 8
+},
+"PCS 2026 Spring": {
+"games": 48,
+"stats": 48,
+"timeline": 48
+},
+"Esports World Cup 2026 Online Qualifier: EMEA": {
+"games": 49,
+"stats": 49,
+"timeline": 49
+},
+"PRM 2nd Division 25-26 Spring": {
+"games": 124,
+"stats": 124,
+"timeline": 124
+},
+"LJL 2026 Spring Series": {
+"games": 78,
+"stats": 78,
+"timeline": 78
+},
+"LPLOL 2026 Spring": {
+"games": 28,
+"stats": 28,
+"timeline": 28
+},
+"Esports World Cup 2026 Online Qualifier: Korea": {
+"games": 34,
+"stats": 34,
+"timeline": 34
+},
+"CD 2026 Split 1 Playoffs": {
+"games": 41,
+"stats": 41,
+"timeline": 41
+},
+"Esports World Cup 2026 Online Qualifier: Asia-Pacific": {
+"games": 35,
+"stats": 35,
+"timeline": 35
+},
+"LFL 2026 Spring Playoffs": {
+"games": 37,
+"stats": 37,
+"timeline": 37
+},
+"EBL 2026 Spring Playoffs": {
+"games": 35,
+"stats": 35,
+"timeline": 35
+},
+"LCK AS 2026 1st Championship Playoffs": {
+"games": 30,
+"stats": 30,
+"timeline": 30
+},
+"HCC 2026 Spring Playoffs": {
+"games": 11,
+"stats": 11,
+"timeline": 11
+},
+"CBLOL 2026 Split 1 Playoffs": {
+"games": 39,
+"stats": 39,
+"timeline": 39
+},
+"Arabian League 2026 Spring Playoffs": {
+"games": 16,
+"stats": 16,
+"timeline": 16
+},
+"VCS 2026 Summer": {
+"games": 34,
+"stats": 34,
+"timeline": 34
+},
+"HLL 2026 Spring Playoffs": {
+"games": 13,
+"stats": 13,
+"timeline": 13
+},
+"Arabian League 2nd Division 2026 Spring Playoffs": {
+"games": 16,
+"stats": 16,
+"timeline": 16
+},
+"LIT 2026 Summer Promotion": {
+"games": 32,
+"stats": 32,
+"timeline": 32
+},
+"Esports Series Madrid 2026 Split 1": {
+"games": 5,
+"stats": 5,
+"timeline": 5
+},
+"Streamers Clash Season 4": {
+"games": 49,
+"stats": 49,
+"timeline": 49
+},
+"HLL 2026 Summer Promotion": {
+"games": 13,
+"stats": 13,
+"timeline": 13
+},
+"TCL 2026 Spring Playoffs": {
+"games": 22,
+"stats": 22,
+"timeline": 22
+},
+"Road Of Legends 2026 Spring Playoffs": {
+"games": 25,
+"stats": 25,
+"timeline": 25
+},
+"PRM 1st Division 2026 Spring Playoffs": {
+"games": 23,
+"stats": 23,
+"timeline": 23
+},
+"Benelux Ascend Series 2026 Spring Playoffs": {
+"games": 26,
+"stats": 26,
+"timeline": 26
+},
+"NACL 2026 Spring Playoffs": {
+"games": 37,
+"stats": 37,
+"timeline": 37
+},
+"CD 2026 Split 2 Open Qualifier": {
+"games": 35,
+"stats": 27,
+"timeline": 27
+},
+"LPL 2026 Split 2 Playoffs": {
+"games": 68,
+"stats": 0,
+"timeline": 0
+},
+"LCP 2026 Split 2 Playoffs": {
+"games": 32,
+"stats": 32,
+"timeline": 32
+},
+"Hitpoint Masters 2026 Spring Playoffs": {
+"games": 27,
+"stats": 27,
+"timeline": 27
+},
+"LEC 2026 Spring Playoffs": {
+"games": 30,
+"stats": 30,
+"timeline": 30
+},
+"LCS 2026 Spring Playoffs": {
+"games": 29,
+"stats": 29,
+"timeline": 29
+},
+"Comic Con Baltics 2026": {
+"games": 5,
+"stats": 5,
+"timeline": 5
+},
+"NLC 2026 Spring": {
+"games": 29,
+"stats": 29,
+"timeline": 29
+},
+"Rift Legends 2026 Spring Playoffs": {
+"games": 15,
+"stats": 15,
+"timeline": 15
+},
+"Hitpoint 2nd Div Challengers 2026 Spring Playoffs": {
+"games": 32,
+"stats": 32,
+"timeline": 32
+},
+"LPLOL 2026 Spring Playoffs": {
+"games": 14,
+"stats": 14,
+"timeline": 14
+},
+"NLC 2026 Spring Playoffs": {
+"games": 18,
+"stats": 18,
+"timeline": 18
+},
+"Nexus League 2026 Spring Playoffs": {
+"games": 15,
+"stats": 15,
+"timeline": 15
+},
+"Arabian League 2026 Summer Promotion": {
+"games": 16,
+"stats": 16,
+"timeline": 16
+},
+"CD 2026 Split 2 Promotion": {
+"games": 19,
+"stats": 19,
+"timeline": 19
+},
+"LES 2026 Spring Playoffs": {
+"games": 16,
+"stats": 16,
+"timeline": 16
+},
+"Asia Masters 2026: APAC Qualifier": {
+"games": 7,
+"stats": 7,
+"timeline": 7
+},
+"LCK 2026 Road to MSI": {
+"games": 20,
+"stats": 20,
+"timeline": 20
+},
+"Esports Series Madrid 2026": {
+"games": 2,
+"stats": 2,
+"timeline": 2
+},
+"Esports World Cup 2026 Online Qualifier: South America": {
+"games": 31,
+"stats": 31,
+"timeline": 31
+},
+"PRM 2nd Division 25-26 Spring Playoffs": {
+"games": 47,
+"stats": 47,
+"timeline": 47
+},
+"Asia Masters 2026": {
+"games": 56,
+"stats": 56,
+"timeline": 56
+},
+"EM 2026 Spring Play-In": {
+"games": 40,
+"stats": 40,
+"timeline": 40
+},
+"EM 2026 Spring Main Event": {
+"games": 70,
+"stats": 70,
+"timeline": 70
+},
+"VCS 2026 Summer Playoffs": {
+"games": 25,
+"stats": 25,
+"timeline": 25
+},
+"Road Of Legends 2026 Summer Promotion": {
+"games": 4,
+"stats": 4,
+"timeline": 4
+},
+"Nexus Tour 2026 Last Chance": {
+"games": 30,
+"stats": 30,
+"timeline": 30
+},
+"Asian Games 2026 Qualifier": {
+"games": 30,
+"stats": 30,
+"timeline": 30
+},
+"PRM 2nd Division 25-26 Spring Relegation": {
+"games": 21,
+"stats": 21,
+"timeline": 21
+},
+"Komplettligaen 2026 Spring Playoffs": {
+"games": 4,
+"stats": 4,
+"timeline": 4
+},
+"NACL 2026 Summer Promotion": {
+"games": 27,
+"stats": 27,
+"timeline": 27
+},
+"Esports Nations Cup 2026 SEA & OCE Qualifier": {
+"games": 17,
+"stats": 17,
+"timeline": 17
+},
+"Esports Nations Cup 2026 MEA Qualifier": {
+"games": 58,
+"stats": 58,
+"timeline": 58
+},
+"Esports Nations Cup 2026 EU East Qualifier": {
+"games": 33,
+"stats": 33,
+"timeline": 33
+},
+"Esports Nations Cup 2026 EU West Qualifier": {
+"games": 27,
+"stats": 27,
+"timeline": 27
+},
+"Esports Nations Cup 2026 NA & CAC Qualifier": {
+"games": 17,
+"stats": 17,
+"timeline": 17
+},
+"Esports Nations Cup 2026 Asia Qualifier": {
+"games": 14,
+"stats": 14,
+"timeline": 14
+},
+"IDL Kings Lendas Season 4": {
+"games": 64,
+"stats": 64,
+"timeline": 64
+},
+"Esports Nations Cup 2026 South America Qualifier": {
+"games": 15,
+"stats": 15,
+"timeline": 15
+},
+"MSI 2026": {
+"games": 71,
+"stats": 71,
+"timeline": 71
+},
+"HLL 2026 Summer": {
+"games": 54,
+"stats": 54,
+"timeline": 54
+},
+"PRM 1st Division 2026 Summer": {
+"games": 100,
+"stats": 100,
+"timeline": 100
+},
+"LRS 2026 Split 2": {
+"games": 66,
+"stats": 66,
+"timeline": 66
+},
+"HCC 2026 Summer": {
+"games": 58,
+"stats": 58,
+"timeline": 58
+},
+"LRN 2026 Split 2": {
+"games": 56,
+"stats": 56,
+"timeline": 56
+},
+"Equal Esports Cup 2026 Group Stage": {
+"games": 42,
+"stats": 42,
+"timeline": 42
+},
+"2026 City Heroes Championship": {
+"games": 9,
+"stats": 0,
+"timeline": 0
+},
+"LES 2026 Summer": {
+"games": 63,
+"stats": 63,
+"timeline": 63
+},
+"Road Of Legends 2026 Summer": {
+"games": 67,
+"stats": 67,
+"timeline": 67
+},
+"Esports World Cup 2026": {
+"games": 51,
+"stats": 51,
+"timeline": 51
+},
+"Arabian League 2026 Summer": {
+"games": 64,
+"stats": 64,
+"timeline": 64
+},
+"NLC 2026 Summer LCQ": {
+"games": 2,
+"stats": 2,
+"timeline": 2
+},
+"NACL 2026 Summer": {
+"games": 67,
+"stats": 67,
+"timeline": 67
+},
+"LJL 2026 Summer Championship": {
+"games": 37,
+"stats": 37,
+"timeline": 37
+},
+"2026 Asia Masters Elite Invitational Tournament 2": {
+"games": 56,
+"stats": 0,
+"timeline": 0
+},
+"Nexus League 2026 Summer": {
+"games": 45,
+"stats": 45,
+"timeline": 45
+},
+"KeSPA Cup 2026": {
+"games": 61,
+"stats": 61,
+"timeline": 61
+},
+"PRM 2nd Division 2026 Season Finals": {
+"games": 74,
+"stats": 74,
+"timeline": 74
+},
+"NLC 2026 Summer": {
+"games": 106,
+"stats": 106,
+"timeline": 106
+},
+"CD 2026 Split 2": {
+"games": 52,
+"stats": 52,
+"timeline": 52
+},
+"LFL 2026 Summer": {
+"games": 45,
+"stats": 45,
+"timeline": 45
+},
+"LRS 2026 Split 2 Playoffs": {
+"games": 30,
+"stats": 30,
+"timeline": 30
+},
+"LPL 2026 Split 3": {
+"games": 167,
+"stats": 0,
+"timeline": 0
+},
+"LIT 2026 Summer": {
+"games": 28,
+"stats": 28,
+"timeline": 28
+},
+"Benelux Ascend Series 2026 Summer Split": {
+"games": 68,
+"stats": 68,
+"timeline": 68
+},
+"LPLOL 2026 Summer": {
+"games": 81,
+"stats": 81,
+"timeline": 81
+},
+"LEC 2026 Summer": {
+"games": 106,
+"stats": 106,
+"timeline": 106
+},
+"LCP 2026 Split 3": {
+"games": 80,
+"stats": 80,
+"timeline": 80
+},
+"UEM 2026": {
+"games": 44,
+"stats": 44,
+"timeline": 44
+},
+"CBLOL 2026 Split 2": {
+"games": 62,
+"stats": 62,
+"timeline": 62
+},
+"LCS 2026 Summer": {
+"games": 64,
+"stats": 64,
+"timeline": 64
+},
+"LCK CL 2026 Rounds 3-4": {
+"games": 102,
+"stats": 102,
+"timeline": 102
+},
+"LRN 2026 Split 2 Playoffs": {
+"games": 31,
+"stats": 31,
+"timeline": 31
+},
+"EBL 2026 Summer": {
+"games": 39,
+"stats": 39,
+"timeline": 39
+},
+"Equal Esports Cup 2026 Playoffs": {
+"games": 22,
+"stats": 22,
+"timeline": 22
+},
+"LCK 2026 Rounds 3-4": {
+"games": 98,
+"stats": 98,
+"timeline": 98
+},
+"TCL 2026 Summer": {
+"games": 65,
+"stats": 65,
+"timeline": 65
+},
+"PCS 2026 Summer": {
+"games": 38,
+"stats": 38,
+"timeline": 38
+},
+"Rift Legends 2026 Summer": {
+"games": 79,
+"stats": 79,
+"timeline": 79
+},
+"HCC 2026 Summer Playoffs": {
+"games": 11,
+"stats": 11,
+"timeline": 11
+},
+"Hitpoint Masters 2026 Summer": {
+"games": 58,
+"stats": 58,
+"timeline": 58
+},
+"LFL 2026 Summer Playoffs": {
+"games": 37,
+"stats": 37,
+"timeline": 37
+},
+"KeG Championship 2026": {
+"games": 13,
+"stats": 13,
+"timeline": 13
+},
+"League Impact Series 2026 Group Stage": {
+"games": 18,
+"stats": 18,
+"timeline": 18
+},
+"CD 2026 Split 2 Playoffs": {
+"games": 42,
+"stats": 42,
+"timeline": 42
+},
+"LES 2026 Summer Playoffs": {
+"games": 14,
+"stats": 14,
+"timeline": 14
+},
+"PRM 1st Division 2026 Summer Playoffs": {
+"games": 35,
+"stats": 35,
+"timeline": 35
+},
+"LIT 2026 Summer Playoffs": {
+"games": 34,
+"stats": 34,
+"timeline": 34
+},
+"EBL 2026 Summer Playoffs": {
+"games": 20,
+"stats": 20,
+"timeline": 20
+},
+"Arabian League 2026 Summer Playoffs": {
+"games": 34,
+"stats": 34,
+"timeline": 34
+},
+"NACL 2026 Summer Playoffs": {
+"games": 47,
+"stats": 47,
+"timeline": 47
+},
+"FLS 2026 Playoffs": {
+"games": 18,
+"stats": 18,
+"timeline": 18
+},
+"Nexus League 2026 Summer Playoffs": {
+"games": 21,
+"stats": 21,
+"timeline": 21
+},
+"LCK CL 2026 Season Play-In": {
+"games": 11,
+"stats": 11,
+"timeline": 11
+},
+"WSCI 2026 China Qualifier": {
+"games": 24,
+"stats": 0,
+"timeline": 0
+},
+"HLL 2026 Summer Playoffs": {
+"games": 28,
+"stats": 28,
+"timeline": 28
+},
+"LCK 2026 Season Play-In": {
+"games": 14,
+"stats": 14,
+"timeline": 14
+},
+"LGC Rising 2026 Stage 4": {
+"games": 8,
+"stats": 8,
+"timeline": 8
+},
+"LPL 2026 Grand Finals": {
+"games": 55,
+"stats": 0,
+"timeline": 0
+},
+"LIT 2027 Winter Promotion": {
+"games": 28,
+"stats": 28,
+"timeline": 28
+},
+"LCK 2026 Season Playoffs": {
+"games": 41,
+"stats": 41,
+"timeline": 41
+},
+"LCK CL 2026 Season Playoffs": {
+"games": 40,
+"stats": 40,
+"timeline": 40
+},
+"LES 2026 Final Four": {
+"games": 12,
+"stats": 12,
+"timeline": 12
+},
+"Road Of Legends 2026 Summer Playoffs": {
+"games": 23,
+"stats": 23,
+"timeline": 23
+},
+"EBL 2027 Promotion": {
+"games": 5,
+"stats": 5,
+"timeline": 5
+},
+"LEC 2026 Summer Playoffs": {
+"games": 31,
+"stats": 31,
+"timeline": 31
+},
+"League Impact Series 2026 Playoffs": {
+"games": 25,
+"stats": 25,
+"timeline": 25
+},
+"CBLOL 2026 Split 2 Playoffs": {
+"games": 40,
+"stats": 40,
+"timeline": 40
+},
+"Hitpoint 2nd Div Challengers 2026 Summer": {
+"games": 70,
+"stats": 70,
+"timeline": 70
+},
+"PRM 1st Division 2027 Promotion": {
+"games": 22,
+"stats": 22,
+"timeline": 22
+},
+"EBL 2026 Season Finals": {
+"games": 17,
+"stats": 17,
+"timeline": 17
+},
+"Hitpoint Masters 2026 Summer Playoffs": {
+"games": 28,
+"stats": 28,
+"timeline": 28
+},
+"LFL 2027 Promotion": {
+"games": 14,
+"stats": 14,
+"timeline": 14
+},
+"Benelux Ascend Series 2026 Summer Playoffs": {
+"games": 23,
+"stats": 23,
+"timeline": 23
+},
+"Nexus Tour 2026 Playoffs": {
+"games": 36,
+"stats": 36,
+"timeline": 36
+},
+"VCS 2026 Finals Stage 1": {
+"games": 23,
+"stats": 23,
+"timeline": 23
+},
+"Road to LES 2026 Closed Qualifier": {
+"games": 31,
+"stats": 31,
+"timeline": 31
+},
+"TipiLAN 2026": {
+"games": 25,
+"stats": 25,
+"timeline": 25
+},
+"LCK AS 2026 2nd Championship": {
+"games": 312,
+"stats": 312,
+"timeline": 312
+},
+"FPL 2026 Summer Playoffs": {
+"games": 10,
+"stats": 10,
+"timeline": 10
+},
+"LigaGG CELOL A 2026 Split 2": {
+"games": 51,
+"stats": 0,
+"timeline": 0
+},
+"LCS 2026 Summer Playoffs": {
+"games": 39,
+"stats": 39,
+"timeline": 39
+},
+"WSCI 2026 EMEA Qualifier": {
+"games": 8,
+"stats": 8,
+"timeline": 8
+},
+"WSCI 2026 Americas Qualifier": {
+"games": 3,
+"stats": 3,
+"timeline": 3
+},
+"LPL 2026 Regional Finals": {
+"games": 12,
+"stats": 0,
+"timeline": 0
+},
+"KOREA Pre Evaluation for 2026 Asian Games": {
+"games": 7,
+"stats": 7,
+"timeline": 7
+},
+"World Star Challengers Invitational 2026": {
+"games": 74,
+"stats": 74,
+"timeline": 74
+},
+"EM 2026 Summer LCQ": {
+"games": 47,
+"stats": 47,
+"timeline": 47
+},
+"Icelandic Esports League 2026 Autumn": {
+"games": 41,
+"stats": 41,
+"timeline": 41
+},
+"Nexus League 2027 Promotion": {
+"games": 12,
+"stats": 12,
+"timeline": 12
+},
+"LES 2027 Promotion": {
+"games": 15,
+"stats": 15,
+"timeline": 15
+},
+"VCS 2026 Finals Stage 2": {
+"games": 19,
+"stats": 19,
+"timeline": 19
+},
+"Hitpoint 2nd Div Challengers 2026 Summer Playoffs": {
+"games": 32,
+"stats": 32,
+"timeline": 32
+},
+"EM 2026 Summer Main Event": {
+"games": 193,
+"stats": 193,
+"timeline": 193
+},
+"CBLOL 2027 Promotion": {
+"games": 24,
+"stats": 24,
+"timeline": 24
+},
+"Asian Games 2026": {
+"games": 19,
+"stats": 19,
+"timeline": 19
+},
+"Arabian League 2nd Division 2026 Summer": {
+"games": 48,
+"stats": 48,
+"timeline": 48
+},
+"Demacia Cup Global Invitational 2026": {
+"games": 71,
+"stats": 39,
+"timeline": 39
+},
+"LCS 2027 Promotion": {
+"games": 23,
+"stats": 23,
+"timeline": 23
+},
+"Road Of Legends 2027 Winter Promotion": {
+"games": 4,
+"stats": 4,
+"timeline": 4
+},
+"LCP Wildcard 2026 Playoffs": {
+"games": 29,
+"stats": 29,
+"timeline": 29
+},
+"TCL 2027 Promotion": {
+"games": 11,
+"stats": 11,
+"timeline": 11
+},
+"MängudeÖÖ 2026": {
+"games": 29,
+"stats": 29,
+"timeline": 29
+},
+"LGC Rising 2026 Playoffs": {
+"games": 20,
+"stats": 20,
+"timeline": 20
+},
+"PRM 2nd Division 26-27 Fall": {
+"games": 119,
+"stats": 119,
+"timeline": 119
+},
+"Worlds 2026 Play-In": {
+"games": 22,
+"stats": 22,
+"timeline": 22
+},
+"Worlds 2026 Main Event": {
+"games": 72,
+"stats": 72,
+"timeline": 72
+},
+"LigaGG CELOL A 2026 Split 2 Playoffs": {
+"games": 18,
+"stats": 2,
+"timeline": 2
+},
+"Superstrike League 2026": {
+"games": 2,
+"stats": 2,
+"timeline": 2
+},
+"LCK AS 2026 2nd Championship Playoffs": {
+"games": 35,
+"stats": 35,
+"timeline": 35
+},
+"Breeze of Glory 2026": {
+"games": 19,
+"stats": 19,
+"timeline": 19
+},
+"HLL 2026 Super Cup": {
+"games": 5,
+"stats": 5,
+"timeline": 5
+},
+"Arabian League 2nd Division 2026 Summer Playoffs": {
+"games": 18,
+"stats": 18,
+"timeline": 18
+},
+"GG Arena by Teknosa Season 2": {
+"games": 24,
+"stats": 24,
+"timeline": 24
+},
+"LCP 2027 Promotion": {
+"games": 9,
+"stats": 9,
+"timeline": 9
+}
+}
+}
