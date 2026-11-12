@@ -35,6 +35,12 @@ jobs:
       - name: Télécharger les contrats
         if: steps.data.outputs.skip != 'true'
         run: python pipeline/fetch_contracts.py || echo "::warning::Contrats non mis à jour, on garde le dernier relevé."
+      - name: Télécharger les fiches joueurs (Leaguepedia)
+        if: steps.data.outputs.skip != 'true'
+        run: python pipeline/fetch_leaguepedia.py || echo "::warning::Leaguepedia non mis à jour, on garde le dernier relevé."
+        env:
+          LEAGUEPEDIA_USER: ${{ secrets.LEAGUEPEDIA_USER }}
+          LEAGUEPEDIA_PASSWORD: ${{ secrets.LEAGUEPEDIA_PASSWORD }}
       - name: Calculer les notes
         if: steps.data.outputs.skip != 'true'
         run: python -W ignore pipeline/build.py data/raw
@@ -49,7 +55,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/index.html pipeline/contracts.json
+          git add docs/index.html pipeline/contracts.json pipeline/lp_players.json pipeline/lp_coverage.json
           if git diff --cached --quiet; then echo "Rien de nouveau."; exit 0; fi
           git commit -m "Mise à jour hebdomadaire : données au $(date -u +%F)"
           git push

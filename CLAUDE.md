@@ -7,6 +7,7 @@ Notes de 1 à 100 pour les joueurs professionnels de League of Legends, fiches j
 - `pipeline/build.py` : tout le calcul. Lit les CSV d'Oracle's Elixir, écrit `app/data.json`. Les réglages (poids des facettes par poste, régularisation, échelle) sont en tête du fichier.
 - `pipeline/fetch_data.py` : télécharge les CSV de matchs dans `data/raw/`.
 - `pipeline/fetch_contracts.py` : télécharge la base publique de contrats de Riot, écrit `pipeline/contracts.json`.
+- `pipeline/leaguepedia.py`, `pipeline/fetch_leaguepedia.py` : connexion à Leaguepedia et récupération des fiches joueurs (`pipeline/lp_players.json` : âge, pays, résidence, contrat) et de la couverture des données détaillées (`pipeline/lp_coverage.json`). Demandent `LEAGUEPEDIA_USER` et `LEAGUEPEDIA_PASSWORD`, présents seulement dans les secrets GitHub : ces scripts se lancent par le workflow « Leaguepedia », pas en local.
 - `pipeline/leagues.json` : niveau de départ, région et noms des ligues.
 - `app/` : sources de la page (`index.template.html`, `style.css`, `app.js`).
 - `build_page.py` : assemble `app/` et `app/data.json` en `docs/index.html`.
@@ -32,6 +33,8 @@ python build_page.py                   # -> docs/index.html
 
 - Ne jamais modifier `docs/index.html` à la main : il est généré. Modifier `app/` ou le pipeline, puis reconstruire et committer le `docs/index.html` obtenu.
 - `data/` et `app/data.json` ne sont pas versionnés (trop lourds, régénérables). Sans eux la page publiée fonctionne quand même : ses données sont incluses dans `docs/index.html`.
+- Leaguepedia : ne jamais demander ni stocker les noms civils ; on garde la date de naissance dans `lp_players.json` mais la page n'affiche que l'âge.
+- Sans compte, Leaguepedia refuse les requêtes sur ses tables (limite partagée entre tous les anonymes).
 - Contrats : ne garder que ligue, équipe, pseudo, poste et date de fin. Jamais de noms civils ni de contacts d'équipe, bien que la source en contienne.
 - Après un changement du calcul, vérifier le classement par poste des ligues majeures avant de committer : il doit rester crédible pour quelqu'un qui suit la scène.
 - Après un changement d'interface, ouvrir la page dans un navigateur (bureau, mobile, mode sombre) et vérifier qu'il n'y a ni erreur console ni défilement horizontal.

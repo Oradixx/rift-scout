@@ -86,6 +86,8 @@
           <select id="s-tier"><option value="">Tous</option><option value="0">Ligues majeures</option><option value="1">Deuxième niveau</option><option value="2">Troisième niveau</option></select></div>
         <div><label for="s-region">Région</label><select id="s-region"></select></div>
         <div><label for="s-league">Ligue</label><select id="s-league"></select></div>
+        <div><label for="s-age">Âge maximum</label><input id="s-age" type="number" min="16" max="40" step="1" placeholder="Tous"></div>
+        <div><label for="s-res">Résidence</label><select id="s-res"></select></div>
         <div><label for="s-note">Note minimale</label><input id="s-note" type="number" min="0" max="99" step="1" value="0"></div>
         <div><label for="s-min">Parties jouées, au moins</label><input id="s-min" type="number" min="0" max="200" step="5" value="20"></div>
         <p class="count wide">Dates de fin de contrat : base publique de Riot. Une fin de contrat ne garantit pas que le joueur soit libre (prolongation possible).</p>
@@ -127,6 +129,8 @@
       <p><b>Avant et après</b> : quand vous essayez un joueur dans une équipe, le niveau de l'effectif est la moyenne des niveaux de ses cinq joueurs. Les chances de victoire sont calculées contre une équipe moyenne de la même ligue, et le rang compare cet effectif à ceux des autres équipes de la ligue. Le profil par facette est la moyenne des cinq joueurs. C'est une estimation : elle suppose que chacun joue dans sa nouvelle équipe comme il a joué cette saison.</p>
       <h2>Les contrats</h2>
       <p>Les dates de fin de contrat viennent de la base publique des contrats reconnus par Riot (LCK, LPL, LEC, LCS, CBLOL, LCP et les principales ligues régionales). <span id="m-contracts"></span> Les joueurs absents de cette base apparaissent comme « non renseigné ».</p>
+      <h2>Âge, nationalité et résidence</h2>
+      <p>Ces informations viennent de Leaguepedia. <span id="m-meta"></span> La résidence est la région dans laquelle le joueur compte comme joueur local au sens des règles d'effectif. Quand la base de Riot ne donne pas de date de fin de contrat, celle de Leaguepedia est utilisée.</p>
       <h2>Ce que la note ne sait pas</h2>
       <ul>
         <li>Dans un effectif qui ne change jamais, le niveau de l'équipe est partagé entre les cinq joueurs. Seules les statistiques individuelles les départagent.</li>

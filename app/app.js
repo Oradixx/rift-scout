@@ -29,10 +29,20 @@
   const isFree = (p) => !!p.c && p.c <= CT.free_until;
   const cDate = (d, long) => new Date(d + 'T12:00:00').toLocaleDateString('fr-FR', long ? { day: 'numeric', month: 'long', year: 'numeric' } : { month: 'short', year: 'numeric' });
   const cShort = (p) => (!hasCT() || !p.c ? '' : isFree(p) ? `<em class="free">fin de contrat ${cDate(p.c)}</em>` : `<em class="signed">contrat ${cDate(p.c)}</em>`);
+  /* âge, pays, résidence (Leaguepedia) : même règle, seulement pour la saison correspondante */
+  const hasMeta = () => !!D.meta && state.season === D.meta.season;
+  const PAYS = { 'South Korea': 'Corée du Sud', 'China': 'Chine', 'Brazil': 'Brésil', 'United States': 'États-Unis', 'Poland': 'Pologne', 'Germany': 'Allemagne', 'France': 'France', 'Vietnam': 'Vietnam', 'Turkey': 'Turquie', 'Spain': 'Espagne',
+    'Czech Republic': 'Tchéquie', 'Taiwan': 'Taïwan', 'Argentina': 'Argentine', 'Greece': 'Grèce', 'Netherlands': 'Pays-Bas', 'Canada': 'Canada', 'Italy': 'Italie', 'Mexico': 'Mexique', 'Portugal': 'Portugal', 'Sweden': 'Suède', 'Denmark': 'Danemark',
+    'Japan': 'Japon', 'Chile': 'Chili', 'United Kingdom': 'Royaume-Uni', 'Belgium': 'Belgique', 'Colombia': 'Colombie', 'Finland': 'Finlande', 'Peru': 'Pérou', 'Romania': 'Roumanie', 'Serbia': 'Serbie', 'Australia': 'Australie', 'Bulgaria': 'Bulgarie',
+    'Egypt': 'Égypte', 'Slovakia': 'Slovaquie', 'Norway': 'Norvège', 'Russia': 'Russie', 'Tunisia': 'Tunisie', 'Hungary': 'Hongrie', 'Hong Kong': 'Hong Kong', 'Venezuela': 'Venezuela', 'Austria': 'Autriche', 'Croatia': 'Croatie',
+    'Philippines': 'Philippines', 'Switzerland': 'Suisse', 'Thailand': 'Thaïlande', 'Slovenia': 'Slovénie', 'Ukraine': 'Ukraine', 'Lithuania': 'Lituanie', 'Morocco': 'Maroc', 'Algeria': 'Algérie', 'Saudi Arabia': 'Arabie saoudite', 'Ireland': 'Irlande', 'Israel': 'Israël', 'Latvia': 'Lettonie', 'Estonia': 'Estonie', 'New Zealand': 'Nouvelle-Zélande', 'Uruguay': 'Uruguay', 'Ecuador': 'Équateur', 'Iceland': 'Islande', 'Lebanon': 'Liban', 'Jordan': 'Jordanie', 'Malaysia': 'Malaisie', 'Singapore': 'Singapour', 'Indonesia': 'Indonésie' };
+  const RESID = { 'EMEA': 'EMEA', 'North America': 'Amérique du Nord', 'Brazil': 'Brésil', 'Asia Pacific': 'Asie-Pacifique', 'Korea': 'Corée', 'China': 'Chine', 'Vietnam': 'Vietnam', 'Latin America': 'Amérique latine' };
+  const pays = (c) => PAYS[c] || c, resid = (r) => RESID[r] || r;
+  const ageTxt = (p) => (hasMeta() && p.age ? `, ${p.age} ans` : '');
   const cMatch = (p, v) => !v || !hasCT() || (v === 'free' ? isFree(p) : v === 'signed' ? !!p.c && !isFree(p) : !p.c);
 
   const state = { season: Object.keys(D.seasons).sort().pop(), view: 'rank', role: '', tier: '0', region: '', league: '', event: '', contract: '', minG: 15, q: '', shown: 100,
-    sc: { plan: {}, contract: '', tid: null, role: 'Mid', tier: '', region: '', league: '', minNote: 0, minG: 20, sort: 'score', shown: 60, ref: null, reach: true } };
+    sc: { plan: {}, contract: '', maxAge: 0, res: '', tid: null, role: 'Mid', tier: '', region: '', league: '', minNote: 0, minG: 20, sort: 'score', shown: 60, ref: null, reach: true } };
   let S, byId, med;
 
   function load() {
@@ -158,7 +168,7 @@
       const d = p._e ? p._e.note - p.note : p.form - p.note;
       const tc = d >= 1.5 ? 'up' : d <= -1.5 ? 'down' : 'flat';
       html += `<button class="row" data-p="${p.id}"><span class="rank">${i + 1}</span><span class="num note ${noteCls(n)}">${nInt(n)}</span>
-        <span class="who"><b>${h(p.name)}</b><small>${h(p._e ? p._e.team : p.team)}, ${h(lgName(p.league))} ${cShort(p)}</small></span>
+        <span class="who"><b>${h(p.name)}</b><small>${h(p._e ? p._e.team : p.team)}, ${h(lgName(p.league))}${ageTxt(p)} ${cShort(p)}</small></span>
         <span class="pos">${p.role}</span>${strip(p)}
         <span class="trend ${tc} r trend-cell" title="${p._e ? 'Écart avec sa note de saison' : 'Forme : 15 dernières parties par rapport à la saison'}">${d > 0 ? '+' : ''}${fmt(d, 1)}</span>
         <span class="r games">${p._e ? p._e.n : p.n}</span></button>`;
@@ -180,6 +190,8 @@
     const rgOpts = (sel) => '<option value="">Toutes</option>' + [...regions].sort().map((r) => `<option${r === sel ? ' selected' : ''}>${h(r)}</option>`).join('');
     $('#f-league').innerHTML = lgOpts(state.league); $('#f-region').innerHTML = rgOpts(state.region);
     $('#s-league').innerHTML = lgOpts(state.sc.league); $('#s-region').innerHTML = rgOpts(state.sc.region);
+    const rs = {}; for (const p of S.players) if (p.res) rs[p.res] = (rs[p.res] || 0) + 1;
+    $('#s-res').innerHTML = '<option value="">Toutes</option>' + Object.keys(rs).sort((a, b) => rs[b] - rs[a]).map((r) => `<option value="${h(r)}"${r === state.sc.res ? ' selected' : ''}>${h(resid(r))}</option>`).join('');
     const evs = Object.keys(events).filter((e) => events[e].n >= 20);
     const grp = (cup) => evs.filter((e) => events[e].cup === cup).sort((a, b) => (cup ? events[b].n - events[a].n : a.localeCompare(b)));
     $('#f-event').innerHTML = '<option value="">Saison entière</option><optgroup label="Tournois internationaux et coupes">' + grp(true).map((e) => `<option${e === state.event ? ' selected' : ''}>${h(e)}</option>`).join('') +
@@ -201,7 +213,7 @@
     const rankIn = S.players.filter((x) => x.role === p.role && x.tier === p.tier && x.n >= 15 && x.note > p.note).length + 1;
     const d = p.form - p.note;
     let html = `<header><span class="num note ${noteCls(p.note)}">${nInt(p.note)}</span><div><h2 id="sheet-name">${h(p.name)}</h2>
-      <p class="meta">${p.role}, ${h(p.team)}, ${h(lgName(p.league))} (${h(p.region)})<br>${rankIn}<sup>${rankIn === 1 ? 'er' : 'e'}</sup> des ${grp}, saison ${state.season}${hasCT() ? '<br>' + (p.c ? (isFree(p) ? `<b class="down">Fin de contrat le ${cDate(p.c, true)}</b>` : `Sous contrat jusqu'au ${cDate(p.c, true)}`) : 'Contrat non renseigné dans la base de Riot') : ''}</p></div><button class="close" data-close>Fermer</button></header>`;
+      <p class="meta">${p.role}, ${h(p.team)}, ${h(lgName(p.league))} (${h(p.region)})<br>${hasMeta() && (p.age || p.cty) ? [p.age ? p.age + ' ans' : null, p.cty ? h(pays(p.cty)) : null, p.res ? 'résidence ' + h(resid(p.res)) : null].filter(Boolean).join(', ') + '<br>' : ''}${rankIn}<sup>${rankIn === 1 ? 'er' : 'e'}</sup> des ${grp}, saison ${state.season}${hasCT() ? '<br>' + (p.c ? (isFree(p) ? `<b class="down">Fin de contrat le ${cDate(p.c, true)}</b>` : `Sous contrat jusqu'au ${cDate(p.c, true)}`) : 'Contrat non renseigné dans la base de Riot') : ''}</p></div><button class="close" data-close>Fermer</button></header>`;
     html += `<section><div class="split">
       <div><small>Niveau de son équipe</small><span class="num">${nInt(p.team_lvl)}</span></div>
       <div><small>Écart individuel</small><span class="num ${p.ind >= 0 ? 'up' : 'down'}">${p.ind >= 0 ? '+' : ''}${fmt(p.note - p.team_lvl, 1)}</span></div>
@@ -300,7 +312,7 @@
     else {
       html += '<h3>Changements essayés</h3><div class="swaps">' + changes.map((r) => {
         const o = byId.get(t.roster[r]), n = byId.get(plan[r]);
-        return `<div class="swap"><span class="role">${r}</span><span>${o ? `${h(o.name)} <b>${nInt(o.note)}</b>` : 'Poste vacant'}, remplacé par <b>${h(n.name)} ${nInt(n.note)}</b>${o ? ' ' + dl(n.note - o.note, '') : ''}<small>${h(n.team)}, ${h(lgName(n.league))}${hasCT() ? (n.c ? (isFree(n) ? `, en fin de contrat (${cDate(n.c)})` : `, sous contrat jusqu'en ${cDate(n.c)} : transfert à négocier`) : ', contrat non renseigné') : ''}</small></span><button class="reset" data-untry="${r}">Retirer</button></div>`;
+        return `<div class="swap"><span class="role">${r}</span><span>${o ? `${h(o.name)} <b>${nInt(o.note)}</b>` : 'Poste vacant'}, remplacé par <b>${h(n.name)} ${nInt(n.note)}</b>${o ? ' ' + dl(n.note - o.note, '') : ''}<small>${h(n.team)}, ${h(lgName(n.league))}${ageTxt(n)}${hasCT() ? (n.c ? (isFree(n) ? `, en fin de contrat (${cDate(n.c)})` : `, sous contrat jusqu'en ${cDate(n.c)} : transfert à négocier`) : ', contrat non renseigné') : ''}</small></span><button class="reset" data-untry="${r}">Retirer</button></div>`;
       }).join('') + `</div>${changes.length > 1 ? '<button class="reset" data-untry="all">Annuler tous les changements</button>' : ''}`;
       const say = [];
       const word = (d, more, less) => (d >= 0.15 ? more : d <= -0.15 ? less : null);
@@ -364,6 +376,7 @@
     brief.innerHTML = txt;
     // candidats
     let C = S.players.filter((p) => p.role === sc.role && p.n >= sc.minG && p.note >= sc.minNote && (!t || p.tid !== t.tid) && (!inc || p.id !== inc.id) && (!t || !sc.reach || p.team_lvl <= t.lvl + 1) && cMatch(p, sc.contract) &&
+      (!hasMeta() || ((!sc.maxAge || (p.age && p.age <= sc.maxAge)) && (!sc.res || p.res === sc.res))) &&
       (sc.tier === '' || p.tier === +sc.tier) && (!sc.region || p.region === sc.region) && (!sc.league || p.league === sc.league));
     C = C.map((p) => {
       const sim = inc ? similarity(p, inc) : null, comp = complement(p, needs, sc.role);
@@ -374,6 +387,7 @@
     C.sort((a, b) => key(b) - key(a));
     if (!hasCT() && sc.sort === 'end') sc.sort = 'score';
     $('#s-contract').value = hasCT() ? sc.contract : ''; $('#s-contract').disabled = !hasCT(); $('#s-sort').querySelector('[value=end]').disabled = !hasCT();
+    $('#s-age').disabled = !hasMeta(); $('#s-res').disabled = !hasMeta(); $('#s-age').value = sc.maxAge || ''; $('#s-res').value = hasMeta() ? sc.res : '';
     $('#s-sort').value = sc.sort; $('#s-reach').checked = sc.reach; $('#s-reach').disabled = !t;
     $('#scout-count').textContent = `${fmt(C.length)} candidat${C.length > 1 ? 's' : ''}`;
     if (!C.length) { rows.innerHTML = '<p class="none">Aucun candidat avec ces critères. Baissez la note minimale ou élargissez les ligues.</p>'; return; }
@@ -383,7 +397,7 @@
       const meter = (v) => v == null ? '<span class="meter"><span></span><b>–</b></span>' : `<span class="meter"><span class="bar"><i style="width:${v}%"></i></span><b>${fmt(v)}</b></span>`;
       const tried = t && sc.plan[sc.role] === p.id;
       return `<div class="row" role="button" tabindex="0" data-p="${p.id}" data-cmp="${inc ? inc.id : ''}"><span class="rank">${i + 1}</span><span class="num note ${noteCls(p.note)}">${nInt(p.note)}</span>
-        <span class="who"><b>${h(p.name)}</b><small>${h(p.team)}, ${h(lgName(p.league))} ${cShort(p)}</small></span><span class="pos r">${dl}</span>
+        <span class="who"><b>${h(p.name)}</b><small>${h(p.team)}, ${h(lgName(p.league))}${ageTxt(p)} ${cShort(p)}</small></span><span class="pos r">${dl}</span>
         <span class="m-sim">${meter(x.sim)}</span><span class="m-sim">${meter(x.comp)}</span><span class="pos games"><small>${archetype(p) || ''}${ins.length ? '<br>' + ins.join(', ') : ''}</small></span>
         ${t ? `<button class="try" data-try="${p.id}" aria-pressed="${tried}">${tried ? 'Retirer' : 'Essayer'}</button>` : '<span></span>'}</div>`;
     }).join('') + (C.length > sc.shown ? '<button class="more" id="scout-more">Afficher 60 candidats de plus</button>' : '');
@@ -404,6 +418,7 @@
     const L = Object.entries(S.leagues).filter(([l]) => S.players.some((p) => p.league === l)).sort((a, b) => b[1] - a[1]);
     $('#lgs').innerHTML = L.map(([l, v]) => `<div class="lg"><span>${h(l)}</span><span class="bar"><i style="width:${Math.max(2, (v - 30) / 69 * 100)}%;background:${noteVar(v)}"></i></span><b>${nInt(v)}</b></div>`).join('');
     $('#m-season').textContent = state.season;
+    $('#m-meta').textContent = D.meta ? `${D.meta.matched} joueurs de la saison ${D.meta.season} y sont reliés.` : '';
     $('#m-contracts').textContent = CT ? `${CT.matched} joueurs de la saison ${CT.season} y sont reliés (relevé du ${cDate(CT.fetched, true)}). Un contrat qui se termine avant le ${cDate(CT.free_until, true)} est compté comme une fin de contrat.` : '';
   }
 
@@ -439,6 +454,7 @@
     bind('#f-league', (v) => { state.league = v; if (v) { state.tier = ''; state.region = ''; syncFilters(); } });
     bind('#f-event', (v) => { state.event = v; if (v) { state.tier = ''; state.minG = 0; syncFilters(); } else { state.minG = 15; state.tier = '0'; syncFilters(); } });
     bind('#f-contract', (v) => { state.contract = v; }); bind('#s-contract', (v) => { state.sc.contract = v; });
+    bind('#s-age', (v) => { state.sc.maxAge = +v || 0; }); bind('#s-res', (v) => { state.sc.res = v; });
     bind('#f-min', (v) => { state.minG = +v || 0; }); bind('#f-q', (v) => { state.q = v; });
     bind('#s-tier', (v) => { state.sc.tier = v; }); bind('#s-region', (v) => { state.sc.region = v; }); bind('#s-league', (v) => { state.sc.league = v; });
     bind('#s-sort', (v) => { state.sc.sort = v; }); $('#s-reach').addEventListener('change', (e) => { state.sc.reach = e.target.checked; state.sc.shown = 60; renderScout(); });

@@ -425,6 +425,35 @@ def match_contracts(A):
     return out, C
 
 
+LP_ROLE = {'Top': 'Top', 'Jungle': 'Jungle', 'Mid': 'Mid', 'Bot': 'ADC', 'Support': 'Support'}
+
+
+def match_leaguepedia(A, today):
+    """âge, pays, résidence et fin de contrat depuis Leaguepedia (pipeline/lp_players.json).
+    Même règle que pour les contrats : même pseudo et même équipe ; à défaut, un seul joueur de ce pseudo à ce poste."""
+    path = os.path.join(HERE, 'lp_players.json')
+    if not os.path.exists(path): return {}, None
+    L = json.load(open(path, encoding='utf-8'))
+    by = {}
+    for c in L['players']:
+        if LP_ROLE.get(c['role']): by.setdefault(norm(c['name']), []).append(c)
+    out = {}
+    for pid, r in A.iterrows():
+        cand = by.get(norm(r['name']), [])
+        if not cand: continue
+        tt = team_tokens(r.team)
+        same_team = [c for c in cand if c['team'] and (tt & team_tokens(c['team']) or norm(c['team']) in norm(r.team) or norm(r.team) in norm(c['team']))]
+        same_role = [c for c in cand if LP_ROLE[c['role']] == r.role]
+        pick = same_team[0] if same_team else (same_role[0] if len(same_role) == 1 and len(cand) == 1 else None)
+        if not pick: continue
+        age = None
+        if pick['birth']:
+            b = pd.Timestamp(pick['birth']); age = int(today.year - b.year - ((today.month, today.day) < (b.month, b.day)))
+            if not 14 <= age <= 45: age = None
+        out[pid] = {'age': age, 'cty': pick['country'], 'res': pick['residency'], 'contract': pick['contract']}
+    return out, L
+
+
 def r1(x, k=1):
     return None if x is None or (isinstance(x, float) and (math.isnan(x) or math.isinf(x))) else round(float(x), k)
 
@@ -458,6 +487,13 @@ def main():
             out['contracts'] = {'source': cmeta['source'], 'fetched': cmeta['fetched'], 'season': str(y), 'matched': len(contracts),
                                 'free_until': str((p.date.max() + pd.Timedelta(days=75)).date())}
             print('contrats reliés :', len(contracts), 'sur', len(cmeta['contracts']))
+        meta, lmeta = match_leaguepedia(A, pd.Timestamp.today()) if y == SEASONS[-1] else ({}, None)
+        if lmeta:
+            out['meta'] = {'season': str(y), 'fetched': lmeta['fetched'], 'matched': len(meta)}
+            extra = {k: v['contract'] for k, v in meta.items() if v['contract'] and k not in contracts}
+            contracts.update(extra)
+            if 'contracts' in out: out['contracts']['matched'] = len(contracts); out['contracts']['from_leaguepedia'] = len(extra)
+            print('fiches Leaguepedia reliées :', len(meta), '| contrats ajoutés :', len(extra))
         players = []
         for pid, r in A.sort_values('pts', ascending=False).iterrows():
             evs = []
@@ -482,7 +518,7 @@ def main():
                 'st': {'win': r1(r.win, 3), 'kda': r1((r.k + r.a) / max(r.d, 1), 2), 'kp': r1(r.kp, 3), 'dpm': r1(r.dpm, 0), 'dsh': r1(r.dsh, 3),
                        'gsh': r1(r.gsh, 3), 'gd15': r1(r.gd15, 0), 'cd15': r1(r.cd15), 'xd15': r1(r.xd15, 0), 'cspm': r1(r.cspm, 2),
                        'vspm': r1(r.vspm, 2), 'dpg': r1(r.dpg, 2), 'fb': r1(r.fb, 3)},
-                'c': contracts.get(pid), 'ev': evs,
+                'c': contracts.get(pid), 'age': meta.get(pid, {}).get('age'), 'cty': meta.get(pid, {}).get('cty'), 'res': meta.get(pid, {}).get('res'), 'ev': evs,
                 'ch': [[c.champion, int(c.n), r1(c.w, 2)] for _, c in ch_by.get(pid, pd.DataFrame()).iterrows()],
             })
         # équipes : effectif des 12 dernières parties
