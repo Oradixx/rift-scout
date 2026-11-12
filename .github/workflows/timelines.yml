@@ -1,0 +1,37 @@
+name: Chronologies Leaguepedia
+# Télécharge les chronologies des parties (hors LPL) et en tire quelques mesures par joueur.
+# Reprend là où le lancement précédent s'est arrêté. Lancement manuel.
+on:
+  workflow_dispatch:
+    inputs:
+      annee:
+        description: Saison
+        default: '2026'
+      minutes:
+        description: Durée maximale en minutes
+        default: '300'
+permissions:
+  contents: write
+jobs:
+  timelines:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install requests
+      - run: python pipeline/fetch_timelines.py ${{ inputs.annee }} ${{ inputs.minutes }}
+        env:
+          LEAGUEPEDIA_USER: ${{ secrets.LEAGUEPEDIA_USER }}
+          LEAGUEPEDIA_PASSWORD: ${{ secrets.LEAGUEPEDIA_PASSWORD }}
+      - name: Enregistrer
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add pipeline/lp_timeline_*.csv.gz || exit 0
+          if git diff --cached --quiet; then echo "Rien de nouveau."; exit 0; fi
+          git commit -m "Chronologies Leaguepedia au $(date -u +%F)"
+          git pull --rebase -q origin main && git push

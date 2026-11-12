@@ -8,6 +8,7 @@ Notes de 1 à 100 pour les joueurs professionnels de League of Legends, fiches j
 - `pipeline/fetch_data.py` : télécharge les CSV de matchs dans `data/raw/`.
 - `pipeline/fetch_contracts.py` : télécharge la base publique de contrats de Riot, écrit `pipeline/contracts.json`.
 - `pipeline/leaguepedia.py`, `pipeline/fetch_leaguepedia.py` : connexion à Leaguepedia et récupération des fiches joueurs (`pipeline/lp_players.json` : âge, pays, résidence, contrat) et de la couverture des données détaillées (`pipeline/lp_coverage.json`). Demandent `LEAGUEPEDIA_USER` et `LEAGUEPEDIA_PASSWORD`, présents seulement dans les secrets GitHub : ces scripts se lancent par le workflow « Leaguepedia », pas en local.
+- `pipeline/fetch_timelines.py` : chronologies des parties hors LPL, réduites à quelques mesures par joueur (morts inutiles, objectifs, proximité du jungler) dans `pipeline/lp_timeline_<année>.csv.gz`. Se lance par le workflow « Chronologies Leaguepedia », reprend où il s'est arrêté. Pas encore utilisé dans les notes. La clé `gameid` + `pid` correspond à `gameid` + `participantid` d'Oracle's Elixir.
 - `pipeline/leagues.json` : niveau de départ, région et noms des ligues.
 - `app/` : sources de la page (`index.template.html`, `style.css`, `app.js`).
 - `build_page.py` : assemble `app/` et `app/data.json` en `docs/index.html`.
