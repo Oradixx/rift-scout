@@ -201,8 +201,8 @@ def zscores(p):
                 x = x - q.champion.map(dev).fillna(0)
             # comparé aux joueurs du même poste dans la même compétition (chaque ligue a son rythme : plus de
             # combats en LPL, plus de vision en LCK) ; le niveau de la ligue est compté à part, dans le niveau d'équipe
-            lm = x.groupby(q.league).agg(['mean', 'count'])
-            x = x - q.league.map((lm['mean'] - x.mean()) * lm['count'] / (lm['count'] + 30)).fillna(0)
+            lm = x.groupby(q.ctx).agg(['mean', 'count'])
+            x = x - q.ctx.map((lm['mean'] - x.mean()) * lm['count'] / (lm['count'] + 30)).fillna(0)
             sd = x.std()
             Z.loc[q.index, s] = ((x - x.mean()) / sd).clip(-3, 3) if sd and sd > 0 else np.nan
     F = pd.DataFrame(index=p.index, columns=list(FACETS), dtype=float)
@@ -250,40 +250,6 @@ def season(year, prior):
     # poste principal
     main = p.groupby(['pid', 'role']).size().reset_index(name='n').sort_values('n').groupby('pid').role.last()
     p = p[p.role == p.pid.map(main)].reset_index(drop=True)
-    F = zscores(p)
-    facets = list(FACETS)
-    resid = pd.DataFrame(index=p.index, columns=facets, dtype=float)
-    # Ce qu'on attend d'un joueur selon l'écart de niveau entre les deux équipes. Le lien n'est pas le même partout
-    # (plus fort dans les petites ligues, plus faible en LEC ou à l'international) et il plafonne pour les gros écarts :
-    # on l'estime donc par niveau de ligue, affiné par compétition, sur un écart de niveau tassé (tanh).
-    p['xR'] = GAP_SAT * np.tanh(p.dR / GAP_SAT)
-    p['grp'] = np.where(p.league.isin(cups), -1, p.league.map(tier_of))
-    slopes = {}
-
-    def fit(x, yv):
-        m = yv.notna()
-        return (float(np.cov(x[m], yv[m])[0, 1] / x[m].var()), int(m.sum())) if m.sum() > 50 and x[m].var() > 0 else (None, int(m.sum()))
-    for ro, q in p.groupby('role'):
-        for f in facets:
-            b0, _ = fit(q.xR, F.loc[q.index, f]); b0 = b0 or 0.0
-            slopes[(ro, f)] = b0
-            b_row = pd.Series(b0, index=q.index)
-            for g_, qg in q.groupby('grp'):
-                bt, nt = fit(qg.xR, F.loc[qg.index, f])
-                bt = b0 if bt is None else (nt * bt + SLOPE_K * b0) / (nt + SLOPE_K)
-                slopes[(ro, f, int(g_))] = bt
-                b_row.loc[qg.index] = bt
-                for lg_, ql in qg.groupby('league'):
-                    bl, nl = fit(ql.xR, F.loc[ql.index, f])
-                    if bl is not None: b_row.loc[ql.index] = (nl * bl + SLOPE_K * bt) / (nl + SLOPE_K)
-            resid.loc[q.index, f] = F.loc[q.index, f] - b_row * q.xR
-    for f in facets: p['r_' + f] = resid[f]; p['z_' + f] = F[f]
-    W = pd.DataFrame(WEIGHTS).T
-    wmat = W.loc[p.role, facets].values
-    rv = resid[facets].values
-    ok = ~np.isnan(rv)
-    p['c'] = np.where(ok, rv * wmat, 0).sum(1) / np.where(ok, wmat, 0).sum(1).clip(min=1e-9)
-    p.loc[(np.where(ok, wmat, 0).sum(1) < 0.5), 'c'] = np.nan
     pretty = p.league.map(lambda x: PRETTY.get(x, x))
     # le segment fait partie du nom, y compris pour les tournois qui ont plusieurs éditions par an (EMEA Masters Winter...)
     p['event'] = np.where(p.split.isna() | p.split.astype(str).isin(['Season', 'nan']), pretty, pretty + ' ' + p.split.fillna('').astype(str))
@@ -325,6 +291,49 @@ def season(year, prior):
     p['scope'] = p.event.map(scope)
     p['big'] = (p.playoffs == 1) | p.scope.isin(['monde', 'region'])
 
+    # Contexte de comparaison des stats. Des qualifications régionales se jouent entre équipes d'une même ligue, dans
+    # les conditions de cette ligue : on les compare donc aux joueurs de cette ligue (qualifications EMEA de l'EWC = LEC),
+    # pas à ceux du tournoi final.
+    p['ctx'] = p.league
+    for ev in [e for e in p.event.unique() if ', qualifications ' in e]:
+        m = p.event == ev
+        homes = p.loc[m, 'own_home'].dropna()
+        if len(homes): p.loc[m, 'ctx'] = homes.value_counts().index[0]
+
+    F = zscores(p)
+    facets = list(FACETS)
+    resid = pd.DataFrame(index=p.index, columns=facets, dtype=float)
+    # Ce qu'on attend d'un joueur selon l'écart de niveau entre les deux équipes. Le lien n'est pas le même partout
+    # (plus fort dans les petites ligues, plus faible en LEC ou à l'international) et il plafonne pour les gros écarts :
+    # on l'estime donc par niveau de ligue, affiné par compétition, sur un écart de niveau tassé (tanh).
+    p['xR'] = GAP_SAT * np.tanh(p.dR / GAP_SAT)
+    p['grp'] = np.where(p.ctx.isin(cups), -1, p.ctx.map(tier_of))
+    slopes = {}
+
+    def fit(x, yv):
+        m = yv.notna()
+        return (float(np.cov(x[m], yv[m])[0, 1] / x[m].var()), int(m.sum())) if m.sum() > 50 and x[m].var() > 0 else (None, int(m.sum()))
+    for ro, q in p.groupby('role'):
+        for f in facets:
+            b0, _ = fit(q.xR, F.loc[q.index, f]); b0 = b0 or 0.0
+            slopes[(ro, f)] = b0
+            b_row = pd.Series(b0, index=q.index)
+            for g_, qg in q.groupby('grp'):
+                bt, nt = fit(qg.xR, F.loc[qg.index, f])
+                bt = b0 if bt is None else (nt * bt + SLOPE_K * b0) / (nt + SLOPE_K)
+                slopes[(ro, f, int(g_))] = bt
+                b_row.loc[qg.index] = bt
+                for lg_, ql in qg.groupby('ctx'):
+                    bl, nl = fit(ql.xR, F.loc[ql.index, f])
+                    if bl is not None: b_row.loc[ql.index] = (nl * bl + SLOPE_K * bt) / (nl + SLOPE_K)
+            resid.loc[q.index, f] = F.loc[q.index, f] - b_row * q.xR
+    for f in facets: p['r_' + f] = resid[f]; p['z_' + f] = F[f]
+    W = pd.DataFrame(WEIGHTS).T
+    wmat = W.loc[p.role, facets].values
+    rv = resid[facets].values
+    ok = ~np.isnan(rv)
+    p['c'] = np.where(ok, rv * wmat, 0).sum(1) / np.where(ok, wmat, 0).sum(1).clip(min=1e-9)
+    p.loc[(np.where(ok, wmat, 0).sum(1) < 0.5), 'c'] = np.nan
     # ligue et équipe actuelles du joueur
     dom = p[~p.league.isin(cups)].sort_values('date')
     home = dom.groupby('pid').tail(20).groupby('pid').league.agg(lambda s: s.mode().iloc[0])
@@ -381,7 +390,7 @@ def season(year, prior):
             m = p.role == ro
             p.loc[m, name] = p.loc[m, 'champion'].map(ci[(ro, name)])
     # centré par compétition et par poste : le style d'un joueur se lit par rapport à ceux qui jouent dans le même environnement
-    sty = p[STYLE] - p.groupby(['role', 'league'])[STYLE].transform('mean') + p.groupby('role')[STYLE].transform('mean')
+    sty = p[STYLE] - p.groupby(['role', 'ctx'])[STYLE].transform('mean') + p.groupby('role')[STYLE].transform('mean')
     S = sty.groupby(p.pid).mean()
     S = S.mul(shr.reindex(S.index), axis=0) + S.groupby(A.role.reindex(S.index)).transform('mean').mul(1 - shr.reindex(S.index), axis=0)
     rs = A.role.reindex(S.index)
