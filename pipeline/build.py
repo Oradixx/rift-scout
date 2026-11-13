@@ -28,6 +28,10 @@ K_SHRINK = 12            # parties « fictives » au niveau moyen ajoutées à c
 SIGMA_IND = 100.0        # points : un écart-type d'écart individuel
 SIGMA_FACET = 185.0      # points : un écart-type sur une facette
 MIN_GAMES = 10
+# Ligues jouées en groupes de niveau (LPL, fin de saison LCK) : comparer les stats au sein de chaque groupe plutôt qu'à
+# toute la ligue. Testé en novembre 2026 et laissé désactivé : comparés à toute la ligue, les groupes faibles n'ont pas
+# de stats gonflées de façon régulière (tantôt au-dessus, tantôt en dessous), et l'activer remonte leurs joueurs de 0,2.
+GROUP_CONTEXT = False
 SCALE_A, SCALE_B = 62.429588148589204, 0.03367803393360008   # note = A + B × points (calée en novembre 2026 : 80 = médiane des ligues majeures)
 QUALIF_GAP_DAYS = 21     # jours sans match au-delà desquels un tournoi est coupé en « qualifications » puis tournoi
 SD_EVENT = 250.0         # points : à quel point le niveau d'une équipe peut s'écarter de sa saison sur un événement
@@ -321,6 +325,27 @@ def season(year, prior):
     # les conditions de cette ligue : on les compare donc aux joueurs de cette ligue (qualifications EMEA de l'EWC = LEC),
     # pas à ceux du tournoi final.
     p['ctx'] = p.league
+    p['group'] = np.nan
+    # Groupes de niveau : on repère les phases où des équipes d'une ligue ne se rencontrent qu'entre elles (colonne
+    # « group », 1 = groupe le plus fort). Voir GROUP_CONTEXT en tête de fichier.
+    reg = p[(p.scope == 'ligue') & (p.playoffs != 1)]
+    for ev, q in reg.groupby('event'):
+        adj = {}
+        for x, y in set(zip(q.tid, q.opp)): adj.setdefault(x, set()).add(y)
+        comps, seen = [], set()
+        for t0 in adj:
+            if t0 in seen: continue
+            comp, stack = set(), [t0]
+            while stack:
+                x = stack.pop()
+                if x not in comp: comp.add(x); stack += list(adj[x] - comp)
+            seen |= comp; comps.append(comp)
+        if len(comps) < 2 or min(len(c) for c in comps) < 3: continue
+        comps.sort(key=lambda c: -np.mean([R[x] for x in c]))
+        for k, comp in enumerate(comps):
+            m = (p.event == ev) & (p.playoffs != 1) & p.tid.isin(comp)
+            if GROUP_CONTEXT: p.loc[m, 'ctx'] = p.loc[m, 'league'] + f' groupe {k + 1} ({ev})'
+            p.loc[m, 'group'] = k + 1
     for ev in [e for e in p.event.unique() if ', qualifications ' in e]:
         m = p.event == ev
         homes = p.loc[m, 'own_home'].dropna()
@@ -333,7 +358,7 @@ def season(year, prior):
     # (plus fort dans les petites ligues, plus faible en LEC ou à l'international) et il plafonne pour les gros écarts :
     # on l'estime donc par niveau de ligue, affiné par compétition, sur un écart de niveau tassé (tanh).
     p['xR'] = GAP_SAT * np.tanh(p.dR / GAP_SAT)
-    p['grp'] = np.where(p.ctx.isin(cups), -1, p.ctx.map(tier_of))
+    p['grp'] = np.where(p.ctx.isin(cups), -1, p.ctx.str.replace(r' groupe \d+ \(.*\)$', '', regex=True).map(tier_of))
     slopes = {}
 
     def fit(x, yv):
