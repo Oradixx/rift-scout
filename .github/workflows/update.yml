@@ -13,7 +13,7 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -41,6 +41,12 @@ jobs:
         env:
           LEAGUEPEDIA_USER: ${{ secrets.LEAGUEPEDIA_USER }}
           LEAGUEPEDIA_PASSWORD: ${{ secrets.LEAGUEPEDIA_PASSWORD }}
+      - name: Télécharger les chronologies des nouvelles parties (Leaguepedia)
+        if: steps.data.outputs.skip != 'true'
+        run: python pipeline/fetch_timelines.py "$(date -u +%Y)" 40 || echo "::warning::Chronologies non mises à jour, les nouvelles parties sont notées sans elles."
+        env:
+          LEAGUEPEDIA_USER: ${{ secrets.LEAGUEPEDIA_USER }}
+          LEAGUEPEDIA_PASSWORD: ${{ secrets.LEAGUEPEDIA_PASSWORD }}
       - name: Calculer les notes
         if: steps.data.outputs.skip != 'true'
         run: python -W ignore pipeline/build.py data/raw
@@ -55,7 +61,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/index.html pipeline/contracts.json pipeline/lp_players.json pipeline/lp_coverage.json
+          git add docs/index.html pipeline/contracts.json pipeline/lp_players.json pipeline/lp_coverage.json pipeline/lp_timeline_*.csv.gz
           if git diff --cached --quiet; then echo "Rien de nouveau."; exit 0; fi
           git commit -m "Mise à jour hebdomadaire : données au $(date -u +%F)"
           git push

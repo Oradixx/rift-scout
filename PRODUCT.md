@@ -32,7 +32,7 @@ La note doit coller au ressenti d'un observateur averti. Une note que personne n
 
 ## Limites connues
 
-- Les supports à style engage dans les équipes dominantes sont sous-notés : ils meurent plus et posent moins de wards, et leur impact (appels, placement) ne laisse pas de trace statistique. Exemple constaté : Labrov et Busio en LEC 2026.
+- Labrov et Busio (LEC 2026) sortent sous le ressenti général. L'hypothèse « sous-notés parce qu'ils initient » a été testée avec les chronologies et n'est pas confirmée : 49 % des morts de Labrov sont inutiles (37 % pour Keria), et Busio n'est présent que sur 27 % des objectifs de son équipe. Ce qui reste hors de portée des stats : appels, placement, rôle dans l'équipe.
 - Dans un effectif qui ne change jamais, le niveau de l'équipe est partagé entre les cinq joueurs.
 - Les positions ne sont connues qu'une fois par minute : la proximité du jungler est une bonne mesure, pas un suivi continu. Les joueurs de LPL n'ont ni morts inutiles, ni présence sur les objectifs, ni proximité du jungler.
 - Une fin de contrat proche ne dit pas si le joueur a prolongé ou signé ailleurs. La base de Riot couvre les ligues majeures et les principales ligues régionales ; ses onglets ne sont pas mis à jour au même rythme.
@@ -47,5 +47,6 @@ La note doit coller au ressenti d'un observateur averti. Une note que personne n
 
 ## Suite envisagée
 
-- À partir des chronologies Leaguepedia : morts inutiles et objectifs disputés (mieux créditer ceux qui initient), proximité du jungler (vrai weakside et strongside). La LPL n'étant pas couverte, ces mesures devront rester facultatives par joueur.
-- Il reste un écart individuel négatif chez G2 et Karmine Corp après correction : à réexaminer avec ces nouvelles mesures.
+- G2 et Karmine Corp gardent un écart individuel négatif sur leurs cinq joueurs : ces équipes gagnent plus que leurs stats ne le laissent attendre. À comprendre.
+- Capter la forme au fil de la saison (une équipe qui monte en puissance n'est pas distinguée d'une équipe qui décline à bilan égal).
+- Nouvelle saison : voir la liste des ajouts manuels dans `CLAUDE.md`.

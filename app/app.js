@@ -152,8 +152,8 @@
   }
   function scopeLabel() {
     const parts = [];
-    if (state.event) parts.push(state.event);
-    else if (state.league) parts.push(lgName(state.league));
+    if (state.event) parts.push(state.basis === 'only' ? state.event : `joueurs de ${state.event}, sur toute la saison`);
+    else if (state.league) parts.push(state.basis === 'only' ? `${lgName(state.league)}, parties de ${lgName(state.league)} seulement` : lgName(state.league));
     else if (state.region) parts.push(state.region);
     else if (state.tier !== '') parts.push(['ligues majeures', 'deuxième niveau', 'troisième niveau'][+state.tier]);
     else parts.push('toutes ligues');

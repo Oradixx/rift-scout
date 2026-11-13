@@ -57,7 +57,7 @@ Un workflow GitHub Actions (`.github/workflows/update.yml`) retélécharge les m
 
 - Une **fin de contrat** proche ne dit pas si le joueur a prolongé ou déjà signé ailleurs. Les joueurs absents de la base de Riot (surtout les ligues de deuxième et troisième niveau) apparaissent comme « non renseigné ».
 - Dans un effectif qui ne change jamais, le niveau de l'équipe est partagé entre les cinq joueurs ; seules les stats individuelles les départagent.
-- Weakside et strongside sont approchés par la participation aux kills avant 15 minutes : les données ne disent pas où passe le jungler.
+- Weakside et strongside reposent sur la position du jungler relevée une fois par minute (chronologies Leaguepedia) : une bonne mesure, pas un suivi continu. La LPL n'a pas de chronologie ; ses joueurs sont notés sans morts inutiles, sans présence sur les objectifs, et leur weakside est approché par les kills avant 15 minutes.
 - Les niveaux de ligue de départ (`pipeline/leagues.json`) viennent de LoL Ratings 3.0 ; pour une nouvelle saison il faut les reconduire ou les recalculer.
 
 Données : [Oracle's Elixir](https://oracleselixir.com/tools/downloads).

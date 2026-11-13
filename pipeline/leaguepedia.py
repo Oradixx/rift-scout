@@ -5,7 +5,7 @@ Ils ne sont jamais affichés ni écrits sur disque.
 
     python pipeline/leaguepedia.py        # test de connexion et inventaire de ce qui est disponible
 """
-import json, os, sys, time
+import json, os, time
 import requests
 
 API = 'https://lol.fandom.com/api.php'

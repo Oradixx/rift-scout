@@ -245,10 +245,6 @@ def champ_index(p):
     return out
 
 
-def pct_rank(s):
-    return s.rank(pct=True)
-
-
 def to_note(pts, a, b):
     """linéaire, puis tassé en douceur au-dessus de 88 pour que 99 reste hors d'atteinte."""
     x = a + b * pts
@@ -421,11 +417,8 @@ def season(year, prior):
     ref = S[A.n.reindex(S.index) >= 15]
     Sz = (S - ref.groupby(rs.reindex(ref.index)).mean().reindex(rs.values).values) / ref.groupby(rs.reindex(ref.index)).std().reindex(rs.values).values
     Sz = Sz.clip(-3, 3).fillna(0)
-    A['pool_z'] = ((A.pool_eff - A[A.n >= 15].groupby('role').pool_eff.transform('mean').reindex(A.index).fillna(A.pool_eff.mean())))
-    A['pool_z'] = (A.pool_eff - A.role.map(q15.assign(pe=A.pool_eff).groupby('role').pe.mean())) / A.role.map(q15.assign(pe=A.pool_eff).groupby('role').pe.std())
 
     # ---- lignes de stats affichées
-    p['k_'] = p.kills; p['d_'] = p.deaths; p['a_'] = p.assists
     st_ = g.agg(win=('result', 'mean'), k=('kills', 'sum'), d=('deaths', 'sum'), a=('assists', 'sum'), kp=('kp', 'mean'), dpm=('dpm', 'mean'),
                 dsh=('damageshare', 'mean'), gsh=('earnedgoldshare', 'mean'), gd15=('golddiffat15', 'mean'), cd15=('csdiffat15', 'mean'),
                 xd15=('xpdiffat15', 'mean'), cspm=('cspm', 'mean'), vspm=('vspm', 'mean'), dpg=('deaths', 'mean'), fb=('fbp', 'mean'),
@@ -492,16 +485,24 @@ def league_table(S):
 
 
 def form_table(S, last_n=15):
+    """Forme : note sur les dernières parties, avec la même logique que les notes d'événement. Le niveau de l'équipe est
+    réestimé sur ces parties (adversaires à leur niveau de saison, même a priori faible SD_EVENT), l'écart individuel
+    est complété par K_EVENT_IND parties de saison."""
     p, A = S['p'], S['A']
-    q = p.sort_values('date').groupby('pid').tail(last_n)
-    g = q.groupby('pid')
-    F = g.agg(n=('c', 'size'), csum=('c', 'sum'), cn=('c', 'count'), wins=('result', 'sum'), Ropp=('R_opp', 'mean'), Rown=('R_own', 'mean'))
-    F = F[F.index.isin(A.index)]
-    cs = A.c_s.reindex(F.index); role = A.role.reindex(F.index)
-    F['I'] = ((F.csum + 8 * cs) / (F.cn + 8)) / S['sd_c'].reindex(role.values).values
-    perf = F.Ropp + PTS_PER_LOGIT * np.log((F.wins + 1) / (F.n - F.wins + 1))
-    F['pts'] = F.Rown + (F.n / (F.n + 12)) * (perf - F.Rown).clip(-400, 400) + SIGMA_IND * F.I
-    return F.pts
+    q = p[p.pid.isin(A.index)].sort_values('date').groupby('pid').tail(last_n)
+    out = {}
+    for pid, g in q.groupby('pid'):
+        off = (g.R_own.values - g.R_opp.values) / PTS_PER_LOGIT + np.where(g.side.values == 'Blue', S['side'], -S['side'])
+        y = g.result.values.astype(float); d = 0.0
+        for _ in range(20):
+            mu = 1 / (1 + np.exp(-(off + d / PTS_PER_LOGIT)))
+            grad = (y - mu).sum() / PTS_PER_LOGIT - d / SD_EVENT ** 2
+            hess = (mu * (1 - mu)).sum() / PTS_PER_LOGIT ** 2 + 1 / SD_EVENT ** 2
+            step = grad / hess; d += step
+            if abs(step) < 1e-4: break
+        ind = (g.c.sum() + K_EVENT_IND * A.c_s[pid]) / (g.c.count() + K_EVENT_IND) / S['sd_c'][A.role[pid]]
+        out[pid] = g.R_own.mean() + d + SIGMA_IND * ind
+    return pd.Series(out)
 
 
 def norm(x):
@@ -613,7 +614,7 @@ def main():
                 for _, e in ev_by[pid].sort_values('start').iterrows():
                     evs.append({'e': e.event, 'n': int(e.n), 'w': r1(e.win, 3), 'kda': r1((e.k + e.a) / max(e.d, 1), 2),
                                 'note': r1(to_note(e.pts, a, b)), 'team': e.team, 'd': str(e.end.date()),
-                                'cup': bool(e.league in S['cups']), 'sc': e.scope})
+                                'sc': e.scope})
             sz = S['Sz'].loc[pid] if pid in S['Sz'].index else None
             players.append({
                 'id': pid.replace('oe:player:', ''), 'name': r['name'], 'team': r.team, 'tid': str(r.tid).replace('oe:team:', ''), 'league': r.league,
