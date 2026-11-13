@@ -107,9 +107,9 @@
       if (p.fp[i] <= 0.3) minus.push(`<b>${fLabel(FAC[i], p.role)}</b> : ${fLow(FAC[i], p.role)} (${nInt(p.f[i])}, pour une note générale de ${nInt(p.note)})`);
     });
     if (p.weak != null && p.strong != null) {
-      if (p.weak_pc >= 0.75 && p.weak_pc >= p.strong_pc) plus.push(`<b>Weakside</b> : tient sa lane quand son équipe joue ailleurs (${topTxt(p.weak_pc)})`);
+      if (p.weak_pc >= 0.75 && p.weak_pc >= p.strong_pc) plus.push(`<b>Weakside</b> : tient sa lane quand son jungler joue ailleurs (${topTxt(p.weak_pc)})`);
       if (p.strong_pc >= 0.75 && p.strong_pc > p.weak_pc) plus.push(`<b>Strongside</b> : convertit l'aide reçue en avance et en dégâts (${topTxt(p.strong_pc)})`);
-      if (p.weak_pc <= 0.25) minus.push('<b>Weakside</b> : souffre quand son équipe joue ailleurs');
+      if (p.weak_pc <= 0.25) minus.push('<b>Weakside</b> : souffre quand son jungler joue ailleurs');
       if (p.strong_pc <= 0.25) minus.push('<b>Strongside</b> : convertit peu l\'aide reçue');
     }
     if (p.clutch != null && p.clutch >= 1) plus.push(`<b>Grands matchs</b> : meilleur en playoffs et à l'international qu'en saison régulière (${p.big_n} parties)`);
@@ -256,7 +256,9 @@
       <div><small>Écart d'or à 15 min</small><b>${st.gd15 > 0 ? '+' : ''}${fmt(st.gd15)}</b></div><div><small>Écart de sbires à 15 min</small><b>${st.cd15 > 0 ? '+' : ''}${fmt(st.cd15, 1)}</b></div>
       <div><small>Écart d'XP à 15 min</small><b>${st.xd15 > 0 ? '+' : ''}${fmt(st.xd15)}</b></div><div><small>Part de l'or</small><b>${pctTxt(st.gsh)}</b></div>
       <div><small>Sbires par minute</small><b>${fmt(st.cspm, 1)}</b></div><div><small>Vision par minute</small><b>${fmt(st.vspm, 2)}</b></div>
-      <div><small>Morts par partie</small><b>${fmt(st.dpg, 1)}</b></div><div><small>Premier sang (kill ou assist)</small><b>${pctTxt(st.fb)}</b></div></div></section>`;
+      <div><small>Morts par partie</small><b>${fmt(st.dpg, 1)}</b></div><div><small>Premier sang (kill ou assist)</small><b>${pctTxt(st.fb)}</b></div>
+      ${st.wd != null ? `<div><small>Morts inutiles</small><b>${pctTxt(st.wd)}</b></div>` : ''}${st.objp != null ? `<div><small>Présence sur les objectifs</small><b>${pctTxt(st.objp)}</b></div>` : ''}${st.jgp != null && p.role !== 'Jungle' ? `<div><small>Temps près de son jungler</small><b>${pctTxt(st.jgp)}</b></div>` : ''}</div>
+      ${st.wd == null ? '<p class="legend">Morts inutiles, présence sur les objectifs et proximité du jungler ne sont pas disponibles pour ce joueur (parties de LPL, ou saison sans chronologie).</p>' : ''}</section>`;
     if (p.ch.length) html += `<section><h3>Champions les plus joués</h3><div class="champs">${p.ch.map((c) => `<span>${h(c[0])} <small>${c[1]} parties, ${pctTxt(c[2])}</small></span>`).join('')}</div></section>`;
     if (p.s) {
       const sims = S.players.filter((x) => x.role === p.role && x.id !== p.id && x.s && x.n >= 15 && x.note >= p.note - 20).map((x) => [similarity(p, x), x]).sort((a, b) => b[0] - a[0]).slice(0, 6);
@@ -277,6 +279,12 @@
       [7, 'Investit dans la vision', null], [8, 'Gros farmeur', null], [6, 'Encaisse pour l\'équipe', null]];
     const out = [];
     for (const [i, hi, lo] of T) { if (p.s[i] >= 1 && hi) out.push(hi); else if (p.s[i] <= -1 && lo) out.push(lo); }
+    // mesures tirées des chronologies (indices 11 à 15 du vecteur de style) : absentes pour la LPL, où elles valent 0
+    if (p.s.length > 15) {
+      if (p.role === 'Jungle') { const k = [13, 14, 15].reduce((a, i) => (p.s[i] > p.s[a] ? i : a), 13); if (p.s[k] >= 0.8) out.unshift('Joue autour du ' + { 13: 'top', 14: 'mid', 15: 'bot' }[k]); }
+      else if (p.role === 'Support') { if (p.s[12] >= 1) out.unshift('Quitte souvent son ADC'); else if (p.s[12] <= -1) out.unshift('Reste avec son ADC'); }
+      else if (p.s[11] >= 1) out.unshift('Souvent accompagné de son jungler'); else if (p.s[11] <= -1) out.unshift('Joue seul sur sa lane');
+    }
     return out.slice(0, 4);
   }
   function closeSheet() { $('#sheet-wrap').classList.remove('open'); }

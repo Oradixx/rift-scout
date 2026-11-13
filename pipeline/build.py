@@ -45,8 +45,11 @@ FACETS = {
     'carry':  {'dpm': .40, 'damageshare': .30, 'dmg_per_gold': .15, 'kshare': .15},
     'eco':    {'cspm': .45, 'earned gpm': .40, 'earnedgoldshare': .15},
     'vision': {'vspm': .50, 'wcpm': .25, 'cwpm': .15, 'wpm': .10},
-    'safe':   {'nd_pm': .50, 'nd_share': .50},
-    'obj':    {'drag_share': .30, 'grubs_diff': .20, 'firstdragon': .10, 'firstherald': .10, 'baron_share': .30},
+    # nwd_pm (morts inutiles) et obj_part (présence sur les objectifs de l'équipe) viennent des chronologies Leaguepedia.
+    # Quand une partie n'en a pas (LPL, saisons non téléchargées), la facette se calcule sur les autres stats, avec
+    # exactement les proportions d'avant.
+    'safe':   {'nwd_pm': .50, 'nd_pm': .25, 'nd_share': .25},
+    'obj':    {'obj_part': .50, 'drag_share': .15, 'grubs_diff': .10, 'firstdragon': .05, 'firstherald': .05, 'baron_share': .15},
 }
 FACET_ROLE = {  # variantes par poste
     'Support': {'lane': {'duo_gd15': .50, 'xpdiffat15': .30, 'golddiffat15': .20},
@@ -64,10 +67,12 @@ WEIGHTS = {
     'ADC':     {'lane': .18, 'early': .05, 'fight': .23, 'carry': .27, 'eco': .13, 'vision': .02, 'safe': .12, 'obj': 0},
     'Support': {'lane': .17, 'early': .14, 'fight': .28, 'carry': .02, 'eco': 0, 'vision': .22, 'safe': .12, 'obj': .05},
 }
-CHAMP_ADJ = ['dpm', 'damageshare', 'dmg_per_gold', 'kshare', 'cspm', 'earned gpm', 'earnedgoldshare', 'vspm', 'wcpm', 'cwpm', 'wpm',
+TL_STATS = {'nwd_pm', 'obj_part'}
+CHAMP_ADJ = ['nwd_pm', 'obj_part', 'dpm', 'damageshare', 'dmg_per_gold', 'kshare', 'cspm', 'earned gpm', 'earnedgoldshare', 'vspm', 'wcpm', 'cwpm', 'wpm',
              'golddiffat15', 'xpdiffat15', 'csdiffat15', 'golddiffat10', 'duo_gd15', 'kp', 'lkda', 'nd_pm', 'nd_share', 'ka15', 'nd15',
              'ka_late', 'nd_late', 'p15', 'fbp']
-STYLE = ['earnedgoldshare', 'damageshare', 'kshare', 'ka15', 'p15', 'dth_pm', 'dtshare', 'vspm', 'cspm', 'champ_carry', 'champ_tank']
+STYLE = ['earnedgoldshare', 'damageshare', 'kshare', 'ka15', 'p15', 'dth_pm', 'dtshare', 'vspm', 'cspm', 'champ_carry', 'champ_tank',
+         'jg_prox', 'roam', 'jg_top', 'jg_mid', 'jg_bot']      # chronologies : temps près de son jungler, support loin de son ADC, lanes visitées par le jungler
 PRETTY = {'WLDs': 'Worlds', 'FST': 'First Stand', 'EM': 'EMEA Masters', 'LCKC': 'LCK Challengers', 'LAS': 'LCK Academy Series',
           'AM': 'Asia Masters', 'DCup': 'Demacia Cup', 'NL': 'Nexus League', 'PRM': 'Prime League', 'AL': 'Arabian League',
           'CD': 'Circuito Desafiante', 'HM': 'Hitpoint Masters', 'HC': 'Hitpoint Challengers', 'RL': 'Rift Legends',
@@ -98,6 +103,14 @@ def load(year):
     p['pid'] = p.playerid.fillna(('name:' + p.playername).where(p.playername.notna()))
     p = p.dropna(subset=['pid'])
     p['role'] = p.position.map(ROLE)
+    # mesures tirées des chronologies Leaguepedia, quand elles existent pour cette saison (même partie, même joueur)
+    tl_path = os.path.join(HERE, f'lp_timeline_{year}.csv.gz')
+    tl_cols = ['worthless', 'obj_ka', 'team_obj', 'jg_prox', 'ejg_prox', 'jg_top', 'jg_mid', 'jg_bot', 'roam', 'gank_d15']
+    if os.path.exists(tl_path):
+        tl = pd.read_csv(tl_path, usecols=['gameid', 'pid'] + tl_cols).rename(columns={'pid': 'participantid'}).drop_duplicates(['gameid', 'participantid'])
+        p = p.merge(tl, on=['gameid', 'participantid'], how='left')
+    else:
+        for c in tl_cols: p[c] = np.nan
     return p, t
 
 
@@ -162,6 +175,8 @@ def features(p, t):
     p['kshare'] = p.kills / p.teamkills.replace(0, np.nan)
     p['ka15'] = p.killsat15 + p.assistsat15
     p['nd15'] = -p.deathsat15
+    p['nwd_pm'] = -p.worthless / mins                       # NaN sans chronologie
+    p['obj_part'] = (p.obj_ka / p.team_obj.replace(0, np.nan))
     p['fbp'] = ((p.firstbloodkill.fillna(0) + p.firstbloodassist.fillna(0)) > 0).astype(float).where(p.firstbloodkill.notna())
     p['ka_late'] = (p.kills + p.assists - p.ka15) / late
     p['nd_late'] = -(p.deaths - p.deathsat15) / late
@@ -211,7 +226,10 @@ def zscores(p):
             w = FACET_ROLE.get(ro, {}).get(f, base)
             num = sum(Z.loc[q.index, s].fillna(0) * wt for s, wt in w.items())
             den = sum(Z.loc[q.index, s].notna() * wt for s, wt in w.items())
-            v = (num / den).where(den >= 0.5)
+            # il faut au moins la moitié (en poids) des stats de base ; celles des chronologies sont un plus, jamais une condition
+            base = {s: wt for s, wt in w.items() if s not in TL_STATS}
+            den_b = sum(Z.loc[q.index, s].notna() * wt for s, wt in base.items())
+            v = (num / den).where(den_b >= 0.5 * sum(base.values()))
             F.loc[q.index, f] = (v - v.mean()) / v.std()
     return F
 
@@ -362,9 +380,15 @@ def season(year, prior):
     for f in facets: A['p_' + f] = A['T'] + SIGMA_FACET * A['i_' + f]
 
     # ---- contexte : weakside / strongside (top, mid, adc), grands matchs, régularité, pool
-    side = p[p.role.isin(['Top', 'Mid', 'ADC']) & p.p15.notna()].copy()
-    lo = side.groupby('role').p15.transform(lambda s: s.quantile(.35)); hi = side.groupby('role').p15.transform(lambda s: s.quantile(.65))
-    side['weak'] = side.p15 <= lo; side['strong'] = side.p15 >= hi
+    # Weakside / strongside : la partie est « weakside » quand le jungler passe peu de temps près du joueur entre la 3e et
+    # la 14e minute (chronologies), « strongside » quand il en passe beaucoup. Sans chronologie (LPL), on retombe sur
+    # la participation aux kills de l'équipe avant 15 minutes.
+    side = p[p.role.isin(['Top', 'Mid', 'ADC']) & (p.jg_prox.notna() | p.p15.notna())].copy()
+    side['weak'] = False; side['strong'] = False
+    for col, m in (('jg_prox', side.jg_prox.notna()), ('p15', side.jg_prox.isna() & side.p15.notna())):
+        q = side[m]
+        lo = q.groupby('role')[col].transform(lambda x: x.quantile(.35)); hi = q.groupby('role')[col].transform(lambda x: x.quantile(.65))
+        side.loc[m, 'weak'] = q[col] <= lo; side.loc[m, 'strong'] = (q[col] >= hi) & (q[col] > lo)
     side['wk_score'] = 0.6 * side.r_lane + 0.4 * side.r_safe
     side['st_score'] = 0.4 * side.r_lane + 0.4 * side.r_carry + 0.2 * side.r_fight
     wk = side[side.weak].groupby('pid').wk_score.agg(['mean', 'count']); st = side[side.strong].groupby('pid').st_score.agg(['mean', 'count'])
@@ -404,7 +428,9 @@ def season(year, prior):
     p['k_'] = p.kills; p['d_'] = p.deaths; p['a_'] = p.assists
     st_ = g.agg(win=('result', 'mean'), k=('kills', 'sum'), d=('deaths', 'sum'), a=('assists', 'sum'), kp=('kp', 'mean'), dpm=('dpm', 'mean'),
                 dsh=('damageshare', 'mean'), gsh=('earnedgoldshare', 'mean'), gd15=('golddiffat15', 'mean'), cd15=('csdiffat15', 'mean'),
-                xd15=('xpdiffat15', 'mean'), cspm=('cspm', 'mean'), vspm=('vspm', 'mean'), dpg=('deaths', 'mean'), fb=('fbp', 'mean'))
+                xd15=('xpdiffat15', 'mean'), cspm=('cspm', 'mean'), vspm=('vspm', 'mean'), dpg=('deaths', 'mean'), fb=('fbp', 'mean'),
+                wd=('worthless', 'sum'), wdn=('worthless', 'count'), jgp=('jg_prox', 'mean'), objp=('obj_part', 'mean'))
+    st_['wd_share'] = (st_.wd / p[p.worthless.notna()].groupby('pid').deaths.sum().reindex(st_.index).replace(0, np.nan)).where(st_.wdn >= 10)
     A = A.join(st_)
     A = A.join(last[['name', 'team', 'tid', 'league', 'last_date']])
     A = A.dropna(subset=['league', 'pts'])
@@ -603,7 +629,8 @@ def main():
                 's': [r1(v, 2) for v in sz.values] if sz is not None else None,
                 'st': {'win': r1(r.win, 3), 'kda': r1((r.k + r.a) / max(r.d, 1), 2), 'kp': r1(r.kp, 3), 'dpm': r1(r.dpm, 0), 'dsh': r1(r.dsh, 3),
                        'gsh': r1(r.gsh, 3), 'gd15': r1(r.gd15, 0), 'cd15': r1(r.cd15), 'xd15': r1(r.xd15, 0), 'cspm': r1(r.cspm, 2),
-                       'vspm': r1(r.vspm, 2), 'dpg': r1(r.dpg, 2), 'fb': r1(r.fb, 3)},
+                       'vspm': r1(r.vspm, 2), 'dpg': r1(r.dpg, 2), 'fb': r1(r.fb, 3),
+                       'wd': r1(r.wd_share, 3), 'jgp': r1(r.jgp, 3) if r.wdn >= 10 else None, 'objp': r1(r.objp, 3) if r.wdn >= 10 else None, 'tl': int(r.wdn)},
                 'lg': {l.league: [r1(to_note(l.pts, a, b)), int(l.n), l.team, r1(l.win, 3)] for l in lg_by[pid].itertuples()} if pid in lg_by else {},
                 'c': contracts.get(pid), 'age': meta.get(pid, {}).get('age'), 'cty': meta.get(pid, {}).get('cty'), 'res': meta.get(pid, {}).get('res'), 'ev': evs,
                 'ch': [[c.champion, int(c.n), r1(c.w, 2)] for _, c in ch_by.get(pid, pd.DataFrame()).iterrows()],
