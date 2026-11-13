@@ -287,6 +287,17 @@ def season(year, prior):
     off_role = p[p.role != p.pid.map(main)].groupby('pid').size()
     p = p[p.role == p.pid.map(main)].reset_index(drop=True)
     pretty = p.league.map(lambda x: PRETTY.get(x, x))
+    # Ligues dont une partie seulement des parties a un segment (LJL, Circuito Desafiante, NACL...) : les parties sans
+    # segment (qualifications, phases d'ouverture, barrages) sont rattachées au segment de la même ligue le plus proche
+    # dans le temps, pour éviter d'avoir à la fois « LJL Spring » et « LJL, avril » dans le menu.
+    unnamed = ~p.league.isin(cups) & (p.split.isna() | p.split.astype(str).isin(['Season', 'nan']))
+    named = ~p.league.isin(cups) & ~unnamed
+    for lg in set(p.loc[unnamed, 'league']) & set(p.loc[named, 'league']):
+        rng_ = p[named & (p.league == lg)].groupby('split').date.agg(['min', 'max'])
+        m = unnamed & (p.league == lg)
+        d = p.loc[m, 'date']
+        dist = pd.DataFrame({sp: np.maximum((r['min'] - d).dt.days.clip(lower=0), (d - r['max']).dt.days.clip(lower=0)) for sp, r in rng_.iterrows()})
+        p.loc[m, 'split'] = dist.idxmin(axis=1)
     # le segment fait partie du nom, y compris pour les tournois qui ont plusieurs éditions par an (EMEA Masters Winter...)
     p['event'] = np.where(p.split.isna() | p.split.astype(str).isin(['Season', 'nan']), pretty, pretty + ' ' + p.split.fillna('').astype(str))
     p['event'] = p.event.str.strip()
