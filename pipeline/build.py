@@ -536,7 +536,7 @@ def stint_table(S):
     """note d'un joueur avec chacune de ses équipes de la saison (toutes compétitions) : même calcul que la note de saison."""
     p, A = S['p'], S['A']
     dom = p[p.scope == 'ligue']
-    lg = dom.sort_values('date').groupby(['pid', 'tid']).league.agg(lambda x: ', '.join(dict.fromkeys(x))).rename('lg')   # ses ligues avec cette équipe, dans l'ordre
+    lg = dom.groupby(['pid', 'tid']).league.agg(lambda x: ', '.join(x.value_counts().index)).rename('lg')   # ses ligues avec cette équipe, la principale d'abord
     g = p.groupby(['pid', 'tid'])
     T = g.agg(n=('c', 'size'), csum=('c', 'sum'), cn=('c', 'count'), T=('R_own', 'mean'), win=('result', 'mean'), team=('teamname', 'last'),
               start=('date', 'min'), end=('date', 'max')).join(lg).reset_index()

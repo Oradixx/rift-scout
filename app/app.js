@@ -136,8 +136,8 @@
       (ignoreRole || !state.role || p.role === state.role) &&
       (q || state.tier === '' || p.tier === +state.tier) &&
       (!state.region || p.region === state.region) &&
-      (!state.league || (lgOnly ? !!p.lg[state.league] : p.league === state.league)) && cMatch(p, state.contract) &&
-      (q || (lgOnly ? p.lg[state.league][1] : p.n) >= state.minG) &&
+      (!state.league || p.league === state.league || !!p.lg[state.league]) && cMatch(p, state.contract) &&
+      (q || (lgOnly ? (p.lg[state.league] || [0, 0])[1] : p.n) >= state.minG) &&
       (!q || p.name.toLowerCase().includes(q) || p.team.toLowerCase().includes(q)));
     if (state.event) {
       L = L.map((p) => ({ p, e: evNote(p, state.event) })).filter((x) => x.e);
@@ -149,6 +149,16 @@
       return L.sort((a, b) => b._e.note - a._e.note);
     }
     return L;
+  }
+  /* équipe à montrer sur une ligne de la liste, et mention d'un changement d'équipe en cours de saison */
+  function teamLine(p) {
+    if (p._e && p._e.team) return h(p._e.team) + ', ' + h(state.event || lgName(state.league));
+    const inLg = state.league && p.lg[state.league];
+    if (inLg && p.league !== state.league) return `${h(inLg[2])}, ${h(lgName(state.league))}<span class="moved">, puis ${h(p.team)} (${h(lgName(p.league))})</span>`;
+    let txt = `${h(p.team)}, ${h(lgName(p.league))}`;
+    if (p.tm && p.tm.length > 1) { const i = p.tm.findIndex((t) => t[0] === p.team); if (i > 0) txt = `${txt}<span class="moved">, avant ${h(p.tm[i - 1][0])}</span>`; }   // parcours trié par date de début
+    if (p.now) txt += `<span class="moved">, puis ${h(p.now)}</span>`;
+    return txt;
   }
   function scopeLabel() {
     const parts = [];
@@ -177,7 +187,7 @@
     renderFive();
     const L = filtered(false);
     const el = $('#rows');
-    const who = state.event ? ` ayant joué ${state.event}` : '';
+    const who = state.event ? ` ayant joué ${state.event}` : state.league ? ` ayant joué en ${lgName(state.league)} cette saison` : '';
     const on = state.basis === 'only' && state.event ? state.event : state.basis === 'only' && state.league ? 'leurs seules parties de ' + lgName(state.league) : 'toute la saison';
     $('#count').textContent = L.length ? `${fmt(L.length)} joueur${L.length > 1 ? 's' : ''}${who}, notés sur ${on}` : '';
     if (!L.length) { el.innerHTML = '<p class="none">Aucun joueur ne correspond à ces filtres. Élargissez le niveau de ligue ou baissez le nombre minimum de parties.</p>'; return; }
@@ -187,7 +197,7 @@
       const d = p._e ? p._e.note - p.note : p.form - p.note;
       const tc = d >= 1.5 ? 'up' : d <= -1.5 ? 'down' : 'flat';
       html += `<button class="row" data-p="${p.id}"><span class="rank">${i + 1}</span><span class="num note ${noteCls(n)}">${nInt(n)}</span>
-        <span class="who"><b>${h(p.name)}</b><small>${h(p._e ? p._e.team : p.team)}, ${h(lgName(p.league))}${ageTxt(p)} ${cShort(p)}</small></span>
+        <span class="who"><b>${h(p.name)}</b><small>${teamLine(p)}${ageTxt(p)} ${cShort(p)}</small></span>
         <span class="pos">${p.role}</span>${strip(p)}
         <span class="trend ${tc} r trend-cell" title="${p._e ? 'Écart avec sa note sur toute la saison' : 'Forme : 15 dernières parties par rapport à la saison'}">${d > 0 ? '+' : ''}${fmt(d, 1)}</span>
         <span class="r games">${p._e ? p._e.n : p.n}</span></button>`;
@@ -247,7 +257,7 @@
       (p.weak != null ? rail('Weakside', p.weak, p.weak_pc, null, cmp ? cmp.weak : null) : '') + (p.strong != null ? rail('Strongside', p.strong, p.strong_pc, null, cmp ? cmp.strong : null) : '') +
       `<p class="legend">Trait noir : médiane des ${grp}. ${cmp && cmp.role === p.role ? `Cadre rouge : ${h(cmp.name)} (${nInt(cmp.note)}). ` : ''}Le classement à droite compare aux ${grp}.</p></section>`;
     if (p.tm) html += `<section><h3>Parcours cette saison</h3><div class="events">` + p.tm.map((t) =>
-      `<div class="ev"><span>${h(t[0])}${t[1] ? ` <small style="text-align:left">${h(t[1].split(', ').map(lgName).join(', '))}</small>` : ' <small style="text-align:left">tournois</small>'}</span><span class="rail" style="display:block;padding:0"><span class="bar" style="display:block"><i style="width:${Math.max(0, (t[3] - 30) / 69 * 100)}%;background:${noteVar(t[3])}"></i><u style="left:${(p.note - 30) / 69 * 100}%"></u></span></span><b class="num ${noteCls(t[3])}" style="font-size:22px;text-align:right">${nInt(t[3])}</b><small>${t[2]} parties, ${frDate(t[4])} au ${frDate(t[5])}</small></div>`).join('') +
+      `<div class="ev"><span>${h(t[0])}${t[1] ? ` <small style="text-align:left">${h(t[1].split(', ').map(lgName).join(', et quelques parties de '))}</small>` : ' <small style="text-align:left">tournois seulement</small>'}</span><span class="rail" style="display:block;padding:0"><span class="bar" style="display:block"><i style="width:${Math.max(0, (t[3] - 30) / 69 * 100)}%;background:${noteVar(t[3])}"></i><u style="left:${(p.note - 30) / 69 * 100}%"></u></span></span><b class="num ${noteCls(t[3])}" style="font-size:22px;text-align:right">${nInt(t[3])}</b><small>${t[2]} parties, ${frDate(t[4])} au ${frDate(t[5])}</small></div>`).join('') +
       `</div><p class="legend">Note du joueur avec chaque équipe, toutes compétitions confondues. Trait noir : sa note sur la saison.</p></section>`;
     if (p.ev.length) html += `<section><h3>Note par événement</h3><div class="events">` + p.ev.map((e) =>
       `<div class="ev"><span>${h(e.e)}</span><span class="rail" style="display:block;padding:0"><span class="bar" style="display:block"><i style="width:${Math.max(0, (e.note - 30) / 69 * 100)}%;background:${noteVar(e.note)}"></i><u style="left:${(p.note - 30) / 69 * 100}%"></u></span></span><b class="num ${noteCls(e.note)}" style="font-size:22px;text-align:right">${nInt(e.note)}</b><small>${e.n} parties, ${pctTxt(e.w)} vict.</small></div>`).join('') +
