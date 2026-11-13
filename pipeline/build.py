@@ -285,7 +285,10 @@ def season(year, prior):
     # poste principal
     main = p.groupby(['pid', 'role']).size().reset_index(name='n').sort_values('n').groupby('pid').role.last()
     off_role = p[p.role != p.pid.map(main)].groupby('pid').size()
-    p = p[p.role == p.pid.map(main)].reset_index(drop=True)
+    # Les parties jouées à un autre poste comptent aussi : leurs stats sont comparées aux joueurs de CE poste (z-scores et
+    # poids par poste), donc elles se mélangent sans biais à celles du poste principal. Le style de jeu et les stats
+    # affichées, eux, restent calculés sur le seul poste principal.
+    p['main'] = p.role == p.pid.map(main)
     pretty = p.league.map(lambda x: PRETTY.get(x, x))
     # Ligues dont une partie seulement des parties a un segment (LJL, Circuito Desafiante, NACL...) : les parties sans
     # segment (qualifications, phases d'ouverture, barrages) sont rattachées au segment de la même ligue le plus proche
@@ -432,6 +435,7 @@ def season(year, prior):
     team_recent = dom.drop_duplicates(['gameid', 'tid']).groupby('tid').tail(20).groupby('tid').league.agg(mode)   # ligue récente de chaque équipe
     last['league'] = with_team.groupby('pid').tail(20).groupby('pid').league.agg(mode).reindex(last.index)
     # aucun match de ligue cette saison (joueur vu seulement en tournoi) : équipe du tournoi, ligue de cette équipe si elle en a une
+    last['role'] = main.reindex(last.index)           # poste principal, pas celui de la dernière partie
     last['noleague'] = last.tid.isna()
     last['tid'] = last.tid.fillna(last.tid_last); last['team'] = last.team.fillna(last.team_last)
     last['league'] = last.league.fillna(last.tid.map(team_recent)).fillna(last.tid.map(team_home))
@@ -491,7 +495,7 @@ def season(year, prior):
             p.loc[m, name] = p.loc[m, 'champion'].map(ci[(ro, name)])
     # centré par compétition et par poste : le style d'un joueur se lit par rapport à ceux qui jouent dans le même environnement
     sty = p[STYLE] - p.groupby(['role', 'ctx'])[STYLE].transform('mean') + p.groupby('role')[STYLE].transform('mean')
-    S = sty.groupby(p.pid).mean()
+    S = sty[p.main].groupby(p.pid[p.main]).mean()
     S = S.mul(shr.reindex(S.index), axis=0) + S.groupby(A.role.reindex(S.index)).transform('mean').mul(1 - shr.reindex(S.index), axis=0)
     rs = A.role.reindex(S.index)
     ref = S[A.n.reindex(S.index) >= 15]
@@ -499,11 +503,11 @@ def season(year, prior):
     Sz = Sz.clip(-3, 3).fillna(0)
 
     # ---- lignes de stats affichées
-    st_ = g.agg(win=('result', 'mean'), k=('kills', 'sum'), d=('deaths', 'sum'), a=('assists', 'sum'), kp=('kp', 'mean'), dpm=('dpm', 'mean'),
+    st_ = p[p.main].groupby('pid').agg(win=('result', 'mean'), k=('kills', 'sum'), d=('deaths', 'sum'), a=('assists', 'sum'), kp=('kp', 'mean'), dpm=('dpm', 'mean'),
                 dsh=('damageshare', 'mean'), gsh=('earnedgoldshare', 'mean'), gd15=('golddiffat15', 'mean'), cd15=('csdiffat15', 'mean'),
                 xd15=('xpdiffat15', 'mean'), cspm=('cspm', 'mean'), vspm=('vspm', 'mean'), dpg=('deaths', 'mean'), fb=('fbp', 'mean'),
                 wd=('worthless', 'sum'), wdn=('worthless', 'count'), jgp=('jg_prox', 'mean'), objp=('obj_part', 'mean'))
-    st_['wd_share'] = (st_.wd / p[p.worthless.notna()].groupby('pid').deaths.sum().reindex(st_.index).replace(0, np.nan)).where(st_.wdn >= 10)
+    st_['wd_share'] = (st_.wd / p[p.main & p.worthless.notna()].groupby('pid').deaths.sum().reindex(st_.index).replace(0, np.nan)).where(st_.wdn >= 10)
     A = A.join(st_)
     A = A.join(last[['name', 'team', 'tid', 'league', 'last_date', 'noleague', 'team_last', 'tid_last']])
     A['off_role'] = off_role.reindex(A.index).fillna(0).astype(int)

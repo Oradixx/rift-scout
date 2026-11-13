@@ -271,7 +271,7 @@
       <div><small>Sbires par minute</small><b>${fmt(st.cspm, 1)}</b></div><div><small>Vision par minute</small><b>${fmt(st.vspm, 2)}</b></div>
       <div><small>Morts par partie</small><b>${fmt(st.dpg, 1)}</b></div><div><small>Premier sang (kill ou assist)</small><b>${pctTxt(st.fb)}</b></div>
       ${st.wd != null ? `<div><small>Morts inutiles</small><b>${pctTxt(st.wd)}</b></div>` : ''}${st.objp != null ? `<div><small>Présence sur les objectifs</small><b>${pctTxt(st.objp)}</b></div>` : ''}${st.jgp != null && p.role !== 'Jungle' ? `<div><small>Temps près de son jungler</small><b>${pctTxt(st.jgp)}</b></div>` : ''}</div>
-      ${p.off ? `<p class="legend">${p.off} partie${p.off > 1 ? 's' : ''} jouée${p.off > 1 ? 's' : ''} à un autre poste ne ${p.off > 1 ? 'sont' : 'est'} pas comptée${p.off > 1 ? 's' : ''}.</p>` : ''}
+      ${p.off ? `<p class="legend">Dont ${p.off} partie${p.off > 1 ? 's' : ''} jouée${p.off > 1 ? 's' : ''} à un autre poste : ${p.off > 1 ? 'elles comptent' : 'elle compte'} dans la note, comparée${p.off > 1 ? 's' : ''} aux joueurs de ce poste. Les statistiques ci-dessus ne portent que sur son poste principal.</p>` : ''}
       ${st.wd == null ? '<p class="legend">Morts inutiles, présence sur les objectifs et proximité du jungler ne sont pas disponibles pour ce joueur (parties de LPL, ou saison sans chronologie).</p>' : ''}</section>`;
     if (p.ch.length) html += `<section><h3>Champions les plus joués</h3><div class="champs">${p.ch.map((c) => `<span>${h(c[0])} <small>${c[1]} parties, ${pctTxt(c[2])}</small></span>`).join('')}</div></section>`;
     if (p.s) {
