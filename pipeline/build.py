@@ -28,6 +28,7 @@ K_SHRINK = 12            # parties « fictives » au niveau moyen ajoutées à c
 SIGMA_IND = 100.0        # points : un écart-type d'écart individuel
 SIGMA_FACET = 185.0      # points : un écart-type sur une facette
 MIN_GAMES = 10
+SCALE_A, SCALE_B = 62.429588148589204, 0.03367803393360008   # note = A + B × points (calée en novembre 2026 : 80 = médiane des ligues majeures)
 QUALIF_GAP_DAYS = 21     # jours sans match au-delà desquels un tournoi est coupé en « qualifications » puis tournoi
 SD_EVENT = 250.0         # points : à quel point le niveau d'une équipe peut s'écarter de sa saison sur un événement
 K_EVENT_IND = 5          # parties de saison ajoutées à l'écart individuel d'un événement
@@ -102,6 +103,13 @@ def load(year):
     p = d[d.position != 'team'].copy()
     p['pid'] = p.playerid.fillna(('name:' + p.playername).where(p.playername.notna()))
     p = p.dropna(subset=['pid'])
+    # Un même joueur enregistré sous deux identifiants (même pseudo, même équipe, même poste) : on les réunit.
+    key = p.assign(low=p.playername.str.lower()).groupby(['low', 'tid', 'position']).pid
+    multi = key.nunique(); canon = {}
+    for (low, tid, pos) in multi[multi > 1].index:
+        ids = p[(p.playername.str.lower() == low) & (p.tid == tid) & (p.position == pos)].pid.value_counts()
+        for other in ids.index[1:]: canon[other] = ids.index[0]
+    if canon: p['pid'] = p.pid.replace(canon)
     p['role'] = p.position.map(ROLE)
     # mesures tirées des chronologies Leaguepedia, quand elles existent pour cette saison (même partie, même joueur)
     tl_path = os.path.join(HERE, f'lp_timeline_{year}.csv.gz')
@@ -263,6 +271,7 @@ def season(year, prior):
     p['R_own'] = p.tid.map(R); p['R_opp'] = p.opp.map(R); p['dR'] = p.R_own - p.R_opp
     # poste principal
     main = p.groupby(['pid', 'role']).size().reset_index(name='n').sort_values('n').groupby('pid').role.last()
+    off_role = p[p.role != p.pid.map(main)].groupby('pid').size()
     p = p[p.role == p.pid.map(main)].reset_index(drop=True)
     pretty = p.league.map(lambda x: PRETTY.get(x, x))
     # le segment fait partie du nom, y compris pour les tournois qui ont plusieurs éditions par an (EMEA Masters Winter...)
@@ -349,12 +358,22 @@ def season(year, prior):
     p['c'] = np.where(ok, rv * wmat, 0).sum(1) / np.where(ok, wmat, 0).sum(1).clip(min=1e-9)
     p.loc[(np.where(ok, wmat, 0).sum(1) < 0.5), 'c'] = np.nan
     # ligue et équipe actuelles du joueur
+    # Équipe et ligue affichées = celles de ses dernières parties de LIGUE de la saison. Un joueur passé d'une ligue à une
+    # autre en cours d'année est rangé avec sa dernière équipe de ligue. S'il a ensuite joué un tournoi ou une coupe avec
+    # une autre équipe (équipe de tournoi, transfert d'intersaison), on le signale à part (team_last) sans changer sa ligue.
+    mode = lambda x: x.mode().iloc[0]
     dom = p[~p.league.isin(cups)].sort_values('date')
-    home = dom.groupby('pid').tail(20).groupby('pid').league.agg(lambda s: s.mode().iloc[0])
-    last = p.sort_values('date').groupby('pid').agg(name=('playername', 'last'), tid=('tid', 'last'), team=('teamname', 'last'),
+    last = p.sort_values('date').groupby('pid').agg(name=('playername', 'last'), tid_last=('tid', 'last'), team_last=('teamname', 'last'),
                                                     last_date=('date', 'max'), role=('role', 'last'))
-    last['league'] = home.reindex(last.index)
-    last['league'] = last.league.fillna(last.tid.map(team_home))
+    dl = dom.groupby('pid').agg(tid=('tid', 'last'), team=('teamname', 'last'))
+    last = last.join(dl)
+    with_team = dom[dom.tid == dom.pid.map(last.tid)]
+    team_recent = dom.drop_duplicates(['gameid', 'tid']).groupby('tid').tail(20).groupby('tid').league.agg(mode)   # ligue récente de chaque équipe
+    last['league'] = with_team.groupby('pid').tail(20).groupby('pid').league.agg(mode).reindex(last.index)
+    # aucun match de ligue cette saison (joueur vu seulement en tournoi) : équipe du tournoi, ligue de cette équipe si elle en a une
+    last['noleague'] = last.tid.isna()
+    last['tid'] = last.tid.fillna(last.tid_last); last['team'] = last.team.fillna(last.team_last)
+    last['league'] = last.league.fillna(last.tid.map(team_recent)).fillna(last.tid.map(team_home))
     last = last.dropna(subset=['league'])
     p = p[p.pid.isin(last.index)]
 
@@ -425,10 +444,11 @@ def season(year, prior):
                 wd=('worthless', 'sum'), wdn=('worthless', 'count'), jgp=('jg_prox', 'mean'), objp=('obj_part', 'mean'))
     st_['wd_share'] = (st_.wd / p[p.worthless.notna()].groupby('pid').deaths.sum().reindex(st_.index).replace(0, np.nan)).where(st_.wdn >= 10)
     A = A.join(st_)
-    A = A.join(last[['name', 'team', 'tid', 'league', 'last_date']])
+    A = A.join(last[['name', 'team', 'tid', 'league', 'last_date', 'noleague', 'team_last', 'tid_last']])
+    A['off_role'] = off_role.reindex(A.index).fillna(0).astype(int)
     A = A.dropna(subset=['league', 'pts'])
     A['tier'] = A.league.map(tier_of)
-    return dict(p=p, A=A, R=R, lvl=lg_lvl, cups=cups, Sz=Sz, team_home=team_home, sd_c=sd_c, t=t, slopes=slopes, side=side_adv)
+    return dict(p=p, A=A, R=R, lvl=lg_lvl, cups=cups, Sz=Sz, team_home=team_home, team_recent=team_recent, sd_c=sd_c, t=t, slopes=slopes, side=side_adv)
 
 
 def event_levels(p, R, side_adv):
@@ -484,6 +504,20 @@ def league_table(S):
     return L
 
 
+def stint_table(S):
+    """note d'un joueur avec chacune de ses équipes de la saison (toutes compétitions) : même calcul que la note de saison."""
+    p, A = S['p'], S['A']
+    dom = p[p.scope == 'ligue']
+    lg = dom.sort_values('date').groupby(['pid', 'tid']).league.agg(lambda x: ', '.join(dict.fromkeys(x))).rename('lg')   # ses ligues avec cette équipe, dans l'ordre
+    g = p.groupby(['pid', 'tid'])
+    T = g.agg(n=('c', 'size'), csum=('c', 'sum'), cn=('c', 'count'), T=('R_own', 'mean'), win=('result', 'mean'), team=('teamname', 'last'),
+              start=('date', 'min'), end=('date', 'max')).join(lg).reset_index()
+    T = T[(T.n >= 3) & T.pid.isin(A.index)]
+    T['I'] = (T.csum / (T.cn + K_SHRINK)) / S['sd_c'].reindex(A.role.reindex(T.pid).values).values
+    T['pts'] = T['T'] + SIGMA_IND * T.I
+    return T.sort_values('start')
+
+
 def form_table(S, last_n=15):
     """Forme : note sur les dernières parties, avec la même logique que les notes d'événement. Le niveau de l'équipe est
     réestimé sur ces parties (adversaires à leur niveau de saison, même a priori faible SD_EVENT), l'écart individuel
@@ -529,8 +563,7 @@ def match_contracts(A):
     for pid, r in A.iterrows():
         cand = by.get(norm(r['name']), [])
         if not cand: continue
-        tt = team_tokens(r.team)
-        same_team = [c for c in cand if tt & team_tokens(c['team']) or norm(c['team']) in norm(r.team) or norm(r.team) in norm(c['team'])]
+        same_team = [c for c in cand for tm in {r.team, r.team_last} if team_tokens(tm) & team_tokens(c['team']) or norm(c['team']) in norm(tm) or norm(tm) in norm(c['team'])]
         same_lg = [c for c in cand if LEAGUE_ALIAS.get(c['league'], c['league']) == r.league or (c['league'] == 'LCK' and r.league in ('LCKC', 'LAS'))]
         pick = same_team[0] if same_team else (same_lg[0] if len(same_lg) == 1 and len(cand) == 1 else None)
         if pick: out[pid] = pick['end']
@@ -553,8 +586,7 @@ def match_leaguepedia(A, today):
     for pid, r in A.iterrows():
         cand = by.get(norm(r['name']), [])
         if not cand: continue
-        tt = team_tokens(r.team)
-        same_team = [c for c in cand if c['team'] and (tt & team_tokens(c['team']) or norm(c['team']) in norm(r.team) or norm(r.team) in norm(c['team']))]
+        same_team = [c for c in cand if c['team'] for tm in {r.team, r.team_last} if team_tokens(tm) & team_tokens(c['team']) or norm(c['team']) in norm(tm) or norm(tm) in norm(c['team'])]
         same_role = [c for c in cand if LP_ROLE[c['role']] == r.role]
         pick = same_team[0] if same_team else (same_role[0] if len(same_role) == 1 and len(cand) == 1 else None)
         if not pick: continue
@@ -577,12 +609,17 @@ def main():
     # échelle 1-100 commune : calée sur la saison la plus récente
     ref = runs[SEASONS[-1]]['A']; ref = ref[ref.n >= 20]
     top = ref.pts.quantile(0.999); med = ref[ref.tier == 0].pts.median()
-    b = (97.5 - 80) / (top - med); a = 80 - b * med
+    # Échelle fixe : la conversion des points en note ne bouge pas d'une mise à jour à l'autre, sinon toutes les notes
+    # glisseraient dès qu'un joueur change de ligue ou qu'un tournoi s'ajoute. On affiche l'écart avec l'échelle qui
+    # serait recalculée aujourd'hui ; à recaler à la main (SCALE_A, SCALE_B) en début de saison ou s'il dépasse 1 point.
+    a, b = SCALE_A, SCALE_B
+    print(f'échelle fixe ; recalculée aujourd\'hui, la médiane des ligues majeures vaudrait {a + b * med:.1f} (cible 80) et le sommet {a + b * top:.1f} (cible 97,5)')
     out['scale'] = {'a': a, 'b': b}
     for y, S in runs.items():
         A, p = S['A'], S['p']
         E = event_table(S); form = form_table(S)
         lg_by = {k: v for k, v in league_table(S).groupby('pid')}
+        st_by = {k: v for k, v in stint_table(S).groupby('pid') if len(v) > 1}
         A = A[A.n >= MIN_GAMES].copy()
         A['note'] = [to_note(v, a, b) for v in A.pts]
         ev_by = {k: v for k, v in E.groupby('pid')}
@@ -632,6 +669,9 @@ def main():
                        'gsh': r1(r.gsh, 3), 'gd15': r1(r.gd15, 0), 'cd15': r1(r.cd15), 'xd15': r1(r.xd15, 0), 'cspm': r1(r.cspm, 2),
                        'vspm': r1(r.vspm, 2), 'dpg': r1(r.dpg, 2), 'fb': r1(r.fb, 3),
                        'wd': r1(r.wd_share, 3), 'jgp': r1(r.jgp, 3) if r.wdn >= 10 else None, 'objp': r1(r.objp, 3) if r.wdn >= 10 else None, 'tl': int(r.wdn)},
+                'now': r.team_last if r.tid_last != r.tid else None, 'off': int(r.off_role),
+                'tm': [[t_.team, t_.lg if isinstance(t_.lg, str) else None, int(t_.n), r1(to_note(t_.pts, a, b)), str(t_.start.date()), str(t_.end.date()), r1(t_.win, 3)]
+                       for t_ in st_by[pid].itertuples()] if pid in st_by else None,
                 'lg': {l.league: [r1(to_note(l.pts, a, b)), int(l.n), l.team, r1(l.win, 3)] for l in lg_by[pid].itertuples()} if pid in lg_by else {},
                 'c': contracts.get(pid), 'age': meta.get(pid, {}).get('age'), 'cty': meta.get(pid, {}).get('cty'), 'res': meta.get(pid, {}).get('res'), 'ev': evs,
                 'ch': [[c.champion, int(c.n), r1(c.w, 2)] for _, c in ch_by.get(pid, pd.DataFrame()).iterrows()],
@@ -640,7 +680,7 @@ def main():
         t = S['t']; teams = []
         tl = t.sort_values('date').groupby('tid').agg(name=('teamname', 'last'), last=('date', 'max'), n=('gameid', 'nunique'), win=('result', 'mean'))
         for tid, tr in tl.iterrows():
-            lg = S['team_home'].get(tid)
+            lg = S['team_recent'].get(tid, S['team_home'].get(tid))
             if not isinstance(lg, str) or tr.n < 8: continue
             gids = t[t.tid == tid].sort_values('date').gameid.tail(12)
             q = p[(p.tid == tid) & p.gameid.isin(gids)]

@@ -28,7 +28,7 @@ python build_page.py                   # -> docs/index.html
 
 `.github/workflows/update.yml` relance tout chaque mardi à 05:17 UTC (ou à la demande depuis l'onglet Actions) et committe `docs/index.html`, `pipeline/contracts.json` et les fichiers Leaguepedia (fiches joueurs, chronologies des nouvelles parties). `pipeline/check.py` bloque la publication si le résultat est manifestement cassé, ou s'il s'écarte en bloc de la page déjà publiée (parties perdues, notes déplacées de plus de 2 points en médiane) : après un changement voulu du calcul, publier à la main. Si Google Drive refuse le téléchargement, la mise à jour est reportée sans erreur.
 
-À chaque nouvelle saison, il faut ajouter à la main : l'identifiant du fichier dans `pipeline/fetch_data.py`, l'année dans `SEASONS` (`pipeline/build.py`) et les niveaux de ligue de départ dans `pipeline/leagues.json`.
+À chaque nouvelle saison, il faut recaler l'échelle (`SCALE_A`, `SCALE_B` dans `pipeline/build.py`, d'après la ligne « échelle fixe » affichée par le calcul) et ajouter à la main : l'identifiant du fichier dans `pipeline/fetch_data.py`, l'année dans `SEASONS` (`pipeline/build.py`) et les niveaux de ligue de départ dans `pipeline/leagues.json`.
 
 ## Règles
 
