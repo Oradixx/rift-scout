@@ -24,6 +24,10 @@ SEASONS = [2025, 2026]
 # ----------------------------------------------------------------------------- réglages
 PTS_PER_LOGIT = 200      # écart de niveau moyen par joueur qui donne 73 % de victoire
 SD_TEAM, SD_LEAGUE = 160.0, 90.0   # a priori : dispersion des équipes dans une ligue, incertitude sur le niveau des ligues
+# LCK et LPL : l'écart entre le haut et le bas du classement y était sous-estimé (le haut gagnait contre le bas 3 à 4 points
+# de plus qu'annoncé, sur des parties cachées au modèle). Une dispersion plus large y corrige l'essentiel, sans dégrader
+# les autres ligues ni les tournois internationaux (validation croisée en 5 parts, saisons 2025 et 2026, novembre 2026).
+SD_TEAM_BY_LEAGUE = {'LCK': 250.0, 'LPL': 250.0}
 K_SHRINK = 12            # parties « fictives » au niveau moyen ajoutées à chaque joueur
 SIGMA_IND = 100.0        # points : un écart-type d'écart individuel
 SIGMA_FACET = 185.0      # points : un écart-type sur une facette
@@ -163,7 +167,9 @@ def team_levels(t, cups, prior):
     X /= PTS_PER_LOGIT
     off = (pri[b.tid.map(ti).values] - pri[r.tid.map(ti).values]) / PTS_PER_LOGIT
     y = b.result.values.astype(float)
-    pen = np.r_[np.full(nT, 1 / SD_TEAM ** 2), np.full(nL, 1 / SD_LEAGUE ** 2), 0.0]
+    # dispersion attendue des équipes autour du niveau de leur ligue : plus large en LCK et en LPL (voir SD_TEAM_BY_LEAGUE)
+    sd_t = np.array([SD_TEAM_BY_LEAGUE.get(home[x], SD_TEAM) if isinstance(home[x], str) else SD_TEAM for x in teams])
+    pen = np.r_[1 / sd_t ** 2, np.full(nL, 1 / SD_LEAGUE ** 2), 0.0]
     beta = np.zeros(X.shape[1])
     for _ in range(30):
         eta = off + X @ beta; mu = 1 / (1 + np.exp(-eta)); w = mu * (1 - mu)
@@ -284,6 +290,22 @@ def season(year, prior):
     # le segment fait partie du nom, y compris pour les tournois qui ont plusieurs éditions par an (EMEA Masters Winter...)
     p['event'] = np.where(p.split.isna() | p.split.astype(str).isin(['Season', 'nan']), pretty, pretty + ' ' + p.split.fillna('').astype(str))
     p['event'] = p.event.str.strip()
+    # Ligues sans segment dans les données (LFL, Nexus League, LJL...) : on les découpe aux pauses de plus de 3 semaines
+    # et on nomme chaque période par ses mois (« LFL, avril à juin »). En LFL, la période de janvier-mars est le tournoi
+    # d'ouverture, où jouent aussi les équipes de Nexus League.
+    MOIS_ = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre']
+    nosplit = ~p.league.isin(cups) & (p.split.isna() | p.split.astype(str).isin(['Season', 'nan']))
+    for lg in p.loc[nosplit, 'league'].unique():
+        m = nosplit & (p.league == lg)
+        days = np.sort(p.loc[m, 'date'].dt.normalize().unique())
+        cuts = [days[i + 1] for i in np.where(np.diff(days) > np.timedelta64(QUALIF_GAP_DAYS, 'D'))[0]]
+        if not cuts: continue
+        bounds = [days[0]] + cuts + [days[-1] + np.timedelta64(1, 'D')]
+        for lo, hi in zip(bounds[:-1], bounds[1:]):
+            mm = m & (p.date >= lo) & (p.date < hi)
+            if not mm.any(): continue
+            a_, b_ = p.loc[mm, 'date'].min().month, p.loc[mm, 'date'].max().month
+            p.loc[mm, 'event'] = p.loc[mm, 'event'] + ', ' + (MOIS_[a_ - 1] if a_ == b_ else f'{MOIS_[a_ - 1]} à {MOIS_[b_ - 1]}')
     # chaque partie : entre deux équipes de la même ligue, ou de ligues différentes ?
     # (une équipe sans ligue connue, invitée ou vue seulement en coupe, ne suffit pas à rendre un match « entre ligues »)
     h_own, h_opp = p.tid.map(team_home), p.opp.map(team_home)
