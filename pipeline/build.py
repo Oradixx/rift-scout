@@ -115,7 +115,10 @@ def load(year):
     tl_path = os.path.join(HERE, f'lp_timeline_{year}.csv.gz')
     tl_cols = ['worthless', 'obj_ka', 'team_obj', 'jg_prox', 'ejg_prox', 'jg_top', 'jg_mid', 'jg_bot', 'roam', 'gank_d15']
     if os.path.exists(tl_path):
-        tl = pd.read_csv(tl_path, usecols=['gameid', 'pid'] + tl_cols).rename(columns={'pid': 'participantid'}).drop_duplicates(['gameid', 'participantid'])
+        tl = pd.read_csv(tl_path, usecols=['gameid', 'pid', 'jg_ok'] + tl_cols).rename(columns={'pid': 'participantid'}).drop_duplicates(['gameid', 'participantid'])
+        # rares parties où le jungler n'est pas à sa place habituelle dans le fichier : les mesures de position n'y sont pas fiables
+        tl.loc[tl.jg_ok == 0, ['jg_prox', 'ejg_prox', 'jg_top', 'jg_mid', 'jg_bot', 'roam', 'gank_d15']] = np.nan
+        tl = tl.drop(columns='jg_ok')
         p = p.merge(tl, on=['gameid', 'participantid'], how='left')
     else:
         for c in tl_cols: p[c] = np.nan
