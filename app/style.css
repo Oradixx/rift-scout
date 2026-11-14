@@ -276,3 +276,17 @@ div.row{cursor:pointer}
 .who small .moved{color:var(--ink-3)}
 .seg-wide{flex-wrap:wrap}
 .seg-wide button[hidden]{display:none}
+
+.scout-mode{margin-bottom:20px}
+.scout-mode button{padding:8px 16px}
+.crack-table .thead,.crack-table .row{grid-template-columns:36px 58px minmax(170px,1.3fr) 64px minmax(190px,1.1fr) minmax(130px,1fr) 56px}
+.face{display:grid;gap:3px;justify-items:start;text-align:left}
+.face small{color:var(--ink-2);font-size:12.5px}
+.tag.mute{background:var(--fog);color:var(--ink-2)}
+@media (max-width:720px){
+  .crack-table .row{grid-template-columns:26px 44px 1fr}
+  .crack-table .row .face{grid-column:3;grid-row:2;margin-top:-4px}
+  .scout-mode{display:flex}
+  .scout-mode button{flex:1}
+}
+.crack-table .who small{white-space:normal;overflow:visible;text-overflow:clip}

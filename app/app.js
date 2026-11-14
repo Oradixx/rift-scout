@@ -43,11 +43,14 @@
     'Philippines': 'Philippines', 'Switzerland': 'Suisse', 'Thailand': 'Thaïlande', 'Slovenia': 'Slovénie', 'Ukraine': 'Ukraine', 'Lithuania': 'Lituanie', 'Morocco': 'Maroc', 'Algeria': 'Algérie', 'Saudi Arabia': 'Arabie saoudite', 'Ireland': 'Irlande', 'Israel': 'Israël', 'Latvia': 'Lettonie', 'Estonia': 'Estonie', 'New Zealand': 'Nouvelle-Zélande', 'Uruguay': 'Uruguay', 'Ecuador': 'Équateur', 'Iceland': 'Islande', 'Lebanon': 'Liban', 'Jordan': 'Jordanie', 'Malaysia': 'Malaisie', 'Singapore': 'Singapour', 'Indonesia': 'Indonésie' };
   const RESID = { 'EMEA': 'EMEA', 'North America': 'Amérique du Nord', 'Brazil': 'Brésil', 'Asia Pacific': 'Asie-Pacifique', 'Korea': 'Corée', 'China': 'Chine', 'Vietnam': 'Vietnam', 'Latin America': 'Amérique latine' };
   const pays = (c) => PAYS[c] || c, resid = (r) => RESID[r] || r;
-  const ageTxt = (p) => (hasMeta() && p.age ? `, ${p.age} ans` : '');
+  const hasAge = () => S.players.some((p) => p.age);
+  const ageTxt = (p) => (p.age ? `, ${p.age} ans` : '');
   const cMatch = (p, v) => !v || !hasCT() || (v === 'free' ? isFree(p) : v === 'signed' ? !!p.c && !isFree(p) : !p.c);
 
+  const TIER_IN = ['ligue majeure', 'deuxième niveau', 'troisième niveau'];
   const state = { season: Object.keys(D.seasons).sort().pop(), view: 'rank', role: '', tier: '0', region: '', league: '', event: '', contract: '', basis: 'season', minG: 15, q: '', shown: 100,
-    sc: { plan: {}, contract: '', maxAge: 0, res: '', tid: null, role: 'Mid', tier: '', region: '', league: '', minNote: 0, minG: 20, sort: 'score', shown: 60, ref: null, reach: true } };
+    sc: { plan: {}, contract: '', maxAge: 0, res: '', tid: null, role: 'Mid', tier: '', region: '', league: '', minNote: 0, minG: 20, sort: 'score', shown: 60, ref: null, reach: true, mode: 'team',
+      cr: { role: '', maxAge: 21, region: '', deep: false, minG: 20, contract: '', fresh: false, all: false, shown: 60 } } };
   let S, byId, med;
 
   function load() {
@@ -132,13 +135,17 @@
     const q = state.q.trim().toLowerCase();
     const only = state.basis === 'only';
     const lgOnly = !!state.league && !state.event && only;
+    // niveau de ligue choisi : on ajoute ceux qui y ont joué sans que ce soit leur niveau principal, notés sur ces seules parties
+    const pass = !q && state.tier !== '' && !state.league && !state.event && state.basis === 'season';
+    const trOf = (p) => { const v = pass && p.tier !== +state.tier && p.tr && p.tr[state.tier]; return v && v[1] >= state.minG && (!state.region || D.region[v[3]] === state.region) ? v : null; };
     let L = S.players.filter((p) =>
-      (ignoreRole || !state.role || p.role === state.role) &&
+      (ignoreRole || !state.role || p.role === state.role) && (trOf(p) ? cMatch(p, state.contract) :
       (q || state.tier === '' || p.tier === +state.tier) &&
       (!state.region || p.region === state.region) &&
       (!state.league || p.league === state.league || !!p.lg[state.league]) && cMatch(p, state.contract) &&
       (q || (lgOnly ? (p.lg[state.league] || [0, 0])[1] : p.n) >= state.minG) &&
-      (!q || p.name.toLowerCase().includes(q) || p.team.toLowerCase().includes(q)));
+      (!q || p.name.toLowerCase().includes(q) || p.team.toLowerCase().includes(q))));
+    if (pass && L.some(trOf)) L = L.map((p) => { const v = trOf(p); return v ? Object.assign({ _e: { note: v[0], n: v[1], team: v[2], lg: v[3], tierOnly: true } }, p) : p; }).sort((a, b) => (b._e ? b._e.note : b.note) - (a._e ? a._e.note : a.note));
     if (state.event) {
       L = L.map((p) => ({ p, e: evNote(p, state.event) })).filter((x) => x.e);
       if (!only) return L.map((x) => x.p);                 // les participants, avec leur note de toute la saison
@@ -154,6 +161,7 @@
   }
   /* équipe à montrer sur une ligne de la liste, et mention d'un changement d'équipe en cours de saison */
   function teamLine(p) {
+    if (p._e && p._e.tierOnly) return `${h(p._e.team)}, ${h(lgName(p._e.lg))}<span class="moved">, noté sur ses seules parties de ${TIER_IN[+state.tier]} ; aussi ${h(p.team)} (${h(lgName(p.league))})</span>`;
     if (p._e && p._e.team && !p._e.recent) return h(p._e.team) + ', ' + h(state.event || lgName(state.league));
     const inLg = state.league && p.lg[state.league];
     if (inLg && p.league !== state.league) return `${h(inLg[2])}, ${h(lgName(state.league))}<span class="moved">, puis ${h(p.team)} (${h(lgName(p.league))})</span>`;
@@ -192,7 +200,8 @@
     const el = $('#rows');
     const who = state.event ? ` ayant joué ${state.event}` : state.league ? ` ayant joué en ${lgName(state.league)} cette saison` : '';
     const on = state.basis === 'recent' ? 'leur dernier split et ce qui a suivi' : state.basis === 'only' && state.event ? state.event : state.basis === 'only' && state.league ? 'leurs seules parties de ' + lgName(state.league) : 'toute la saison';
-    $('#count').textContent = L.length ? `${fmt(L.length)} joueur${L.length > 1 ? 's' : ''}${who}, notés sur ${on}` : '';
+    const nPass = L.filter((p) => p._e && p._e.tierOnly).length;
+    $('#count').textContent = L.length ? `${fmt(L.length)} joueur${L.length > 1 ? 's' : ''}${who}, notés sur ${on}` + (nPass ? `, dont ${nPass} de passage, noté${nPass > 1 ? 's' : ''} sur ${nPass > 1 ? 'leurs' : 'ses'} seules parties de ce niveau` : '') : '';
     if (!L.length) { el.innerHTML = '<p class="none">Aucun joueur ne correspond à ces filtres. Élargissez le niveau de ligue ou baissez le nombre minimum de parties.</p>'; return; }
     let html = '';
     L.slice(0, state.shown).forEach((p, i) => {
@@ -249,13 +258,14 @@
     const rankIn = S.players.filter((x) => x.role === p.role && x.tier === p.tier && x.n >= 15 && x.note > p.note).length + 1;
     const d = p.form - p.note;
     let html = `<header><span class="num note ${noteCls(p.note)}">${nInt(p.note)}</span><div><h2 id="sheet-name">${h(p.name)}</h2>
-      <p class="meta">${p.role}, ${h(p.team)}, ${h(lgName(p.league))} (${h(p.region)})<br>${hasMeta() && (p.age || p.cty) ? [p.age ? p.age + ' ans' : null, p.cty ? h(pays(p.cty)) : null, p.res ? 'résidence ' + h(resid(p.res)) : null].filter(Boolean).join(', ') + '<br>' : ''}${rankIn}<sup>${rankIn === 1 ? 'er' : 'e'}</sup> des ${grp}, saison ${state.season}${p.now ? `<br>A ensuite joué pour ${h(p.now)} (tournoi ou intersaison)` : ''}${hasCT() ? '<br>' + (p.c ? (isFree(p) ? `<b class="down">Fin de contrat le ${cDate(p.c, true)}</b>` : `Sous contrat jusqu'au ${cDate(p.c, true)}`) : 'Contrat non renseigné dans la base de Riot') : ''}</p></div><button class="close" data-close>Fermer</button></header>`;
+      <p class="meta">${p.role}, ${h(p.team)}, ${h(lgName(p.league))} (${h(p.region)})<br>${(p.age || p.cty) ? [p.age ? p.age + ' ans' : null, p.cty ? h(pays(p.cty)) : null, p.res ? 'résidence ' + h(resid(p.res)) : null].filter(Boolean).join(', ') + '<br>' : ''}${rankIn}<sup>${rankIn === 1 ? 'er' : 'e'}</sup> des ${grp}, saison ${state.season}${p.now ? `<br>A ensuite joué pour ${h(p.now)} (tournoi ou intersaison)` : ''}${hasCT() ? '<br>' + (p.c ? (isFree(p) ? `<b class="down">Fin de contrat le ${cDate(p.c, true)}</b>` : `Sous contrat jusqu'au ${cDate(p.c, true)}`) : 'Contrat non renseigné dans la base de Riot') : ''}</p></div><button class="close" data-close>Fermer</button></header>`;
     html += `<section><div class="split">
-      <div><small>Niveau de son équipe</small><span class="num">${nInt(p.team_lvl)}</span></div>
+      <div><small>Niveau de son équipe${p.tse ? ', à ± ' + fmt(p.tse, 1) + ' près' : ''}</small><span class="num">${nInt(p.team_lvl)}</span></div>
       <div><small>Écart individuel</small><span class="num ${p.ind >= 0 ? 'up' : 'down'}">${p.ind >= 0 ? '+' : ''}${fmt(p.note - p.team_lvl, 1)}</span></div>
       <div><small>Forme, 15 dernières parties</small><span class="num ${d >= 1.5 ? 'up' : d <= -1.5 ? 'down' : ''}">${nInt(p.form)}</span></div>
       <div><small>Parties jouées, ${pctTxt(p.st.win)} de victoires</small><span class="num">${p.n}</span></div></div>
       ${p.rc ? `<p class="legend" style="margin-top:10px">Période récente (${h(p.rc[3])} et ce qui a suivi, ${p.rc[1]} parties depuis le ${frDate(p.rc[2])}) : <b class="${noteCls(p.rc[0])}">${nInt(p.rc[0])}</b></p>` : ''}
+      ${p.tr && Object.keys(p.tr).length > 1 ? `<p class="legend" style="margin-top:10px">Par niveau de ligue : ${Object.keys(p.tr).sort().map((k) => `${TIER_IN[k]} <b class="${noteCls(p.tr[k][0])}">${nInt(p.tr[k][0])}</b> (${p.tr[k][1]} parties, ${h(p.tr[k][2])})`).join(' ; ')}</p>` : ''}
       <div class="tags">${arch ? `<span class="tag gold">${arch}</span>` : ''}${styleTags(p).map((t) => `<span class="tag">${t}</span>`).join('')}</div></section>`;
     if (ins.plus.length || ins.minus.length) html += `<section><div class="two"><div><h3>Forces</h3>${ins.plus.length ? `<ul class="say">${ins.plus.map((x) => `<li>${x}</li>`).join('')}</ul>` : '<p class="legend">Rien qui ressorte nettement par rapport à son poste.</p>'}</div>
       <div><h3>Points faibles</h3>${ins.minus.length ? `<ul class="say minus">${ins.minus.map((x) => `<li>${x}</li>`).join('')}</ul>` : '<p class="legend">Aucun point faible marqué par rapport à son poste.</p>'}</div></div></section>`;
@@ -398,6 +408,9 @@
   }
   function renderScout() {
     const sc = state.sc; const t = sc.tid ? team(sc.tid) : null;
+    $('#scout-mode').querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', b.dataset.scmode === sc.mode));
+    $('#scout-team').hidden = sc.mode !== 'team'; $('#scout-cracks').hidden = sc.mode !== 'cracks';
+    if (sc.mode === 'cracks') return renderCracks();
     const lineup = $('#lineup'), brief = $('#brief'), rows = $('#scout-rows');
     $('#s-roles').querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', b.dataset.role === sc.role));
     let inc = null, needs = null;
@@ -418,14 +431,16 @@
     if (t && needs) {
       const weakest = needs.gap.map((g, i) => [g, i]).filter((x) => x[0] >= 1.5).sort((a, b) => b[0] - a[0]).slice(0, 2).map((x) => FLABEL[FAC[x[1]]].toLowerCase());
       const res = needs.gold >= 1 ? 'Les quatre autres joueurs consomment beaucoup d\'or : un profil peu gourmand s\'intègre mieux.' : needs.gold <= -1 ? 'Les quatre autres joueurs consomment peu d\'or : il y a de la place pour un carry.' : 'Les ressources sont réparties de façon classique entre les quatre autres joueurs.';
-      txt = `<b>${h(t.name)}</b> (${h(lgName(t.league))}, niveau ${nInt(t.lvl)}) cherche un <b>${sc.role}</b>${inc ? `, à la place de ${h(inc.name)} (${nInt(inc.note)}, ${(archetype(inc) || '').toLowerCase()})` : ''}. ` +
+      txt = `<b>${h(t.name)}</b> (${h(lgName(t.league))}, niveau ${nInt(t.lvl)}${t.se ? ' ± ' + fmt(t.se, 1) : ''}) cherche un <b>${sc.role}</b>${inc ? `, à la place de ${h(inc.name)} (${nInt(inc.note)}, ${(archetype(inc) || '').toLowerCase()})` : ''}. ` +
         (weakest.length ? `Le reste de l'équipe est en retrait sur : <b>${weakest.join('</b> et <b>')}</b>. ` : 'Le reste de l\'équipe n\'a pas de facette nettement en retrait. ') + res;
     } else if (inc) txt = `Joueurs au poste de <b>${sc.role}</b> comparés à <b>${h(inc.name)}</b> (${nInt(inc.note)}, ${(archetype(inc) || '').toLowerCase()}).`;
     else txt = `Choisissez une équipe pour chercher un renfort adapté à son effectif, ou parcourez directement les meilleurs <b>${ROLE_PL[sc.role]}</b>.`;
     brief.innerHTML = txt;
     // candidats
-    let C = S.players.filter((p) => p.role === sc.role && p.n >= sc.minG && p.note >= sc.minNote && (!t || p.tid !== t.tid) && (!inc || p.id !== inc.id) && (!t || !sc.reach || p.team_lvl <= t.lvl + 1) && cMatch(p, sc.contract) &&
-      (!hasMeta() || ((!sc.maxAge || (p.age && p.age <= sc.maxAge)) && (!sc.res || p.res === sc.res))) &&
+    // niveau de ligue choisi : un joueur qui y a joué sans que ce soit son niveau principal est proposé avec sa note sur ces seules parties
+    const stint = (p) => { if (sc.tier === '' || sc.league || p.tier === +sc.tier) return p; const v = p.tr && p.tr[sc.tier]; return v ? Object.assign({}, p, { note: v[0], n: v[1], team: v[2], league: v[3], region: D.region[v[3]] || p.region, tier: +sc.tier, _tr: true }) : p; };
+    let C = S.players.map(stint).filter((p) => p.role === sc.role && p.n >= sc.minG && p.note >= sc.minNote && (!t || p.tid !== t.tid) && (!inc || p.id !== inc.id) && (!t || !sc.reach || p.team_lvl <= t.lvl + 1) && cMatch(p, sc.contract) &&
+      (!sc.maxAge || !hasAge() || (p.age && p.age <= sc.maxAge)) && (!hasMeta() || !sc.res || p.res === sc.res) &&
       (sc.tier === '' || p.tier === +sc.tier) && (!sc.region || p.region === sc.region) && (!sc.league || p.league === sc.league));
     C = C.map((p) => {
       const sim = inc ? similarity(p, inc) : null, comp = complement(p, needs, sc.role);
@@ -436,7 +451,7 @@
     C.sort((a, b) => key(b) - key(a));
     if (!hasCT() && sc.sort === 'end') sc.sort = 'score';
     $('#s-contract').value = hasCT() ? sc.contract : ''; $('#s-contract').disabled = !hasCT(); $('#s-sort').querySelector('[value=end]').disabled = !hasCT();
-    $('#s-age').disabled = !hasMeta(); $('#s-res').disabled = !hasMeta(); $('#s-age').value = sc.maxAge || ''; $('#s-res').value = hasMeta() ? sc.res : '';
+    $('#s-age').disabled = !hasAge(); $('#s-res').disabled = !hasMeta(); $('#s-age').value = sc.maxAge || ''; $('#s-res').value = hasMeta() ? sc.res : '';
     $('#s-sort').value = sc.sort; $('#s-reach').checked = sc.reach; $('#s-reach').disabled = !t;
     $('#scout-count').textContent = `${fmt(C.length)} candidat${C.length > 1 ? 's' : ''}`;
     if (!C.length) { rows.innerHTML = '<p class="none">Aucun candidat avec ces critères. Baissez la note minimale ou élargissez les ligues.</p>'; return; }
@@ -446,11 +461,61 @@
       const meter = (v) => v == null ? '<span class="meter"><span></span><b>–</b></span>' : `<span class="meter"><span class="bar"><i style="width:${v}%"></i></span><b>${fmt(v)}</b></span>`;
       const tried = t && sc.plan[sc.role] === p.id;
       return `<div class="row" role="button" tabindex="0" data-p="${p.id}" data-cmp="${inc ? inc.id : ''}"><span class="rank">${i + 1}</span><span class="num note ${noteCls(p.note)}">${nInt(p.note)}</span>
-        <span class="who"><b>${h(p.name)}</b><small>${h(p.team)}, ${h(lgName(p.league))}${ageTxt(p)} ${cShort(p)}</small></span><span class="pos r">${dl}</span>
+        <span class="who"><b>${h(p.name)}</b><small>${h(p.team)}, ${h(lgName(p.league))}${p._tr ? `<span class="moved">, noté sur ses seules parties de ${TIER_IN[p.tier]}</span>` : ''}${ageTxt(p)} ${cShort(p)}</small></span><span class="pos r">${dl}</span>
         <span class="m-sim">${meter(x.sim)}</span><span class="m-sim">${meter(x.comp)}</span><span class="pos games"><small>${archetype(p) || ''}${ins.length ? '<br>' + ins.join(', ') : ''}</small></span>
         ${t ? `<button class="try" data-try="${p.id}" aria-pressed="${tried}">${tried ? 'Retirer' : 'Essayer'}</button>` : '<span></span>'}</div>`;
     }).join('') + (C.length > sc.shown ? '<button class="more" id="scout-more">Afficher 60 candidats de plus</button>' : '');
   }
+  /* cracks : jeunes joueurs des ligues inférieures, notés sur leurs seules parties de ce niveau, comparés aux titulaires de la ligue majeure de leur région */
+  function majorRef(region, role) {
+    const cnt = {}; for (const t of S.teams) if (t.tier === 0 && D.region[t.league] === region) cnt[t.league] = (cnt[t.league] || 0) + 1;
+    const lg = Object.keys(cnt).sort((a, b) => cnt[b] - cnt[a])[0];
+    const of = (T) => T.map((t) => byId.get(t.roster[role])).filter(Boolean);
+    return { lg, own: lg ? of(S.teams.filter((t) => t.league === lg)) : [], all: of(S.teams.filter((t) => t.tier === 0)) };
+  }
+  function cracks() {
+    const c = state.sc.cr, refs = {};
+    const out = [];
+    for (const p of S.players) {
+      if (!p.age || p.age > c.maxAge || (c.role && p.role !== c.role) || !p.tr || !cMatch(p, c.contract)) continue;
+      const cand = ['1', '2'].filter((k) => (k === '1' || c.deep) && p.tr[k] && p.tr[k][1] >= c.minG).map((k) => [k, p.tr[k]]).sort((a, b) => b[1][1] - a[1][1])[0];
+      if (!cand) continue;
+      const v = cand[1], region = D.region[v[3]] || p.region, maj = p.tr['0'];
+      if ((c.region && region !== c.region) || (c.fresh && maj)) continue;
+      const key = region + p.role, ref = refs[key] || (refs[key] = majorRef(region, p.role));
+      // titulaires de la ligue majeure de sa région, puis de toutes les ligues majeures (lui-même exclu s'il y est devenu titulaire)
+      const cmp = (L) => { L = L.filter((x) => x.id !== p.id); const a = L.filter((x) => x.note < v[0]).length; return { a, N: L.length, share: L.length ? a / L.length : 0 }; };
+      const own = cmp(ref.own), all = cmp(ref.all);
+      const verdict = own.share >= 0.5 ? 2 : own.share >= 0.25 || all.share >= 0.25 ? 1 : 0;
+      if (!c.all && !verdict) continue;
+      out.push({ p, note: v[0], n: v[1], team: v[2], lg: v[3], tier: +cand[0], region, maj, lgRef: ref.lg, own, all, verdict });
+    }
+    return out.sort((a, b) => b.note - a.note);
+  }
+  function renderCracks() {
+    const c = state.sc.cr, rows = $('#crack-rows');
+    $('#c-roles').querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', b.dataset.role === c.role));
+    $('#c-age').value = c.maxAge; $('#c-min').value = c.minG; $('#c-deep').checked = c.deep; $('#c-fresh').checked = c.fresh; $('#c-all').checked = c.all;
+    $('#c-contract').disabled = !hasCT(); $('#c-contract').value = hasCT() ? c.contract : '';
+    const regions = [...new Set(S.players.filter((p) => p.tier > 0).map((p) => p.region))].sort();
+    $('#c-region').innerHTML = '<option value="">Toutes</option>' + regions.map((r) => `<option${r === c.region ? ' selected' : ''}>${h(r)}</option>`).join('');
+    if (!hasAge()) { $('#crack-count').textContent = ''; rows.innerHTML = '<p class="none">Les âges ne sont pas disponibles pour cette saison : la recherche de jeunes joueurs ne peut pas se faire.</p>'; return; }
+    const L = cracks();
+    $('#crack-count').textContent = `${fmt(L.length)} joueur${L.length > 1 ? 's' : ''} de ${c.maxAge} ans ou moins`;
+    if (!L.length) { rows.innerHTML = '<p class="none">Aucun joueur avec ces critères. Relevez l\'âge maximum ou affichez aussi ceux qui sont encore loin du niveau.</p>'; return; }
+    rows.innerHTML = L.slice(0, c.shown).map((x, i) => {
+      const p = x.p, N = x.own.N, ins = insights(p).plus.slice(0, 2).map((s) => s.replace(/<b>(.*?)<\/b>.*/, '$1'));
+      const where = h(lgName(x.lgRef || ''));
+      const face = (!N ? '' : x.own.a === 0 ? `Derrière les ${N} titulaires de ${where}` : x.own.a === N ? `Devant les ${N} titulaires de ${where}` : `Devant ${x.own.a} des ${N} titulaires de ${where}`) +
+        (x.all.N ? `${N ? ', et devant ' : 'Devant '}${x.all.a} des ${x.all.N} titulaires de toutes les ligues majeures` : '');
+      const tag = x.verdict === 2 ? '<span class="tag gold">Niveau titulaire</span>' : x.verdict === 1 ? '<span class="tag">Mérite un essai</span>' : '<span class="tag mute">À suivre</span>';
+      return `<button class="row" data-p="${p.id}"><span class="rank">${i + 1}</span><span class="num note ${noteCls(x.note)}">${nInt(x.note)}</span>
+        <span class="who"><b>${h(p.name)}</b><small>${h(x.team)}, ${h(lgName(x.lg))}, ${p.age} ans ${cShort(p)}${x.maj ? `<span class="moved"><br>Déjà ${x.maj[1]} parties en ${h(lgName(x.maj[3]))}, note ${nInt(x.maj[0])}</span>` : ''}</small></span>
+        <span class="pos">${p.role}</span><span class="face">${tag}<small>${face}</small></span>
+        <span class="pos games"><small>${archetype(p) || ''}${ins.length ? '<br>' + ins.join(', ') : ''}</small></span><span class="r games">${x.n}</span></button>`;
+    }).join('') + (L.length > c.shown ? '<button class="more" id="crack-more">Afficher 60 joueurs de plus</button>' : '');
+  }
+
   function suggest(q) {
     const box = $('#suggest'); q = q.trim().toLowerCase();
     if (!q) { box.hidden = true; return; }
@@ -491,6 +556,9 @@
       else if (b.dataset.p) openSheet(b.dataset.p, b.dataset.cmp);
       else if (b.hasAttribute('data-close')) closeSheet();
       else if (b.dataset.tid) { $('#suggest').hidden = true; setTeam(b.dataset.tid); }
+      else if (b.dataset.scmode) { state.sc.mode = b.dataset.scmode; renderScout(); }
+      else if (b.id === 'crack-more') { state.sc.cr.shown += 60; renderScout(); }
+      else if (b.closest('#c-roles')) { state.sc.cr.role = b.dataset.role; state.sc.cr.shown = 60; renderScout(); }
       else if (b.dataset.lgmode) { state.basis = b.dataset.lgmode; state.shown = 100; renderRank(); }
       else if (b.id === 'more') { state.shown += 100; renderRank(); }
       else if (b.id === 'scout-more') { state.sc.shown += 60; renderScout(); }
@@ -509,6 +577,9 @@
     bind('#s-tier', (v) => { state.sc.tier = v; }); bind('#s-region', (v) => { state.sc.region = v; }); bind('#s-league', (v) => { state.sc.league = v; });
     bind('#s-sort', (v) => { state.sc.sort = v; }); $('#s-reach').addEventListener('change', (e) => { state.sc.reach = e.target.checked; state.sc.shown = 60; renderScout(); });
     bind('#s-note', (v) => { state.sc.minNote = +v || 0; }); bind('#s-min', (v) => { state.sc.minG = +v || 0; });
+    const cr = state.sc.cr;
+    bind('#c-age', (v) => { cr.maxAge = +v || 21; }); bind('#c-region', (v) => { cr.region = v; }); bind('#c-min', (v) => { cr.minG = +v || 0; }); bind('#c-contract', (v) => { cr.contract = v; });
+    [['#c-deep', 'deep'], ['#c-fresh', 'fresh'], ['#c-all', 'all']].forEach(([id, k]) => $(id).addEventListener('change', (e) => { cr[k] = e.target.checked; cr.shown = 60; renderScout(); }));
     $('#team-input').addEventListener('input', (e) => suggest(e.target.value));
     $('#team-input').addEventListener('focus', (e) => { e.target.select(); });
     document.addEventListener('keydown', (e) => { if ((e.key === 'Enter' || e.key === ' ') && e.target.matches && e.target.matches('div.row[data-p]')) { e.preventDefault(); openSheet(e.target.dataset.p, e.target.dataset.cmp); }
