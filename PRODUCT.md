@@ -7,53 +7,78 @@ Répondre à deux questions, pour quelqu'un qui suit la scène professionnelle o
 1. Qui sont les meilleurs joueurs du monde, à chaque poste, dans chaque ligue, sur chaque événement ?
 2. Quel joueur recruter à un poste donné, en tenant compte de son niveau, de son style et de son contrat ?
 
-La note doit coller au ressenti d'un observateur averti. Une note que personne ne trouve crédible est un défaut, même si le calcul est défendable.
+La note doit coller au ressenti d'un observateur averti. Une note que personne ne trouve crédible est un défaut, même si le calcul est défendable. Mais quand le ressenti et les données divergent, on teste avant de corriger, et on ne corrige que si un test le justifie (voir « Ce qui a été testé et écarté »).
 
 ## Ce que l'appli propose
 
 - **Classement** : meilleur cinq et liste complète ; filtres poste, niveau de ligue, région, ligue, événement, contrat ; saisons 2025 et 2026.
-- **Fiche joueur** : note, niveau de l'équipe et écart individuel, forme récente, forces et points faibles rédigés, huit facettes, weakside et strongside, note par événement, statistiques, champions, joueurs au style proche, date de fin de contrat.
-- **Scouting** : une équipe et un poste à pourvoir ; candidats classés par note, ressemblance de style avec le titulaire et apport aux quatre autres joueurs ; filtre et tri par fin de contrat.
+- **Qui afficher, et sur quoi noter** : les filtres choisissent les joueurs ; le sélecteur « Noter les joueurs sur » choisit la note (toute la saison, ou la ligue / l'événement choisi seulement). Région + événement donne par exemple les notes des Worlds des joueurs d'EMEA.
+- **Fiche joueur** : note, niveau de l'équipe et écart individuel, forme récente, forces et points faibles rédigés, huit facettes, weakside et strongside, parcours de la saison (une note par équipe), note par événement, statistiques (dont morts inutiles, présence sur les objectifs, temps près de son jungler), champions, joueurs au style proche, âge, nationalité, résidence, fin de contrat.
+- **Scouting** : une équipe et un poste à pourvoir ; candidats classés par note, ressemblance de style avec le titulaire et apport aux quatre autres joueurs ; filtres contrat, âge maximum, résidence ; tri par fin de contrat.
 - **Avant et après** (dans le scouting) : on essaie un ou plusieurs joueurs dans une équipe ; niveau de l'effectif, chances de victoire contre une équipe moyenne de la ligue, rang estimé et profil par facette sont recalculés et comparés à l'effectif actuel.
 - **Méthode** : le calcul expliqué simplement, avec ses limites.
 
-## Choix de méthode et raisons
+## Le calcul
+
+### La note
 
 - **Note = niveau de l'équipe + écart individuel.** Des stats brutes surnotent les joueurs qui dominent une petite ligue. Le niveau d'équipe (modèle de victoire sur toute la saison, ligues situées entre elles par les tournois internationaux) place tout le monde sur une échelle commune ; les stats ne servent qu'à départager par rapport à ce qu'on attend dans ce contexte.
 - **Stats comparées au même poste, dans la même compétition, corrigées du champion.** Chaque ligue a son rythme (plus de combats en LPL, plus de vision en LCK) et un tank n'a pas à être jugé sur les dégâts d'un carry.
+- **Stats attendues selon l'écart de niveau entre les deux équipes**, estimées par niveau de ligue, affinées par compétition et plafonnées pour les gros écarts. Estimées globalement, elles pénalisaient les joueurs des équipes qui dominent une ligue majeure (G2, Karmine Corp) et gonflaient ceux des équipes faibles.
 - **Poids de l'écart individuel calé sur les données** (environ 100 points par écart-type), pas choisi à la main.
-- **Échelle** : 80 = joueur médian des ligues majeures, plafond tassé vers 97 pour que 99 reste hors d'atteinte.
-- **Style séparé du niveau.** Le vecteur de style (ressources, activité avant 15 minutes, risque, vision, type de champions) sert à comparer des profils, jamais à noter.
-- **Stats attendues estimées par niveau de ligue**, affinées par compétition et plafonnées pour les gros écarts de niveau. Estimées globalement, elles pénalisaient les joueurs des équipes qui dominent une ligue majeure (G2, Karmine Corp) et gonflaient ceux des équipes faibles.
-- **Note par événement = niveau d'équipe réestimé sur l'événement.** Le même modèle de victoire est relancé sur les seules parties de l'événement, toutes équipes ensemble, avec le niveau de saison comme point de départ faible (équivalent de deux à trois parties). Auparavant la note restait collée au niveau de saison quand l'équipe jouait peu de parties : à l'EWC 2026, Anyone's Legend (4 parties, battu 2-0 par Karmine Corp) restait devant. Les qualifications régionales d'un tournoi (parties entre équipes d'une même région, jouées plus de 21 jours avant) sont notées à part, une par région, et leurs stats sont comparées à la ligue de la région (qualifications EMEA de l'EWC = LEC). Les événements sont classés d'après les équipes présentes : international, entre ligues d'une même région, ou coupe d'une seule ligue.
-- **Qui afficher et sur quoi noter sont deux choix séparés.** Niveau, région, ligue et événement choisissent les joueurs (ligue actuelle, ou participation à l'événement). Le sélecteur « Noter les joueurs sur » choisit la note : toute la saison, ou la ligue / l'événement seulement. Par défaut : toute la saison pour une ligue, l'événement seulement pour un événement. À filtres égaux, une note de saison ne doit jamais changer à cause de l'interface.
-- **Chronologies Leaguepedia** (11 146 parties en 2026 et 11 491 en 2025, tout sauf la LPL) : morts inutiles (moitié de « Survie »), présence individuelle sur les objectifs (moitié de « Objectifs »), weakside/strongside d'après le temps que le jungler passe près du joueur, et trois dimensions de style. Effet mesuré sur les notes : 0,1 point en médiane, 1,1 au plus. Ces mesures sont toujours un plus, jamais une condition : une partie sans chronologie se calcule comme avant.
-- **Joueurs à plusieurs équipes.** Chaque partie compte avec son équipe et sa ligue. Équipe et ligue affichées = celles des dernières parties de ligue de la saison (pas d'une coupe d'intersaison : en 2025, Viper reste à Hanwha Life en LCK, avec la mention de son passage à Bilibili Gaming). La fiche montre le parcours et une note par équipe. Un joueur enregistré sous deux identifiants (même pseudo, équipe et poste) est réuni.
-- **Parties hors poste principal comptées** (599 lignes, 122 joueurs en 2026), comparées aux joueurs du poste joué ; style et statistiques affichées sur le seul poste principal.
-- **Échelle fixe.** La conversion points → note (`SCALE_A`, `SCALE_B` dans `build.py`) ne bouge plus à chaque mise à jour ; `build.py` affiche l'écart avec l'échelle recalculée. À recaler à la main en début de saison.
-- **Écart interne de la LCK et de la LPL élargi** (`SD_TEAM_BY_LEAGUE`, 250 au lieu de 160). Sur des parties cachées au modèle, le haut du classement battait le bas 3 à 4 points plus souvent qu'annoncé ; corrigé pour l'essentiel, sans dégrader les autres ligues. Les équipes du bas de ces ligues baissent, celles du haut montent.
-- **Ligues sans segment dans les données** (LFL et Nexus League 2026…) : découpées aux pauses de plus de 3 semaines et nommées par leurs mois (« LFL, avril à juin »). Quand une ligue a des segments pour une partie seulement de ses parties (LJL, Circuito Desafiante, NACL, NLC, fin de la LFL 2025), les parties sans segment (qualifications, ouvertures, barrages) sont rattachées au segment le plus proche dans le temps.
-- **Groupes de niveau en LPL et en LCK : vérifié, pas de correction propre aux groupes.** La LPL se joue toute l'année en groupes isolés (474 parties en 2026), la LCK en fin de saison (98). Trois tests : (1) le niveau des équipes est bien calibré hors échantillon (favoris nets annoncés à 72 %, gagnants à 71 % en LCK et LPL) ; (2) à écart de niveau égal, les groupes faibles n'ont pas de stats gonflées de façon régulière ; (3) comparer chaque joueur à son seul groupe remonterait les joueurs des groupes faibles au lieu de les baisser. Le réglage existe (`GROUP_CONTEXT`) mais reste désactivé.
-- **Écart individuel plus haut dans les équipes du bas de tableau**, dans toutes les ligues majeures, groupes ou non (LEC comprise). C'est l'envers du constat sur G2 et Karmine Corp : une équipe qui gagne plus que ses stats ne l'annoncent a un niveau d'équipe haut et des écarts individuels négatifs, et inversement. La note totale (équipe + individuel) reste cohérente ; c'est le partage entre les deux qui est flou.
-- **Niveaux de ligue de départ** repris du projet LoL Ratings 3.0, seul élément hérité de l'ancien modèle.
+- **Échelle fixe** : 80 = joueur médian des ligues majeures, plafond tassé vers 97. La conversion points → note (`SCALE_A`, `SCALE_B`) ne bouge plus d'une mise à jour à l'autre ; à recaler en début de saison.
+- **Écart interne de la LCK et de la LPL plus large** que dans les autres ligues (`SD_TEAM_BY_LEAGUE`, 250 contre 160). Sur des parties cachées au modèle, le haut de ces ligues battait le bas 3 à 4 points plus souvent qu'annoncé ; cette dispersion plus large corrige l'essentiel sans dégrader les autres ligues ni les tournois internationaux. Effet : environ 0,5 point de note.
+- **Chronologies Leaguepedia** (11 146 parties en 2026, 11 491 en 2025, tout sauf la LPL) : morts inutiles (moitié de « Survie »), présence individuelle sur les objectifs (moitié de « Objectifs »), weakside/strongside d'après le temps que le jungler passe près du joueur, trois dimensions de style. Toujours un plus, jamais une condition : une partie sans chronologie se calcule comme avant. Positions ignorées dans les rares parties où le jungler n'est pas à sa place habituelle dans le fichier.
+- **Parties hors poste principal comptées**, comparées aux joueurs du poste réellement joué (96 joueurs concernés en 2026 ; leur note baisse le plus souvent, on joue moins bien hors de son poste). Style et statistiques affichées : poste principal seulement.
+- **Style séparé du niveau.** Le vecteur de style sert à comparer des profils, jamais à noter.
+
+### Joueurs, équipes, ligues
+
+- **Chaque partie compte avec l'équipe et la ligue où elle a été jouée.** Équipe et ligue affichées = celles des dernières parties de ligue de la saison, pas d'une coupe d'intersaison ni d'une équipe de tournoi (Rekkles 2026 : Los Ratones en LEC, « puis Witchcraft » ; Viper 2025 : Hanwha Life, pas Bilibili Gaming).
+- **Un filtre de ligue liste tous ceux qui y ont joué cette saison**, même partis depuis, avec leur équipe dans cette ligue et celle qu'ils ont rejointe (Looki : Karmine Corp Blue Stars en Nexus League, puis Karmine Corp Blue en LFL).
+- **Un même joueur sous deux identifiants** (même pseudo, équipe et poste) est réuni.
+
+### Événements
+
+- **Note par événement = niveau d'équipe réestimé sur l'événement**, toutes équipes ensemble, le niveau de saison ne servant que de point de départ faible. Battre une équipe compte selon ce qu'elle a fait dans ce même tournoi, pas selon sa ligue. La forme sur les 15 dernières parties suit la même logique.
+- **Portée d'un événement d'après les équipes présentes** : international (plusieurs régions), entre ligues d'une même région, ou coupe d'une seule ligue. Une équipe invitée isolée ne suffit pas à rendre un tournoi international (KeSPA Cup = coupe).
+- **Qualifications régionales** (parties entre équipes d'une même région, jouées plus de 3 semaines avant un tournoi international) : notées à part, une par région (« EWC, qualifications EMEA »), et leurs stats comparées à la ligue de la région (EMEA = LEC). La qualification chinoise des Worlds est distincte du dernier split de LPL (playoffs finis le 13 septembre, qualification du 17 au 19).
+- **Éditions d'un même tournoi** nommées par leur segment (EMEA Masters Winter, Spring, Summer).
+- **Ligues sans segment dans les données** (LFL et Nexus League 2026) : découpées aux pauses de plus de 3 semaines et nommées par leurs mois (« LFL, janvier à mars » = tournoi d'ouverture). Quand une partie seulement des matchs d'une ligue a un segment (LJL, Circuito Desafiante, NACL, NLC, fin de la LFL 2025), les autres (qualifications, ouvertures, barrages) rejoignent le segment le plus proche dans le temps.
+
+## Ce qui a été testé et écarté
+
+Ces pistes ont été vérifiées sur les données et n'ont pas conduit à une correction. Les relancer avant de changer le calcul dans le même sens.
+
+- **Les joueurs des groupes faibles de LPL et de LCK sont-ils surnotés ?** La LPL se joue toute l'année en groupes isolés, la LCK en fin de saison. Le niveau des équipes est bien calibré hors échantillon ; à écart de niveau égal, les groupes faibles n'ont pas de stats gonflées de façon régulière ; comparer chaque joueur à son seul groupe remonterait ces joueurs au lieu de les baisser. Réglage disponible, désactivé (`GROUP_CONTEXT`).
+- **Le bas de la LCK est-il bien en dessous de G2 et KC ?** Le modèle met G2 (88) devant HANJIN BRION, DN SOOPers et Kiwoom DRX (86), Karmine Corp à leur niveau, et le bas de la LPL 6 à 8 points sous G2 et KC. Matchs directs Occident contre bas de LCK en 2026 : 7 parties, dont G2 3-0 FEARX (en faveur du ressenti) et des défaites de Vitality et NAVI, équipes moyennes de LEC (sans valeur de preuve). Trop peu pour corriger.
+- **La part individuelle des joueurs d'équipes faibles est-elle un effet d'équipe ?** Chez les 619 joueurs qui ont changé d'équipe entre 2025 et 2026, la part de leurs stats commune à leur équipe les suit autant que leur part propre (0,27 dans les deux cas) : c'est du niveau réel. Les joueurs passés de Corée vers l'Occident gardent leur note (kyeahoo 84,5 à Kiwoom DRX en 2025 puis à Karmine Corp en 2026 ; Loki 82 à HANJIN BRION puis à Cloud9).
+- **Fiabilité de l'écart individuel.** Mesurée par moitiés de parties : il faut l'équivalent de 22 à 30 parties pour que la moitié d'un écart soit fiable, contre 12 dans le réglage (`K_SHRINK`). Corriger ce réglage ne change presque rien aux joueurs avec beaucoup de parties (normalisation par poste) et a été laissé tel quel.
+- **Les meilleurs occidentaux sont-ils sous-classés ?** En 2026, ils sont 7e (Caps) à 18e (Alvaro) de leur poste. Deux tests : (1) en face-à-face de lane contre la Corée et la Chine, l'or à 15 minutes réel correspond à celui que prévoit l'écart de note (LEC : −16 et −10 pièces d'or d'écart en 2026 et 2025, rien de mesurable ; LCS 2025 un peu en dessous) ; (2) en tournoi international, les joueurs de LEC font un peu moins bien que leur note de saison, comparés aux Coréens et aux Chinois (+0,3 et −1,1 point, contre +0,8 à +1,4). Les données ne justifient pas de les remonter.
 
 ## Limites connues
 
-- Labrov et Busio (LEC 2026) sortent sous le ressenti général. L'hypothèse « sous-notés parce qu'ils initient » a été testée avec les chronologies et n'est pas confirmée : 49 % des morts de Labrov sont inutiles (37 % pour Keria), et Busio n'est présent que sur 27 % des objectifs de son équipe. Ce qui reste hors de portée des stats : appels, placement, rôle dans l'équipe.
+- **Partage équipe / individuel.** Une équipe qui gagne plus que ses stats ne l'annoncent (G2, Karmine Corp, T1) reçoit un niveau d'équipe haut et des écarts individuels négatifs ; une équipe qui perd malgré des stats correctes (bas de LCK, JD Gaming, LNG) reçoit l'inverse. La note totale reste cohérente ; c'est le partage entre « équipe » et « individuel » qui est flou, et qui fait que des joueurs d'équipes moyennes (DuDu, Aiming, Teddy) passent devant des joueurs occidentaux d'équipes plus fortes.
+- **Ressentis non confirmés par les données**, à garder en tête : Labrov et Busio (morts inutiles et présence sur les objectifs faibles, l'hypothèse « ils initient » ne tient pas) ; Caliste 17e des ADC en 2026 (87, plombé par un MSI à 76 alors que son été LEC et son EWC sont à 91-92) ; les meilleurs occidentaux en général.
+- **Ce que les stats ne voient pas** : appels, placement, draft, décisions de fin de partie. S'ils font gagner une équipe, ça se retrouve dans son niveau, pas dans les notes individuelles.
 - Dans un effectif qui ne change jamais, le niveau de l'équipe est partagé entre les cinq joueurs.
-- Les positions ne sont connues qu'une fois par minute : la proximité du jungler est une bonne mesure, pas un suivi continu. Les joueurs de LPL n'ont ni morts inutiles, ni présence sur les objectifs, ni proximité du jungler.
+- Les positions ne sont connues qu'une fois par minute. Les joueurs de LPL n'ont ni morts inutiles, ni présence sur les objectifs, ni proximité du jungler (pas de chronologie).
+- La forme réagit fort sur 15 parties (jusqu'à 20 points d'écart avec la note de saison).
 - Une fin de contrat proche ne dit pas si le joueur a prolongé ou signé ailleurs. La base de Riot couvre les ligues majeures et les principales ligues régionales ; ses onglets ne sont pas mis à jour au même rythme.
-
 - La simulation avant et après suppose que chaque joueur joue dans sa nouvelle équipe comme il a joué cette saison : ni entente, ni langue, ni adaptation à une autre ligue.
+- Trois sigles de tournois restent sans nom sûr : AC, CCWS, CT.
 
 ## Sources
 
-- Matchs : Oracle's Elixir (fichiers annuels). Reste la source des notes.
-- Leaguepedia (compte requis) : âge, pays, résidence, contrats en complément. Il donne aussi, pour chaque partie hors LPL, le fichier complet de Riot et la chronologie (kills avec position, position de chaque joueur toutes les minutes). Couverture mesurée sur 2026 : 11 377 parties sur 12 405, soit tout sauf la LPL et quelques coupes chinoises (0 %).
+- Matchs : Oracle's Elixir (fichiers annuels). Reste la source des notes. Téléchargement depuis Google Drive, parfois bloqué par un quota.
+- Leaguepedia (compte requis) : âge, pays, résidence, contrats en complément, et pour chaque partie hors LPL le fichier complet de Riot et la chronologie (kills avec position, position de chaque joueur toutes les minutes). Couverture : 92 % des parties d'Oracle's Elixir, tout sauf la LPL et une partie des coupes chinoises.
 - Contrats : base publique des contrats reconnus par Riot.
+- Niveaux de ligue de départ : projet LoL Ratings 3.0, seul élément hérité de l'ancien modèle.
 
 ## Suite envisagée
 
-- G2 et Karmine Corp gardent un écart individuel négatif sur leurs cinq joueurs : ces équipes gagnent plus que leurs stats ne le laissent attendre. À comprendre.
+- Faire tourner une fois la mise à jour automatique de bout en bout (jamais réussi : quota Google Drive au seul essai).
+- Comprendre le partage équipe / individuel (G2 et Karmine Corp négatifs, bas de tableau positifs) sans casser ce que montrent les tests de transfert.
+- La LEC 2025 montre le même écart haut / bas sous-estimé que la LCK et la LPL (6 points), pas la LEC 2026 : à surveiller avant de l'étendre.
 - Capter la forme au fil de la saison (une équipe qui monte en puissance n'est pas distinguée d'une équipe qui décline à bilan égal).
 - Nouvelle saison : voir la liste des ajouts manuels dans `CLAUDE.md`.
