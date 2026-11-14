@@ -28,6 +28,9 @@ SD_TEAM, SD_LEAGUE = 160.0, 90.0   # a priori : dispersion des équipes dans une
 # de plus qu'annoncé, sur des parties cachées au modèle). Une dispersion plus large y corrige l'essentiel, sans dégrader
 # les autres ligues ni les tournois internationaux (validation croisée en 5 parts, saisons 2025 et 2026, novembre 2026).
 SD_TEAM_BY_LEAGUE = {'LCK': 250.0, 'LPL': 250.0}
+# Poids d'un match entre deux ligues dans le niveau des équipes. Testé à 2, 3 et 5 en novembre 2026 (validation croisée
+# 2025-2026) : les prédictions se dégradent, y compris entre ligues. Laissé à 1, comme un match de ligue.
+CROSS_WEIGHT = 1.0
 K_SHRINK = 12            # parties « fictives » au niveau moyen ajoutées à chaque joueur
 SIGMA_IND = 100.0        # points : un écart-type d'écart individuel
 SIGMA_FACET = 185.0      # points : un écart-type sur une facette
@@ -183,13 +186,15 @@ def team_levels(t, cups, prior):
     X /= PTS_PER_LOGIT
     off = (pri[b.tid.map(ti).values] - pri[r.tid.map(ti).values]) / PTS_PER_LOGIT
     y = b.result.values.astype(float)
+    hb, hr = b.tid.map(home), r.tid.map(home)
+    gw = np.where(hb.notna().values & hr.notna().values & (hb.values != hr.values), CROSS_WEIGHT, 1.0)   # poids des matchs entre ligues
     # dispersion attendue des équipes autour du niveau de leur ligue : plus large en LCK et en LPL (voir SD_TEAM_BY_LEAGUE)
     sd_t = np.array([SD_TEAM_BY_LEAGUE.get(home[x], SD_TEAM) if isinstance(home[x], str) else SD_TEAM for x in teams])
     pen = np.r_[1 / sd_t ** 2, np.full(nL, 1 / SD_LEAGUE ** 2), 0.0]
     beta = np.zeros(X.shape[1])
     for _ in range(30):
-        eta = off + X @ beta; mu = 1 / (1 + np.exp(-eta)); w = mu * (1 - mu)
-        H = X.T @ (X * w[:, None]) + np.diag(pen); gr = X.T @ (y - mu) - pen * beta
+        eta = off + X @ beta; mu = 1 / (1 + np.exp(-eta)); w = gw * mu * (1 - mu)
+        H = X.T @ (X * w[:, None]) + np.diag(pen); gr = X.T @ (gw * (y - mu)) - pen * beta
         step = np.linalg.solve(H, gr); beta += step
         if np.abs(step).max() < 1e-6: break
     R = pri + beta[:nT]
