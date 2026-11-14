@@ -54,7 +54,10 @@ La note doit coller au ressenti d'un observateur averti. Une note que personne n
 
 ## Ce qui a été testé et écarté
 
-Ces pistes ont été vérifiées sur les données et n'ont pas conduit à une correction. Les relancer avant de changer le calcul dans le même sens.
+Ces pistes ont été vérifiées sur les données et n'ont pas conduit à une correction. Les relancer avant de changer le calcul dans le même sens. Les niveaux cités avant novembre 2026 ont été mesurés sans l'écart d'or, qui les a tous baissés d'environ un demi-point (G2 88,4 → 87,8, SkewMond 90,8 → 90,1) sans changer les classements.
+
+- **La Demacia Cup est-elle surévaluée ?** Édition internationale 2026 (FearX, Brion, KT, JDG, WE, LGD, FlyQuest, Vitality, NAVI, Shopify, RED, GAM) : calcul refait sans le tournoi, puis prédiction de ses 71 parties. LCK 28 victoires pour 26,1 annoncées, LPL 21 pour 22,7, LEC 10 pour 7,8, LCS 11 pour 9,0 : pas de surévaluation de la LCK ni de la LPL, les équipes occidentales ont fait un peu mieux que prévu (petit échantillon). Poids du tournoi dans les notes de saison : LCK +0,5 en médiane, FearX +1, GAM −1,4. Notes d'événement : +1,4 au-dessus des notes de saison, contre +0,85 en moyenne sur tous les événements (les notes d'événement, moins régularisées, avantagent un peu les joueurs qui jouent beaucoup). Demacia Cup 2025 (LPL seule) : les équipes remaniées (réserves de BLG, AL, JDG, Weibo…) ont des niveaux bas (68 à 83), les battre ne gonfle pas les vainqueurs ; les grosses notes sur peu de parties restent bruitées (Photic +13 sur 6 parties).
+- **Estimation des cracks par région** (un écart deuxième niveau → ligue majeure propre à chaque région) : écartée, voir « Cracks à essayer » plus haut.
 
 - **Les joueurs des groupes faibles de LPL et de LCK sont-ils surnotés ?** La LPL se joue toute l'année en groupes isolés, la LCK en fin de saison. Le niveau des équipes est bien calibré hors échantillon ; à écart de niveau égal, les groupes faibles n'ont pas de stats gonflées de façon régulière ; comparer chaque joueur à son seul groupe remonterait ces joueurs au lieu de les baisser. Réglage disponible, désactivé (`GROUP_CONTEXT`).
 - **Ordre « top LCK > top LEC > reste LCK > reste LEC » ?** Le modèle le donne déjà si « top LEC » = G2 et Karmine Corp : 2026, top 5 LCK 92,6 > G2 et KC 87,6 > reste LCK 86,4 > reste LEC 77,0 (2025 : 93,5 > 85,5 > 84,9 > 76,9). Avec le top 5 de la LEC (84,4), le reste de la LCK passe devant. BNK FEARX (88,6) reste au niveau de G2.
@@ -80,17 +83,20 @@ Ces pistes ont été vérifiées sur les données et n'ont pas conduit à une co
 - Une fin de contrat proche ne dit pas si le joueur a prolongé ou signé ailleurs. La base de Riot couvre les ligues majeures et les principales ligues régionales ; ses onglets ne sont pas mis à jour au même rythme.
 - La simulation avant et après suppose que chaque joueur joue dans sa nouvelle équipe comme il a joué cette saison : ni entente, ni langue, ni adaptation à une autre ligue.
 - Trois sigles de tournois restent sans nom sûr : AC, CCWS, CT.
+- **Écart entre niveaux de ligue.** Un même joueur a en moyenne 6 points de plus en ligue majeure qu'en deuxième niveau la même saison (84 joueurs ; +2 en EMEA, +7 en Corée) : une part du niveau d'équipe (équipe première contre réserve) retombe sur le joueur. Les notes ne le corrigent pas ; l'onglet Cracks en tient compte dans son estimation.
+- 30 % des joueurs des ligues inférieures n'ont pas d'âge relié (Leaguepedia sans date de naissance, ou pas de fiche reliée) : l'onglet Cracks ne les montre que sur demande et dit combien il en cache.
 
 ## Sources
 
-- Matchs : Oracle's Elixir (fichiers annuels). Reste la source des notes. Téléchargement depuis Google Drive, parfois bloqué par un quota.
+- Matchs : Oracle's Elixir (fichiers annuels). Reste la source des notes. Téléchargement depuis Google Drive, parfois bloqué par un quota. Données de la page : jusqu'au 13 novembre 2026.
 - Leaguepedia (compte requis) : âge, pays, résidence, contrats en complément, et pour chaque partie hors LPL le fichier complet de Riot et la chronologie (kills avec position, position de chaque joueur toutes les minutes). Couverture : 92 % des parties d'Oracle's Elixir, tout sauf la LPL et une partie des coupes chinoises.
 - Contrats : base publique des contrats reconnus par Riot.
 - Niveaux de ligue de départ : projet LoL Ratings 3.0, seul élément hérité de l'ancien modèle.
 
 ## Suite envisagée
 
-- Faire tourner une fois la mise à jour automatique de bout en bout (jamais réussi : quota Google Drive au seul essai).
+- Faire tourner une fois la mise à jour automatique de bout en bout (jamais réussi : quota Google Drive au seul essai ; le téléchargement par identifiant marche avec gdown 6, essayé le 14 novembre 2026).
+- Worlds 2026 : le fichier d'Oracle's Elixir du 14 novembre s'arrête aux demi-finales (Gen.G contre Invictus, Bilibili 3-1 T1) ; la finale arrivera avec la prochaine mise à jour.
 - Comprendre le partage équipe / individuel (G2 et Karmine Corp négatifs, bas de tableau positifs) sans casser ce que montrent les tests de transfert.
 - La LEC 2025 montre le même écart haut / bas sous-estimé que la LCK et la LPL (6 points), pas la LEC 2026 : à surveiller avant de l'étendre.
 - Capter la forme au fil de la saison (une équipe qui monte en puissance n'est pas distinguée d'une équipe qui décline à bilan égal).

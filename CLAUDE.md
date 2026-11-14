@@ -14,7 +14,7 @@ Notes de 1 à 100 pour les joueurs professionnels de League of Legends, fiches j
 - `pipeline/fetch_timelines.py` : chronologies des parties hors LPL, réduites à quelques mesures par joueur (morts inutiles, objectifs, proximité du jungler) dans `pipeline/lp_timeline_<année>.csv.gz` (2025 et 2026 complets). Se lance par le workflow « Chronologies Leaguepedia », reprend où il s'est arrêté. Utilisé par `build.py` quand le fichier de la saison existe (morts inutiles dans « Survie », présence dans « Objectifs », weakside/strongside, style) ; sans lui, ou pour une partie de LPL, le calcul retombe sur les stats de base avec les mêmes proportions. La clé `gameid` + `pid` correspond à `gameid` + `participantid` d'Oracle's Elixir.
 - `pipeline/leagues.json` : niveau de départ, région et noms des ligues.
 - `pipeline/check.py` : garde-fou avant publication, compare aussi au `docs/index.html` déjà publié.
-- `app/` : sources de la page (`index.template.html`, `style.css`, `app.js`).
+- `app/` : sources de la page (`index.template.html`, `style.css`, `app.js`). Le scouting a deux onglets : « Renforcer une équipe » et « Cracks à essayer » (`cracks()`, `renderCracks()` : jeunes des ligues inférieures, note de deuxième niveau convertie en note estimée en ligue majeure par la droite `proj` calculée dans `build.py`, mélangée partie pour partie aux parties déjà jouées en ligue majeure ; seuils sur les titulaires de la ligue majeure de la région). La note par niveau de ligue (`tr`, depuis `tier_table`) sert aussi au classement et au scouting quand un niveau est choisi : un joueur de passage y figure avec sa note sur ces seules parties, signalée sur la ligne.
 - `build_page.py` : assemble `app/` et `app/data.json` en `docs/index.html`.
 
 ## Commandes
@@ -30,7 +30,7 @@ python build_page.py                   # -> docs/index.html
 
 ## Mise à jour automatique
 
-`.github/workflows/update.yml` relance tout chaque mardi à 05:17 UTC (ou à la demande depuis l'onglet Actions) et committe `docs/index.html`, `pipeline/contracts.json` et les fichiers Leaguepedia (fiches joueurs, chronologies des nouvelles parties). `pipeline/check.py` bloque la publication si le résultat est manifestement cassé, ou s'il s'écarte en bloc de la page déjà publiée (parties perdues, notes déplacées de plus de 2 points en médiane) : après un changement voulu du calcul, publier à la main. Si Google Drive refuse le téléchargement, la mise à jour est reportée sans erreur. État au 14 novembre 2026 : la mise à jour n'a jamais tourné de bout en bout (bloquée par le quota Google Drive au seul essai) ; le premier passage réussi est à surveiller.
+`.github/workflows/update.yml` relance tout chaque mardi à 05:17 UTC (ou à la demande depuis l'onglet Actions) et committe `docs/index.html`, `pipeline/contracts.json` et les fichiers Leaguepedia (fiches joueurs, chronologies des nouvelles parties). `pipeline/check.py` bloque la publication si le résultat est manifestement cassé, ou s'il s'écarte en bloc de la page déjà publiée (parties perdues, notes déplacées de plus de 2 points en médiane) : après un changement voulu du calcul, publier à la main. Si Google Drive refuse le téléchargement, la mise à jour est reportée sans erreur. État au 14 novembre 2026 : la mise à jour n'a jamais tourné de bout en bout (bloquée par le quota Google Drive au seul essai) ; le premier passage réussi est à surveiller. Le téléchargement passe l'identifiant du fichier à gdown sans `--fuzzy` (option supprimée dans gdown 6, qui cassait la mise à jour de LoL Ratings). Page publiée avec les données du 13 novembre 2026 (Worlds jusqu'aux demi-finales).
 
 Les chronologies d'une saison complète se téléchargent avec le workflow « Chronologies Leaguepedia » (année, durée maximale ; environ 2 h 20 pour une saison, reprise automatique). La mise à jour hebdomadaire ne télécharge que celles des nouvelles parties.
 
@@ -42,6 +42,7 @@ Les chronologies d'une saison complète se téléchargent avec le workflow « Ch
 - Un changement du calcul se valide sur des données qu'il n'a pas vues (validation croisée sur les parties, joueurs transférés, matchs internationaux), pas seulement en regardant le classement.
 - À filtres égaux, une note ne doit jamais changer à cause d'une modification de l'interface. Après un changement d'affichage, comparer la page à la version précédente (joueurs, notes, nombres de parties) sur plusieurs combinaisons de filtres.
 - Annoncer à l'utilisateur toute variation de notes, avec son ampleur (médiane et maximum) et les joueurs qui bougent le plus.
+- Une estimation qui n'est pas une note (comme celle de l'onglet Cracks) s'ajuste sur une saison et se valide sur une autre (joueurs montés l'année suivante), et s'affiche à part de la note, libellée comme une estimation.
 
 - Ne jamais modifier `docs/index.html` à la main : il est généré. Modifier `app/` ou le pipeline, puis reconstruire et committer le `docs/index.html` obtenu.
 - `data/` et `app/data.json` ne sont pas versionnés (trop lourds, régénérables). Sans eux la page publiée fonctionne quand même : ses données sont incluses dans `docs/index.html`.
