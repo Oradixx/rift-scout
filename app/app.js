@@ -50,7 +50,7 @@
   const TIER_IN = ['ligue majeure', 'deuxième niveau', 'troisième niveau'];
   const state = { season: Object.keys(D.seasons).sort().pop(), view: 'rank', role: '', tier: '0', region: '', league: '', event: '', contract: '', basis: 'season', minG: 15, q: '', shown: 100,
     sc: { plan: {}, contract: '', maxAge: 0, res: '', tid: null, role: 'Mid', tier: '', region: '', league: '', minNote: 0, minG: 20, sort: 'score', shown: 60, ref: null, reach: true, mode: 'team',
-      cr: { role: '', maxAge: 21, region: '', deep: false, minG: 20, contract: '', fresh: false, all: false, shown: 60 } } };
+      cr: { role: '', maxAge: 21, region: '', deep: false, minG: 20, contract: '', fresh: false, all: false, noAge: false, shown: 60 } } };
   let S, byId, med;
 
   function load() {
@@ -477,40 +477,42 @@
     const c = state.sc.cr, refs = {};
     const out = [];
     for (const p of S.players) {
-      if (!p.age || p.age > c.maxAge || (c.role && p.role !== c.role) || !p.tr || !cMatch(p, c.contract)) continue;
+      if ((p.age ? p.age > c.maxAge : !c.noAge) || (c.role && p.role !== c.role) || !p.tr || !cMatch(p, c.contract)) continue;
       const cand = ['1', '2'].filter((k) => (k === '1' || c.deep) && p.tr[k] && p.tr[k][1] >= c.minG).map((k) => [k, p.tr[k]]).sort((a, b) => b[1][1] - a[1][1])[0];
       if (!cand) continue;
       const v = cand[1], region = D.region[v[3]] || p.region, maj = p.tr['0'];
       if ((c.region && region !== c.region) || (c.fresh && maj)) continue;
       const key = region + p.role, ref = refs[key] || (refs[key] = majorRef(region, p.role));
       // titulaires de la ligue majeure de sa région, puis de toutes les ligues majeures (lui-même exclu s'il y est devenu titulaire)
-      const cmp = (L) => { L = L.filter((x) => x.id !== p.id); const a = L.filter((x) => x.note < v[0]).length; return { a, N: L.length, share: L.length ? a / L.length : 0 }; };
+      // note estimée en ligue majeure (droite ajustée sur les joueurs des deux niveaux la même saison) ; le troisième niveau n'a pas de projection
+      const est = cand[0] === '1' && D.proj ? D.proj.a + D.proj.b * v[0] : v[0];
+      const cmp = (L) => { L = L.filter((x) => x.id !== p.id); const a = L.filter((x) => x.note < est).length; return { a, N: L.length, share: L.length ? a / L.length : 0 }; };
       const own = cmp(ref.own), all = cmp(ref.all);
-      const verdict = own.share >= 0.5 ? 2 : own.share >= 0.25 || all.share >= 0.25 ? 1 : 0;
+      const verdict = own.share >= 0.5 ? 2 : own.share >= 0.25 ? 1 : 0;
       if (!c.all && !verdict) continue;
-      out.push({ p, note: v[0], n: v[1], team: v[2], lg: v[3], tier: +cand[0], region, maj, lgRef: ref.lg, own, all, verdict });
+      out.push({ p, note: v[0], est, n: v[1], team: v[2], lg: v[3], tier: +cand[0], region, maj, lgRef: ref.lg, own, all, verdict });
     }
-    return out.sort((a, b) => b.note - a.note);
+    return out.sort((a, b) => b.est - a.est);
   }
   function renderCracks() {
     const c = state.sc.cr, rows = $('#crack-rows');
     $('#c-roles').querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', b.dataset.role === c.role));
-    $('#c-age').value = c.maxAge; $('#c-min').value = c.minG; $('#c-deep').checked = c.deep; $('#c-fresh').checked = c.fresh; $('#c-all').checked = c.all;
+    $('#c-age').value = c.maxAge; $('#c-min').value = c.minG; $('#c-deep').checked = c.deep; $('#c-fresh').checked = c.fresh; $('#c-all').checked = c.all; $('#c-noage').checked = c.noAge;
     $('#c-contract').disabled = !hasCT(); $('#c-contract').value = hasCT() ? c.contract : '';
     const regions = [...new Set(S.players.filter((p) => p.tier > 0).map((p) => p.region))].sort();
     $('#c-region').innerHTML = '<option value="">Toutes</option>' + regions.map((r) => `<option${r === c.region ? ' selected' : ''}>${h(r)}</option>`).join('');
     if (!hasAge()) { $('#crack-count').textContent = ''; rows.innerHTML = '<p class="none">Les âges ne sont pas disponibles pour cette saison : la recherche de jeunes joueurs ne peut pas se faire.</p>'; return; }
     const L = cracks();
-    $('#crack-count').textContent = `${fmt(L.length)} joueur${L.length > 1 ? 's' : ''} de ${c.maxAge} ans ou moins`;
+    $('#crack-count').textContent = `${fmt(L.length)} joueur${L.length > 1 ? 's' : ''} de ${c.maxAge} ans ou moins${c.noAge ? ' ou d\'âge inconnu' : ''}`;
     if (!L.length) { rows.innerHTML = '<p class="none">Aucun joueur avec ces critères. Relevez l\'âge maximum ou affichez aussi ceux qui sont encore loin du niveau.</p>'; return; }
     rows.innerHTML = L.slice(0, c.shown).map((x, i) => {
       const p = x.p, N = x.own.N, ins = insights(p).plus.slice(0, 2).map((s) => s.replace(/<b>(.*?)<\/b>.*/, '$1'));
       const where = h(lgName(x.lgRef || ''));
-      const face = (!N ? '' : x.own.a === 0 ? `Derrière les ${N} titulaires de ${where}` : x.own.a === N ? `Devant les ${N} titulaires de ${where}` : `Devant ${x.own.a} des ${N} titulaires de ${where}`) +
-        (x.all.N ? `${N ? ', et devant ' : 'Devant '}${x.all.a} des ${x.all.N} titulaires de toutes les ligues majeures` : '');
+      const face = (x.tier === 1 ? `Estimé à <b>${nInt(x.est)}</b> en ligue majeure : ` : 'Pas d\'estimation depuis le troisième niveau : ') + (!N ? '' : x.own.a === 0 ? `derrière les ${N} titulaires de ${where}` : x.own.a === N ? `devant les ${N} titulaires de ${where}` : `devant ${x.own.a} des ${N} titulaires de ${where}`) +
+        (x.all.N ? `${N ? ', et ' : ''}${x.all.a} des ${x.all.N} de toutes les ligues majeures` : '');
       const tag = x.verdict === 2 ? '<span class="tag gold">Niveau titulaire</span>' : x.verdict === 1 ? '<span class="tag">Mérite un essai</span>' : '<span class="tag mute">À suivre</span>';
       return `<button class="row" data-p="${p.id}"><span class="rank">${i + 1}</span><span class="num note ${noteCls(x.note)}">${nInt(x.note)}</span>
-        <span class="who"><b>${h(p.name)}</b><small>${h(x.team)}, ${h(lgName(x.lg))}, ${p.age} ans ${cShort(p)}${x.maj ? `<span class="moved"><br>Déjà ${x.maj[1]} parties en ${h(lgName(x.maj[3]))}, note ${nInt(x.maj[0])}</span>` : ''}</small></span>
+        <span class="who"><b>${h(p.name)}</b><small>${h(x.team)}, ${h(lgName(x.lg))}, ${p.age ? p.age + ' ans' : 'âge inconnu'} ${cShort(p)}${x.maj ? `<span class="moved"><br>Déjà ${x.maj[1]} parties en ${h(lgName(x.maj[3]))}, note ${nInt(x.maj[0])}</span>` : ''}</small></span>
         <span class="pos">${p.role}</span><span class="face">${tag}<small>${face}</small></span>
         <span class="pos games"><small>${archetype(p) || ''}${ins.length ? '<br>' + ins.join(', ') : ''}</small></span><span class="r games">${x.n}</span></button>`;
     }).join('') + (L.length > c.shown ? '<button class="more" id="crack-more">Afficher 60 joueurs de plus</button>' : '');
@@ -579,7 +581,7 @@
     bind('#s-note', (v) => { state.sc.minNote = +v || 0; }); bind('#s-min', (v) => { state.sc.minG = +v || 0; });
     const cr = state.sc.cr;
     bind('#c-age', (v) => { cr.maxAge = +v || 21; }); bind('#c-region', (v) => { cr.region = v; }); bind('#c-min', (v) => { cr.minG = +v || 0; }); bind('#c-contract', (v) => { cr.contract = v; });
-    [['#c-deep', 'deep'], ['#c-fresh', 'fresh'], ['#c-all', 'all']].forEach(([id, k]) => $(id).addEventListener('change', (e) => { cr[k] = e.target.checked; cr.shown = 60; renderScout(); }));
+    [['#c-deep', 'deep'], ['#c-fresh', 'fresh'], ['#c-all', 'all'], ['#c-noage', 'noAge']].forEach(([id, k]) => $(id).addEventListener('change', (e) => { cr[k] = e.target.checked; cr.shown = 60; renderScout(); }));
     $('#team-input').addEventListener('input', (e) => suggest(e.target.value));
     $('#team-input').addEventListener('focus', (e) => { e.target.select(); });
     document.addEventListener('keydown', (e) => { if ((e.key === 'Enter' || e.key === ' ') && e.target.matches && e.target.matches('div.row[data-p]')) { e.preventDefault(); openSheet(e.target.dataset.p, e.target.dataset.cmp); }

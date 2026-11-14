@@ -63,14 +63,14 @@
       <div class="scout-head">
         <div>
           <h1>Les cracks des ligues inférieures</h1>
-          <p>Les jeunes joueurs qui n'évoluent pas, ou pas encore durablement, en ligue majeure. Chacun est noté sur ses seules parties du niveau inférieur, puis comparé aux titulaires de la ligue majeure de sa région, au même poste.</p>
+          <p>Les jeunes joueurs qui n'évoluent pas, ou pas encore durablement, en ligue majeure. Chacun est noté sur ses seules parties du niveau inférieur. Cette note est convertie en note estimée en ligue majeure, puis comparée aux titulaires de la ligue majeure de sa région, au même poste.</p>
         </div>
         <div class="pick">
           <div class="field"><span>Poste</span>
             <div class="roles" id="c-roles" style="grid-template-columns:repeat(6,1fr)">
               <button data-role="">Tous</button><button data-role="Top">Top</button><button data-role="Jungle">Jungle</button><button data-role="Mid">Mid</button><button data-role="ADC">ADC</button><button data-role="Support">Support</button>
             </div></div>
-          <p class="count">« Niveau titulaire » : devant au moins la moitié des titulaires de la ligue majeure de sa région. « Mérite un essai » : devant au moins un quart de ces titulaires, ou un quart des titulaires de toutes les ligues majeures. La note d'une ligue inférieure repose sur peu de matchs contre les ligues majeures : elle indique qui regarder, pas qui signer les yeux fermés.</p>
+          <p class="count">Le même joueur a en moyenne 6 points de plus en ligue majeure qu'en deuxième niveau, la même saison : la note estimée en tient compte (erreur typique de 4 points sur les joueurs montés de 2025 à 2026). « Niveau titulaire » : estimé devant au moins la moitié des titulaires de la ligue majeure de sa région. « Mérite un essai » : devant au moins un quart. C'est une piste pour savoir qui regarder, pas une garantie.</p>
         </div>
       </div>
       <div class="work">
@@ -82,10 +82,11 @@
           <div><label for="c-contract">Contrat</label><select id="c-contract"><option value="">Tous</option><option value="free">En fin de contrat</option><option value="signed">Sous contrat au-delà</option><option value="none">Non renseigné</option></select></div>
           <label class="check wide"><input type="checkbox" id="c-deep"> Chercher aussi dans les ligues de troisième niveau</label>
           <label class="check wide"><input type="checkbox" id="c-fresh"> Seulement ceux qui n'ont jamais joué en ligue majeure cette saison</label>
+          <label class="check wide"><input type="checkbox" id="c-noage"> Inclure les joueurs dont l'âge n'est pas connu</label>
           <label class="check wide"><input type="checkbox" id="c-all"> Afficher aussi ceux qui sont encore loin du niveau</label>
         </aside>
         <div class="table crack-table">
-          <div class="thead"><span>Rang</span><span title="Note sur ses seules parties du niveau inférieur">Note</span><span>Joueur</span><span>Poste</span><span>Face aux titulaires de la ligue majeure</span><span>Profil et forces</span><span class="r">Parties</span></div>
+          <div class="thead"><span>Rang</span><span title="Note sur ses seules parties du niveau inférieur">Note</span><span>Joueur</span><span>Poste</span><span>Estimation en ligue majeure</span><span>Profil et forces</span><span class="r">Parties</span></div>
           <div id="crack-rows"></div>
         </div>
       </div>
@@ -168,7 +169,7 @@
       </ul>
       <h2>Le scouting</h2>
       <p><b>Style proche</b> mesure la ressemblance avec le joueur à remplacer. <b>Apport à l'équipe</b> combine deux choses : les forces du candidat sur les facettes où les quatre autres joueurs sont en retrait, et l'équilibre des ressources (un carry de plus dans une équipe qui en a déjà trois s'intègre moins bien). Le tri recommandé part de la note et la corrige de ces deux mesures. Quand on choisit un niveau de ligue, un joueur qui y a joué sans que ce soit son niveau principal (équipe réserve, montée ou descente en cours d'année) apparaît avec sa note sur ses seules parties de ce niveau.</p>
-      <p><b>Cracks à essayer</b> liste les jeunes joueurs des ligues de deuxième niveau (et, sur demande, de troisième niveau), notés sur leurs seules parties de ce niveau, puis comparés aux titulaires de la ligue majeure de leur région et à ceux de toutes les ligues majeures. Sur les joueurs montés en ligue majeure entre 2025 et 2026, la note de deuxième niveau prédit bien la note de l'année suivante (corrélation 0,62, contre 0,73 pour ceux restés en ligue majeure), mais les joueurs montés progressent en moyenne de 7 points : la liste sous-estime plutôt les jeunes.</p>
+      <p><b>Cracks à essayer</b> liste les jeunes joueurs des ligues de deuxième niveau (et, sur demande, de troisième niveau), notés sur leurs seules parties de ce niveau. Un même joueur qui a joué aux deux niveaux la même saison a en moyenne 6 points de plus en ligue majeure : la note de deuxième niveau est donc convertie en note estimée en ligue majeure (droite ajustée sur ces joueurs), puis comparée aux titulaires de la ligue majeure de sa région. Sur les joueurs montés de 2025 à 2026, que l'ajustement n'a pas vus, l'estimation se trompe de 4 points en médiane, contre 8 en prenant la note de deuxième niveau telle quelle.</p>
       <p><b>Avant et après</b> : quand vous essayez un joueur dans une équipe, le niveau de l'effectif est la moyenne des niveaux de ses cinq joueurs. Les chances de victoire sont calculées contre une équipe moyenne de la même ligue, et le rang compare cet effectif à ceux des autres équipes de la ligue. Le profil par facette est la moyenne des cinq joueurs. C'est une estimation : elle suppose que chacun joue dans sa nouvelle équipe comme il a joué cette saison.</p>
       <h2>Les contrats</h2>
       <p>Les dates de fin de contrat viennent de la base publique des contrats reconnus par Riot (LCK, LPL, LEC, LCS, CBLOL, LCP et les principales ligues régionales). <span id="m-contracts"></span> Les joueurs absents de cette base apparaissent comme « non renseigné ».</p>

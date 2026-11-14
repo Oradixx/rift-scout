@@ -640,8 +640,10 @@ def tier_table(S):
     p, A = S['p'], S['A']
     q = p[p.scope == 'ligue'].assign(tier=lambda d: d.league.map(tier_of))
     g = q.groupby(['pid', 'tier'])
-    T = g.agg(n=('c', 'size'), csum=('c', 'sum'), cn=('c', 'count'), T=('R_own', 'mean'), team=('teamname', 'last'),
-              league=('league', lambda x: x.value_counts().index[0])).reset_index()
+    T = g.agg(n=('c', 'size'), csum=('c', 'sum'), cn=('c', 'count'), T=('R_own', 'mean')).reset_index()
+    # équipe et ligue affichées : le couple le plus joué à ce niveau (pas l'équipe de la dernière partie avec la ligue la plus fréquente)
+    main = q.groupby(['pid', 'tier', 'teamname', 'league']).size().rename('k').reset_index().sort_values('k').drop_duplicates(['pid', 'tier'], keep='last')
+    T = T.merge(main.rename(columns={'teamname': 'team'})[['pid', 'tier', 'team', 'league']], on=['pid', 'tier'])
     T = T[(T.n >= 5) & T.pid.isin(A.index)]
     T['I'] = (T.csum / (T.cn + K_SHRINK)) / S['sd_c'].reindex(A.role.reindex(T.pid).values).values
     T['pts'] = T['T'] + SIGMA_IND * T.I
@@ -879,6 +881,15 @@ def main():
             'games': int(p.gameid.nunique()), 'from': str(p.date.min().date()), 'to': str(p.date.max().date()),
         }
         print(y, 'joueurs', len(players), 'équipes', len(teams), 'parties', p.gameid.nunique(), 'avantage côté bleu', round(S['side'], 3))
+    # note projetée en ligue majeure pour un joueur de deuxième niveau (onglet Cracks) : droite ajustée sur les joueurs qui ont
+    # joué aux deux niveaux la même saison (au moins 15 parties de chaque côté). Validée sur les joueurs montés de 2025 à 2026 :
+    # erreur absolue médiane 4,1 points contre 7,8 en prenant la note de deuxième niveau telle quelle.
+    pr = [(v['tr']['1'][0], v['tr']['0'][0]) for ss in out['seasons'].values() for v in ss['players']
+          if '0' in v['tr'] and '1' in v['tr'] and v['tr']['0'][1] >= 15 and v['tr']['1'][1] >= 15]
+    if len(pr) >= 30:
+        x = np.array(pr); sl, ic = np.polyfit(x[:, 0], x[:, 1], 1)
+        out['proj'] = {'a': r1(ic, 3), 'b': r1(sl, 4), 'n': len(pr)}
+        print('projection deuxième niveau -> ligue majeure :', round(ic, 1), '+', round(sl, 2), 'x note, sur', len(pr), 'joueurs')
     json.dump(out, open(OUT, 'w', encoding='utf-8'), ensure_ascii=False, separators=(',', ':'))
     print('écrit', OUT, os.path.getsize(OUT) // 1000, 'Ko')
     return runs, out
