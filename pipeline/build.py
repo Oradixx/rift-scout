@@ -32,6 +32,11 @@ K_SHRINK = 12            # parties « fictives » au niveau moyen ajoutées à c
 SIGMA_IND = 100.0        # points : un écart-type d'écart individuel
 SIGMA_FACET = 185.0      # points : un écart-type sur une facette
 MIN_GAMES = 10
+# Période récente, version prudente : le niveau de l'équipe s'écarte moins de sa saison (SD_RECENT) et l'écart individuel
+# est complété par plus de parties de saison (K_RECENT_IND) que pour une note d'événement.
+SD_RECENT, K_RECENT_IND = 125.0, 15
+ROSTER_MIN_STARTERS = 3  # en dessous de 3 titulaires habituels sur 5 dans une coupe ou un tournoi, l'équipe est traitée à part
+REMANIEE = '#remaniee'
 # Ligues jouées en groupes de niveau (LPL, fin de saison LCK) : comparer les stats au sein de chaque groupe plutôt qu'à
 # toute la ligue. Testé en novembre 2026 et laissé désactivé : comparés à toute la ligue, les groupes faibles n'ont pas
 # de stats gonflées de façon régulière (tantôt au-dessus, tantôt en dessous), et l'activer remonte leurs joueurs de 0,2.
@@ -104,6 +109,15 @@ def load(year):
     d['date'] = pd.to_datetime(d['date'], errors='coerce')
     d = d.drop_duplicates(['gameid', 'participantid']).dropna(subset=['result', 'date']).copy()
     d['tid'] = d.teamid.fillna(d.teamname)
+    # Une même équipe enregistrée sous deux identifiants (même nom, même ligue) : on garde le plus fréquent.
+    tn = d[d.position == 'team'].groupby(['teamname', 'league', 'tid']).gameid.nunique().reset_index()
+    canon = {}
+    for (name, lg), q in tn.groupby(['teamname', 'league']):
+        if len(q) > 1:
+            keep = q.sort_values('gameid').tid.iloc[-1]
+            for x in q.tid:
+                if x != keep: canon[x] = keep
+    if canon: d['tid'] = d.tid.replace(canon)
     d = d.dropna(subset=['tid'])
     ok = d[d.position == 'team'].groupby('gameid').tid.nunique()
     d = d[d.gameid.isin(ok[ok == 2].index)]
@@ -149,6 +163,8 @@ def team_levels(t, cups, prior):
     home = dom.groupby(['tid', 'league']).gameid.nunique().reset_index().sort_values('gameid').groupby('tid').league.last()
     teams = sorted(t.tid.unique())
     home = home.reindex(teams)
+    # une équipe remaniée est rattachée à la ligue de l'équipe dont elle porte le nom
+    home = pd.Series([home.get(x.replace(REMANIEE, '')) if (x.endswith(REMANIEE) and not isinstance(home[x], str)) else home[x] for x in teams], index=teams)
     fallback = np.mean([v for k, v in prior.items() if tier_of(k) == 1])
     lg_list = sorted(set(home.dropna()))
     pri = np.array([prior.get(home[x], fallback) if isinstance(home[x], str) else fallback for x in teams])
@@ -277,6 +293,23 @@ def to_note(pts, a, b):
 def season(year, prior):
     p, t = load(year)
     cups = detect_cups(t)
+    # Équipes remaniées. Dans les coupes et les tournois, une équipe de ligue aligne parfois surtout des remplaçants
+    # (KeSPA Cup 2026 : T1 avec un tiers de ses titulaires, Dplus Kia avec aucun ; Demacia Cup 2025 : la plupart des
+    # équipes chinoises sans titulaire). Battre ces effectifs ne vaut pas battre l'équipe titulaire : quand une équipe
+    # aligne au plus ROSTER_MIN_STARTERS - 1 de ses 5 titulaires habituels, elle est traitée comme une équipe à part
+    # (identifiant suffixé par REMANIEE), avec son propre niveau, rattachée à la même ligue.
+    dom_ = p[~p.league.isin(cups)]
+    st_ = dom_.groupby(['tid', 'pid']).gameid.nunique().reset_index().sort_values('gameid', ascending=False)
+    st_ = st_[st_.groupby('tid').gameid.transform('max') >= 10].groupby('tid').head(5).groupby('tid').pid.agg(set)
+    p['_st'] = [pid in st_.get(tid, ()) for pid, tid in zip(p.pid, p.tid)]
+    n_st = p.groupby(['gameid', 'tid'])._st.transform('sum')
+    rem = p.league.isin(cups) & p.tid.isin(st_.index) & (n_st < ROSTER_MIN_STARTERS)
+    rem_keys = set(zip(p.loc[rem, 'gameid'], p.loc[rem, 'tid']))
+    p.loc[rem, 'tid'] = p.loc[rem, 'tid'] + REMANIEE
+    tm_ = [(g, x) in rem_keys for g, x in zip(t.gameid, t.tid)]
+    t.loc[tm_, 'tid'] = t.loc[tm_, 'tid'] + REMANIEE
+    p = p.drop(columns='_st')
+    if rem_keys: print(f'{year} : {len(rem_keys)} matchs d\'équipes remaniées traités à part')
     R, team_home, lg_lvl, side_adv = team_levels(t, cups, prior)
     p = features(p, t)
     opp = t[['gameid', 'tid']].rename(columns={'tid': 'opp'})
@@ -573,6 +606,7 @@ def stint_table(S):
     """note d'un joueur avec chacune de ses équipes de la saison (toutes compétitions) : même calcul que la note de saison."""
     p, A = S['p'], S['A']
     dom = p[p.scope == 'ligue']
+    p = p.assign(tid=p.tid.str.replace(REMANIEE, '', regex=False)); dom = p[p.scope == 'ligue']   # une équipe et sa version remaniée = un seul passage
     lg = dom.groupby(['pid', 'tid']).league.agg(lambda x: ', '.join(x.value_counts().index)).rename('lg')   # ses ligues avec cette équipe, la principale d'abord
     g = p.groupby(['pid', 'tid'])
     T = g.agg(n=('c', 'size'), csum=('c', 'sum'), cn=('c', 'count'), T=('R_own', 'mean'), win=('result', 'mean'), team=('teamname', 'last'),
@@ -583,22 +617,22 @@ def stint_table(S):
     return T.sort_values('start')
 
 
-def window_notes(S, q):
+def window_notes(S, q, sd=None, k_ind=None):
     """Note sur un sous-ensemble de parties de chaque joueur, avec la même logique que les notes d'événement : niveau de
     l'équipe réestimé sur ces parties (adversaires à leur niveau de saison, a priori faible SD_EVENT), écart individuel
     complété par K_EVENT_IND parties de saison."""
-    A = S['A']
+    A = S['A']; sd = sd or SD_EVENT; k_ind = K_EVENT_IND if k_ind is None else k_ind
     out = {}
     for pid, g in q[q.pid.isin(A.index)].groupby('pid'):
         off = (g.R_own.values - g.R_opp.values) / PTS_PER_LOGIT + np.where(g.side.values == 'Blue', S['side'], -S['side'])
         y = g.result.values.astype(float); d = 0.0
         for _ in range(20):
             mu = 1 / (1 + np.exp(-(off + d / PTS_PER_LOGIT)))
-            grad = (y - mu).sum() / PTS_PER_LOGIT - d / SD_EVENT ** 2
-            hess = (mu * (1 - mu)).sum() / PTS_PER_LOGIT ** 2 + 1 / SD_EVENT ** 2
+            grad = (y - mu).sum() / PTS_PER_LOGIT - d / sd ** 2
+            hess = (mu * (1 - mu)).sum() / PTS_PER_LOGIT ** 2 + 1 / sd ** 2
             step = grad / hess; d += step
             if abs(step) < 1e-4: break
-        ind = (g.c.sum() + K_EVENT_IND * A.c_s[pid]) / (g.c.count() + K_EVENT_IND) / S['sd_c'][A.role[pid]]
+        ind = (g.c.sum() + k_ind * A.c_s[pid]) / (g.c.count() + k_ind) / S['sd_c'][A.role[pid]]
         out[pid] = g.R_own.mean() + d + SIGMA_IND * ind
     return pd.Series(out, dtype=float)
 
@@ -618,7 +652,7 @@ def recent_table(S, min_games=8):
     start = lg[lg.event == lg.pid.map(last_ev)].groupby('pid').date.min()
     q = p[p.date >= p.pid.map(start)]
     n = q.groupby('pid').size()
-    pts = window_notes(S, q[q.pid.isin(n[n >= min_games].index)])
+    pts = window_notes(S, q[q.pid.isin(n[n >= min_games].index)], sd=SD_RECENT, k_ind=K_RECENT_IND)
     return pd.DataFrame({'pts': pts, 'n': n.reindex(pts.index), 'start': start.reindex(pts.index), 'ev': last_ev.reindex(pts.index)})
 
 
@@ -753,7 +787,7 @@ def main():
                        'gsh': r1(r.gsh, 3), 'gd15': r1(r.gd15, 0), 'cd15': r1(r.cd15), 'xd15': r1(r.xd15, 0), 'cspm': r1(r.cspm, 2),
                        'vspm': r1(r.vspm, 2), 'dpg': r1(r.dpg, 2), 'fb': r1(r.fb, 3),
                        'wd': r1(r.wd_share, 3), 'jgp': r1(r.jgp, 3) if r.wdn >= 10 else None, 'objp': r1(r.objp, 3) if r.wdn >= 10 else None, 'tl': int(r.wdn)},
-                'now': r.team_last if r.tid_last != r.tid else None, 'off': int(r.off_role),
+                'now': r.team_last if str(r.tid_last).replace(REMANIEE, '') != str(r.tid).replace(REMANIEE, '') else None, 'off': int(r.off_role),
                 'tm': [[t_.team, t_.lg if isinstance(t_.lg, str) else None, int(t_.n), r1(to_note(t_.pts, a, b)), str(t_.start.date()), str(t_.end.date()), r1(t_.win, 3)]
                        for t_ in st_by[pid].itertuples()] if pid in st_by else None,
                 'lg': {l.league: [r1(to_note(l.pts, a, b)), int(l.n), l.team, r1(l.win, 3)] for l in lg_by[pid].itertuples()} if pid in lg_by else {},
@@ -764,6 +798,7 @@ def main():
         t = S['t']; teams = []
         tl = t.sort_values('date').groupby('tid').agg(name=('teamname', 'last'), last=('date', 'max'), n=('gameid', 'nunique'), win=('result', 'mean'))
         for tid, tr in tl.iterrows():
+            if str(tid).endswith(REMANIEE): continue
             lg = S['team_recent'].get(tid, S['team_home'].get(tid))
             if not isinstance(lg, str) or tr.n < 8: continue
             gids = t[t.tid == tid].sort_values('date').gameid.tail(12)
