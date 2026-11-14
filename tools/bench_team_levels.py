@@ -15,6 +15,7 @@ def period(d):  # janvier-mars, avril-juin, juillet-septembre, octobre-décembre
     return ((d.dt.month - 1) // 3).values
 
 def fit(t, cups, prior, o):
+    if o.get('prior'): prior = o['prior'](prior)          # variante sur les niveaux de ligue de départ
     """Renvoie une fonction de prédiction p(bleu gagne) pour des lignes (tid bleu, tid rouge, date, phase)."""
     dom = t[~t.league.isin(cups)]
     home = dom.groupby(['tid', 'league']).gameid.nunique().reset_index().sort_values('gameid').groupby('tid').league.last()
@@ -47,7 +48,7 @@ def fit(t, cups, prior, o):
     X = sp.hstack([X[:, :nT + nL], sp.csr_matrix(np.ones((n, 1))), X[:, nT + nL + 1:]]).tocsr()
     off = (pri[bi] - pri[ri]) / B.PTS_PER_LOGIT; y = b.result.values.astype(float)
     sdd = o.get('sd_league', {}); sd_t = np.array([sdd.get(home[x], 160.) if isinstance(home[x], str) else 160. for x in teams])
-    pen = np.r_[1 / sd_t ** 2, np.full(nL, 1 / 90. ** 2), 0.0, np.zeros(len(extra))]
+    pen = np.r_[1 / sd_t ** 2, np.full(nL, 1 / o.get('sd_lg', 90.) ** 2), 0.0, np.zeros(len(extra))]
     for key, j in extra.items(): pen[j] = 1 / (o['sd_period'] if key[0] == 'P' else o['sd_phase']) ** 2
     gw = np.ones(n)
     if o.get('cross_w'): gw = np.where(hb.notna().values & hr.notna().values & (hb.values != hr.values), o['cross_w'], 1.)
