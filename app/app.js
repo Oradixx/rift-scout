@@ -148,11 +148,13 @@
       L = L.filter((p) => p.lg[state.league]).map((p) => { const v = p.lg[state.league]; return Object.assign({ _e: { note: v[0], n: v[1], team: v[2], w: v[3] } }, p); });
       return L.sort((a, b) => b._e.note - a._e.note);
     }
+    // période récente : dernier split de ligue de chaque joueur et tout ce qu'il a joué ensuite
+    if (state.basis === 'recent') return L.filter((p) => p.rc).map((p) => Object.assign({ _e: { note: p.rc[0], n: p.rc[1], recent: true } }, p)).sort((a, b) => b._e.note - a._e.note);
     return L;
   }
   /* équipe à montrer sur une ligne de la liste, et mention d'un changement d'équipe en cours de saison */
   function teamLine(p) {
-    if (p._e && p._e.team) return h(p._e.team) + ', ' + h(state.event || lgName(state.league));
+    if (p._e && p._e.team && !p._e.recent) return h(p._e.team) + ', ' + h(state.event || lgName(state.league));
     const inLg = state.league && p.lg[state.league];
     if (inLg && p.league !== state.league) return `${h(inLg[2])}, ${h(lgName(state.league))}<span class="moved">, puis ${h(p.team)} (${h(lgName(p.league))})</span>`;
     let txt = `${h(p.team)}, ${h(lgName(p.league))}`;
@@ -162,7 +164,8 @@
   }
   function scopeLabel() {
     const parts = [];
-    if (state.event) parts.push(state.basis === 'only' ? state.event : `joueurs de ${state.event}, sur toute la saison`);
+    if (state.basis === 'recent') parts.push((state.event ? `joueurs de ${state.event}` : state.league ? lgName(state.league) : '') + (state.event || state.league ? ', ' : '') + 'période récente');
+    else if (state.event) parts.push(state.basis === 'only' ? state.event : `joueurs de ${state.event}, sur toute la saison`);
     else if (state.league) parts.push(state.basis === 'only' ? `${lgName(state.league)}, parties de ${lgName(state.league)} seulement` : lgName(state.league));
     else if (state.region) parts.push(state.region);
     else if (state.tier !== '') parts.push(['ligues majeures', 'deuxième niveau', 'troisième niveau'][+state.tier]);
@@ -188,7 +191,7 @@
     const L = filtered(false);
     const el = $('#rows');
     const who = state.event ? ` ayant joué ${state.event}` : state.league ? ` ayant joué en ${lgName(state.league)} cette saison` : '';
-    const on = state.basis === 'only' && state.event ? state.event : state.basis === 'only' && state.league ? 'leurs seules parties de ' + lgName(state.league) : 'toute la saison';
+    const on = state.basis === 'recent' ? 'leur dernier split et ce qui a suivi' : state.basis === 'only' && state.event ? state.event : state.basis === 'only' && state.league ? 'leurs seules parties de ' + lgName(state.league) : 'toute la saison';
     $('#count').textContent = L.length ? `${fmt(L.length)} joueur${L.length > 1 ? 's' : ''}${who}, notés sur ${on}` : '';
     if (!L.length) { el.innerHTML = '<p class="none">Aucun joueur ne correspond à ces filtres. Élargissez le niveau de ligue ou baissez le nombre minimum de parties.</p>'; return; }
     let html = '';
@@ -205,9 +208,11 @@
     if (L.length > state.shown) html += `<button class="more" id="more">Afficher 100 joueurs de plus</button>`;
     el.innerHTML = html;
     $('#f-contract').disabled = !hasCT(); $('#f-contract').value = hasCT() ? state.contract : '';
-    $('#th-trend').textContent = (state.event || state.league) && state.basis === 'only' ? 'Écart saison' : 'Forme';
-    const box = $('#lg-mode'); box.hidden = !state.league && !state.event;
-    if (!box.hidden) { $('#lg-mode-only').textContent = (state.event || lgName(state.league)) + ' seulement'; box.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', b.dataset.lgmode === state.basis)); }
+    $('#th-trend').textContent = state.basis === 'recent' || ((state.event || state.league) && state.basis === 'only') ? 'Écart saison' : 'Forme';
+    const box = $('#lg-mode'), only = $('#lg-mode-only');
+    only.hidden = !state.league && !state.event;
+    if (!only.hidden) only.textContent = (state.event || lgName(state.league)) + ' seulement';
+    box.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', b.dataset.lgmode === state.basis));
   }
   function fillSelects() {
     const leagues = {}, regions = new Set(), events = {};
@@ -250,6 +255,7 @@
       <div><small>Écart individuel</small><span class="num ${p.ind >= 0 ? 'up' : 'down'}">${p.ind >= 0 ? '+' : ''}${fmt(p.note - p.team_lvl, 1)}</span></div>
       <div><small>Forme, 15 dernières parties</small><span class="num ${d >= 1.5 ? 'up' : d <= -1.5 ? 'down' : ''}">${nInt(p.form)}</span></div>
       <div><small>Parties jouées, ${pctTxt(p.st.win)} de victoires</small><span class="num">${p.n}</span></div></div>
+      ${p.rc ? `<p class="legend" style="margin-top:10px">Période récente (${h(p.rc[3])} et ce qui a suivi, ${p.rc[1]} parties depuis le ${frDate(p.rc[2])}) : <b class="${noteCls(p.rc[0])}">${nInt(p.rc[0])}</b></p>` : ''}
       <div class="tags">${arch ? `<span class="tag gold">${arch}</span>` : ''}${styleTags(p).map((t) => `<span class="tag">${t}</span>`).join('')}</div></section>`;
     if (ins.plus.length || ins.minus.length) html += `<section><div class="two"><div><h3>Forces</h3>${ins.plus.length ? `<ul class="say">${ins.plus.map((x) => `<li>${x}</li>`).join('')}</ul>` : '<p class="legend">Rien qui ressorte nettement par rapport à son poste.</p>'}</div>
       <div><h3>Points faibles</h3>${ins.minus.length ? `<ul class="say minus">${ins.minus.map((x) => `<li>${x}</li>`).join('')}</ul>` : '<p class="legend">Aucun point faible marqué par rapport à son poste.</p>'}</div></div></section>`;
@@ -495,8 +501,8 @@
     });
     const bind = (id, fn) => $(id).addEventListener('input', (e) => { fn(e.target.value); state.shown = 100; state.sc.shown = 60; state.view === 'rank' ? renderRank() : renderScout(); });
     bind('#f-tier', (v) => { state.tier = v; }); bind('#f-region', (v) => { state.region = v; if (v) { state.league = ''; $('#f-league').value = ''; } });
-    bind('#f-league', (v) => { state.league = v; if (!state.event) state.basis = 'season'; if (v) { state.tier = ''; state.region = ''; syncFilters(); } });
-    bind('#f-event', (v) => { state.event = v; state.basis = v ? 'only' : 'season'; if (v) { state.tier = ''; state.minG = 0; syncFilters(); } else { state.minG = 15; state.tier = '0'; syncFilters(); } });
+    bind('#f-league', (v) => { state.league = v; if (!state.event && state.basis === 'only') state.basis = 'season'; if (v) { state.tier = ''; state.region = ''; syncFilters(); } });
+    bind('#f-event', (v) => { state.event = v; if (state.basis !== 'recent' || !v) state.basis = v ? 'only' : (state.basis === 'recent' ? 'recent' : 'season'); if (v) { state.tier = ''; state.minG = 0; syncFilters(); } else { state.minG = 15; state.tier = '0'; syncFilters(); } });
     bind('#f-contract', (v) => { state.contract = v; }); bind('#s-contract', (v) => { state.sc.contract = v; });
     bind('#s-age', (v) => { state.sc.maxAge = +v || 0; }); bind('#s-res', (v) => { state.sc.res = v; });
     bind('#f-min', (v) => { state.minG = +v || 0; }); bind('#f-q', (v) => { state.q = v; });

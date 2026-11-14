@@ -30,6 +30,8 @@
     <div class="work">
       <aside class="filters" aria-label="Filtres">
         <div class="wide"><span class="count" id="count"></span></div>
+        <div class="field wide" id="lg-mode"><span>Noter les joueurs sur</span>
+          <div class="seg seg-wide"><button data-lgmode="season">Toute la saison</button><button data-lgmode="recent" title="Dernier split de ligue de chaque joueur et tout ce qu'il a joué ensuite">Période récente</button><button data-lgmode="only" id="lg-mode-only" hidden>Cette ligue seulement</button></div></div>
         <div class="field wide"><span>Poste</span>
           <div class="roles" id="f-roles">
             <button data-role="">Tous</button><button data-role="Top">Top</button><button data-role="Jungle">Jungle</button>
@@ -40,8 +42,6 @@
         <div><label for="f-region">Région</label><select id="f-region"></select></div>
         <div><label for="f-league">Ligue</label><select id="f-league"></select></div>
         <div><label for="f-event">Événement</label><select id="f-event"></select></div>
-        <div class="field wide" id="lg-mode" hidden><span>Noter les joueurs sur</span>
-          <div class="seg seg-wide"><button data-lgmode="season">Toute la saison</button><button data-lgmode="only" id="lg-mode-only">Cette ligue seulement</button></div></div>
         <div><label for="f-contract">Contrat</label><select id="f-contract"><option value="">Tous</option><option value="free">En fin de contrat</option><option value="signed">Sous contrat au-delà</option><option value="none">Non renseigné</option></select></div>
         <div><label for="f-min">Parties jouées, au moins</label><input id="f-min" type="number" min="0" max="200" step="5"></div>
         <div><label for="f-q">Joueur ou équipe</label><input id="f-q" type="search" placeholder="Chovy, G2, Solary…"></div>
@@ -121,6 +121,8 @@
       <p>Un joueur avec peu de parties est ramené vers le niveau moyen (l'équivalent de 12 parties moyennes est ajouté à chacun).</p>
       <h2>Les lectures complémentaires</h2>
       <ul>
+        <li><b>Période récente</b> : la note sur le dernier split de ligue de chaque joueur (saison régulière et playoffs) et tout ce qu'il a joué ensuite (tournois internationaux, coupes), même calcul que les notes d'événement. Un joueur avec moins de 8 parties sur cette période n'y apparaît pas. Pour un joueur de LEC en novembre 2026 : LEC Summer et Worlds.</li>
+        <li><b>Note générale et notes par événement</b> : la note générale n'est pas une moyenne des notes par événement. Elle est calculée directement sur toutes les parties de la saison, avec le niveau d'équipe de toute la saison ; chaque note d'événement réestime le niveau de l'équipe sur les seules parties de l'événement. Les deux sont proches : en 2026, la note générale s'écarte de la moyenne de ses événements (pondérée par le nombre de parties) de 0,9 point en médiane.</li>
         <li><b>Qui afficher, et sur quoi noter</b> : niveau, région, ligue et événement choisissent les joueurs affichés. Dès qu'une ligue ou un événement est choisi, un sélecteur « Noter les joueurs sur » permet de voir soit leur note de toute la saison, soit leur note sur cette ligue ou cet événement seulement. Filtrer sur une ligue montre tous les joueurs qui y ont joué cette saison, même partis depuis : la ligne indique leur équipe dans cette ligue et l'équipe qu'ils ont rejointe ensuite. Pour une ligue, la note est recalculée sur les seules parties de cette ligue (saison régulière et playoffs), sans les tournois ni les coupes, et tous les joueurs qui y ont joué sont listés, même s'ils l'ont quittée depuis. La colonne « Écart saison » donne la différence avec la note sur toute la saison.</li>
         <li><b>Joueurs passés par plusieurs équipes</b> : chaque partie compte avec l'équipe et la ligue dans lesquelles elle a été jouée. Le joueur est rangé avec sa dernière équipe de ligue de la saison ; sa fiche montre son parcours, avec une note par équipe. S'il a ensuite joué un tournoi ou une coupe d'intersaison avec une autre équipe, c'est signalé sans changer sa ligue. Les parties jouées à un autre poste que son poste principal comptent aussi, comparées aux joueurs de ce poste ; le style de jeu et les statistiques affichées ne portent que sur le poste principal.</li>
         <li><b>Note par événement</b> : le niveau de chaque équipe est réestimé sur les seules parties de l'événement, toutes équipes ensemble. Battre une équipe compte donc selon ce que cette équipe a fait dans ce même événement, pas selon sa ligue. Le niveau de saison ne sert que de point de départ et pèse l'équivalent de deux à trois parties. L'écart individuel est calculé sur les parties de l'événement, complété par cinq parties de saison. Quand un tournoi international a des qualifications régionales jouées des semaines plus tôt, elles sont notées à part, région par région, et rangées avec les coupes régionales. Les stats y sont comparées à celles de la ligue de la région (les qualifications EMEA de l'EWC sont jugées comme de la LEC).</li>

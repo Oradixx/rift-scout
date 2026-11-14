@@ -5,6 +5,7 @@ Notes de 1 à 100 pour les joueurs professionnels de League of Legends, fiches j
 ## Structure
 
 - `pipeline/build.py` : tout le calcul. Lit les CSV d'Oracle's Elixir, écrit `app/data.json`. Les réglages sont en tête du fichier : poids des facettes par poste, régularisation (`K_SHRINK`, `SD_TEAM`, `SD_TEAM_BY_LEAGUE` pour la LCK et la LPL, `SD_LEAGUE`, `SD_EVENT`), échelle fixe (`SCALE_A`, `SCALE_B`), seuil de découpage des tournois et des ligues (`QUALIF_GAP_DAYS`), comparaison par groupe de niveau (`GROUP_CONTEXT`, désactivée). Chaque réglage non évident a un commentaire qui dit comment il a été choisi.
+- Notes sur une partie des parties d'un joueur (forme sur 15 parties, période récente, note par équipe, par ligue, par événement) : toutes passent par les mêmes fonctions de `build.py` (`window_notes`, `event_table`, `league_table`, `stint_table`) ; en ajouter une passe par là, pas par un calcul à part.
 - `pipeline/fetch_data.py` : télécharge les CSV de matchs dans `data/raw/`.
 - `pipeline/fetch_contracts.py` : télécharge la base publique de contrats de Riot, écrit `pipeline/contracts.json`.
 - `pipeline/leaguepedia.py`, `pipeline/fetch_leaguepedia.py` : connexion à Leaguepedia et récupération des fiches joueurs (`pipeline/lp_players.json` : âge, pays, résidence, contrat) et de la couverture des données détaillées (`pipeline/lp_coverage.json`). Demandent `LEAGUEPEDIA_USER` et `LEAGUEPEDIA_PASSWORD`, présents seulement dans les secrets GitHub : ces scripts se lancent par le workflow « Leaguepedia », pas en local.

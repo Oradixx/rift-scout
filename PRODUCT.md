@@ -12,6 +12,7 @@ La note doit coller au ressenti d'un observateur averti. Une note que personne n
 ## Ce que l'appli propose
 
 - **Classement** : meilleur cinq et liste complète ; filtres poste, niveau de ligue, région, ligue, événement, contrat ; saisons 2025 et 2026.
+- **Période récente** : option « Période récente » du sélecteur « Noter les joueurs sur ». Pour chaque joueur, son dernier split de ligue (saison régulière et playoffs) et tout ce qu'il a joué ensuite (tournois, coupes), même calcul que les notes d'événement ; au moins 8 parties. Volontairement réactive : en 2026, 73 joueurs de ligues majeures sur 324 s'écartent de plus de 5 points de leur note de saison (DN SOOPers, 23 victoires sur 35 parties depuis fin juillet contre des adversaires de niveau 89 : Sharvel 84 sur la saison, 97 sur la période récente).
 - **Qui afficher, et sur quoi noter** : les filtres choisissent les joueurs ; le sélecteur « Noter les joueurs sur » choisit la note (toute la saison, ou la ligue / l'événement choisi seulement). Région + événement donne par exemple les notes des Worlds des joueurs d'EMEA.
 - **Fiche joueur** : note, niveau de l'équipe et écart individuel, forme récente, forces et points faibles rédigés, huit facettes, weakside et strongside, parcours de la saison (une note par équipe), note par événement, statistiques (dont morts inutiles, présence sur les objectifs, temps près de son jungler), champions, joueurs au style proche, âge, nationalité, résidence, fin de contrat.
 - **Scouting** : une équipe et un poste à pourvoir ; candidats classés par note, ressemblance de style avec le titulaire et apport aux quatre autres joueurs ; filtres contrat, âge maximum, résidence ; tri par fin de contrat.
@@ -39,6 +40,8 @@ La note doit coller au ressenti d'un observateur averti. Une note que personne n
 - **Un même joueur sous deux identifiants** (même pseudo, équipe et poste) est réuni.
 
 ### Événements
+
+- **La note générale n'est pas une moyenne des notes par événement.** Elle est calculée directement sur toutes les parties de la saison (niveau d'équipe de toute la saison + écart individuel moyen) ; chaque note d'événement réestime le niveau de l'équipe sur les seules parties de l'événement. Les deux restent proches : la note générale s'écarte de la moyenne de ses événements pondérée par les parties de 0,9 point en médiane (2026).
 
 - **Note par événement = niveau d'équipe réestimé sur l'événement**, toutes équipes ensemble, le niveau de saison ne servant que de point de départ faible. Battre une équipe compte selon ce qu'elle a fait dans ce même tournoi, pas selon sa ligue. La forme sur les 15 dernières parties suit la même logique.
 - **Portée d'un événement d'après les équipes présentes** : international (plusieurs régions), entre ligues d'une même région, ou coupe d'une seule ligue. Une équipe invitée isolée ne suffit pas à rendre un tournoi international (KeSPA Cup = coupe).

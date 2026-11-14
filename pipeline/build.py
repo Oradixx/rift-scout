@@ -583,14 +583,13 @@ def stint_table(S):
     return T.sort_values('start')
 
 
-def form_table(S, last_n=15):
-    """Forme : note sur les dernières parties, avec la même logique que les notes d'événement. Le niveau de l'équipe est
-    réestimé sur ces parties (adversaires à leur niveau de saison, même a priori faible SD_EVENT), l'écart individuel
-    est complété par K_EVENT_IND parties de saison."""
-    p, A = S['p'], S['A']
-    q = p[p.pid.isin(A.index)].sort_values('date').groupby('pid').tail(last_n)
+def window_notes(S, q):
+    """Note sur un sous-ensemble de parties de chaque joueur, avec la même logique que les notes d'événement : niveau de
+    l'équipe réestimé sur ces parties (adversaires à leur niveau de saison, a priori faible SD_EVENT), écart individuel
+    complété par K_EVENT_IND parties de saison."""
+    A = S['A']
     out = {}
-    for pid, g in q.groupby('pid'):
+    for pid, g in q[q.pid.isin(A.index)].groupby('pid'):
         off = (g.R_own.values - g.R_opp.values) / PTS_PER_LOGIT + np.where(g.side.values == 'Blue', S['side'], -S['side'])
         y = g.result.values.astype(float); d = 0.0
         for _ in range(20):
@@ -601,7 +600,26 @@ def form_table(S, last_n=15):
             if abs(step) < 1e-4: break
         ind = (g.c.sum() + K_EVENT_IND * A.c_s[pid]) / (g.c.count() + K_EVENT_IND) / S['sd_c'][A.role[pid]]
         out[pid] = g.R_own.mean() + d + SIGMA_IND * ind
-    return pd.Series(out)
+    return pd.Series(out, dtype=float)
+
+
+def form_table(S, last_n=15):
+    """Forme : note sur les 15 dernières parties."""
+    return window_notes(S, S['p'].sort_values('date').groupby('pid').tail(last_n))
+
+
+def recent_table(S, min_games=8):
+    """Période récente : pour chaque joueur, son dernier split de ligue (saison régulière et playoffs) et tout ce qu'il a
+    joué ensuite (tournois, coupes). Une seule valeur par joueur : la note sur ces parties, leur nombre, la date de départ
+    et le nom du split."""
+    p = S['p']
+    lg = p[p.scope == 'ligue']
+    last_ev = lg.sort_values('date').groupby('pid').event.last()
+    start = lg[lg.event == lg.pid.map(last_ev)].groupby('pid').date.min()
+    q = p[p.date >= p.pid.map(start)]
+    n = q.groupby('pid').size()
+    pts = window_notes(S, q[q.pid.isin(n[n >= min_games].index)])
+    return pd.DataFrame({'pts': pts, 'n': n.reindex(pts.index), 'start': start.reindex(pts.index), 'ev': last_ev.reindex(pts.index)})
 
 
 def norm(x):
@@ -682,7 +700,7 @@ def main():
     out['scale'] = {'a': a, 'b': b}
     for y, S in runs.items():
         A, p = S['A'], S['p']
-        E = event_table(S); form = form_table(S)
+        E = event_table(S); form = form_table(S); recent = recent_table(S)
         lg_by = {k: v for k, v in league_table(S).groupby('pid')}
         st_by = {k: v for k, v in stint_table(S).groupby('pid') if len(v) > 1}
         A = A[A.n >= MIN_GAMES].copy()
@@ -723,6 +741,7 @@ def main():
                 'region': META['region'].get(r.league, 'Autre'), 'tier': int(r.tier), 'role': r.role, 'n': int(r.n),
                 'note': r1(r.note), 'pts': r1(r.pts, 0), 'team_lvl': r1(to_note(r['T'], a, b)), 'ind': r1(r.I, 2),
                 'form': r1(to_note(form.get(pid, r.pts), a, b)), 'last': str(r.last_date.date()),
+                'rc': [r1(to_note(recent.pts[pid], a, b)), int(recent.n[pid]), str(recent.start[pid].date()), recent.ev[pid]] if pid in recent.index else None,
                 'f': [r1(to_note(r['p_' + f], a, b)) if not pd.isna(r['p_' + f]) else None for f in fac],
                 'fp': [r1(r['pc_' + f], 3) for f in fac], 'pc': r1(r.pc_note, 3),
                 'weak': r1(to_note(r.p_weak, a, b)) if not pd.isna(r.p_weak) else None, 'weak_pc': r1(r.pc_weak, 3),

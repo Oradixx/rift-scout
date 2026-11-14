@@ -274,3 +274,5 @@ div.row{cursor:pointer}
 
 .ev span small{color:var(--ink-3);font-size:12.5px}
 .who small .moved{color:var(--ink-3)}
+.seg-wide{flex-wrap:wrap}
+.seg-wide button[hidden]{display:none}
