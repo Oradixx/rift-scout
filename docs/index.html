@@ -368,8 +368,8 @@ div.row{cursor:pointer}
       <div class="work">
         <aside class="filters" aria-label="Critères de recherche des jeunes joueurs">
           <div class="wide"><span class="count" id="crack-count"></span></div>
-          <div><label for="c-age">Âge maximum</label><select id="c-age"><option>18</option><option>19</option><option>20</option><option>21</option><option>22</option><option>23</option></select></div>
-          <div><label for="c-min">Parties jouées, au moins</label><input id="c-min" type="number" min="5" max="150" step="5" value="20"></div>
+          <div><label for="c-age">Âge maximum</label><select id="c-age"><option>18</option><option>19</option><option>20</option><option>21</option><option selected>22</option><option>23</option></select></div>
+          <div><label for="c-min">Parties jouées, au moins</label><input id="c-min" type="number" min="5" max="150" step="5" value="15"></div>
           <div><label for="c-region">Région</label><select id="c-region"></select></div>
           <div><label for="c-contract">Contrat</label><select id="c-contract"><option value="">Tous</option><option value="free">En fin de contrat</option><option value="signed">Sous contrat au-delà</option><option value="none">Non renseigné</option></select></div>
           <label class="check wide"><input type="checkbox" id="c-deep"> Chercher aussi dans les ligues de troisième niveau</label>
@@ -533,7 +533,7 @@ div.row{cursor:pointer}
   const TIER_IN = ['ligue majeure', 'deuxième niveau', 'troisième niveau'];
   const state = { season: Object.keys(D.seasons).sort().pop(), view: 'rank', role: '', tier: '0', region: '', league: '', event: '', contract: '', basis: 'season', minG: 15, q: '', shown: 100,
     sc: { plan: {}, contract: '', maxAge: 0, res: '', tid: null, role: 'Mid', tier: '', region: '', league: '', minNote: 0, minG: 20, sort: 'score', shown: 60, ref: null, reach: true, mode: 'team',
-      cr: { role: '', maxAge: 21, region: '', deep: false, minG: 20, contract: '', fresh: false, all: false, noAge: false, shown: 60 } } };
+      cr: { role: '', maxAge: 22, region: '', deep: false, minG: 15, contract: '', fresh: false, all: false, noAge: false, shown: 60 } } };
   let S, byId, med;
 
   function load() {
@@ -956,8 +956,8 @@ div.row{cursor:pointer}
     const of = (T) => T.map((t) => byId.get(t.roster[role])).filter(Boolean);
     return { lg, own: lg ? of(S.teams.filter((t) => t.league === lg)) : [], all: of(S.teams.filter((t) => t.tier === 0)) };
   }
-  function cracks() {
-    const c = state.sc.cr, refs = {};
+  function cracks(over) {
+    const c = Object.assign({}, state.sc.cr, over), refs = {};
     const out = [];
     for (const p of S.players) {
       if ((p.age ? p.age > c.maxAge : !c.noAge) || (c.role && p.role !== c.role) || !p.tr || !cMatch(p, c.contract)) continue;
@@ -986,7 +986,8 @@ div.row{cursor:pointer}
     $('#c-region').innerHTML = '<option value="">Toutes</option>' + regions.map((r) => `<option${r === c.region ? ' selected' : ''}>${h(r)}</option>`).join('');
     if (!hasAge()) { $('#crack-count').textContent = ''; rows.innerHTML = '<p class="none">Les âges ne sont pas disponibles pour cette saison : la recherche de jeunes joueurs ne peut pas se faire.</p>'; return; }
     const L = cracks();
-    $('#crack-count').textContent = `${fmt(L.length)} joueur${L.length > 1 ? 's' : ''} de ${c.maxAge} ans ou moins${c.noAge ? ' ou d\'âge inconnu' : ''}`;
+    const hidden = c.noAge ? 0 : cracks({ noAge: true }).filter((x) => !x.p.age).length;
+    $('#crack-count').textContent = `${fmt(L.length)} joueur${L.length > 1 ? 's' : ''} de ${c.maxAge} ans ou moins${c.noAge ? ' ou d\'âge inconnu' : ''}` + (hidden ? `. ${hidden} autre${hidden > 1 ? 's' : ''} d'âge inconnu, à afficher avec la case plus bas.` : '');
     if (!L.length) { rows.innerHTML = '<p class="none">Aucun joueur avec ces critères. Relevez l\'âge maximum ou affichez aussi ceux qui sont encore loin du niveau.</p>'; return; }
     rows.innerHTML = L.slice(0, c.shown).map((x, i) => {
       const p = x.p, N = x.own.N, ins = insights(p).plus.slice(0, 2).map((s) => s.replace(/<b>(.*?)<\/b>.*/, '$1'));
@@ -1063,7 +1064,7 @@ div.row{cursor:pointer}
     bind('#s-sort', (v) => { state.sc.sort = v; }); $('#s-reach').addEventListener('change', (e) => { state.sc.reach = e.target.checked; state.sc.shown = 60; renderScout(); });
     bind('#s-note', (v) => { state.sc.minNote = +v || 0; }); bind('#s-min', (v) => { state.sc.minG = +v || 0; });
     const cr = state.sc.cr;
-    bind('#c-age', (v) => { cr.maxAge = +v || 21; }); bind('#c-region', (v) => { cr.region = v; }); bind('#c-min', (v) => { cr.minG = +v || 0; }); bind('#c-contract', (v) => { cr.contract = v; });
+    bind('#c-age', (v) => { cr.maxAge = +v || 22; }); bind('#c-region', (v) => { cr.region = v; }); bind('#c-min', (v) => { cr.minG = +v || 0; }); bind('#c-contract', (v) => { cr.contract = v; });
     [['#c-deep', 'deep'], ['#c-fresh', 'fresh'], ['#c-all', 'all'], ['#c-noage', 'noAge']].forEach(([id, k]) => $(id).addEventListener('change', (e) => { cr[k] = e.target.checked; cr.shown = 60; renderScout(); }));
     $('#team-input').addEventListener('input', (e) => suggest(e.target.value));
     $('#team-input').addEventListener('focus', (e) => { e.target.select(); });
