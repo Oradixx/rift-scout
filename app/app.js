@@ -485,7 +485,9 @@
       const key = region + p.role, ref = refs[key] || (refs[key] = majorRef(region, p.role));
       // titulaires de la ligue majeure de sa région, puis de toutes les ligues majeures (lui-même exclu s'il y est devenu titulaire)
       // note estimée en ligue majeure (droite ajustée sur les joueurs des deux niveaux la même saison) ; le troisième niveau n'a pas de projection
-      const est = cand[0] === '1' && D.proj ? D.proj.a + D.proj.b * v[0] : v[0];
+      let est = cand[0] === '1' && D.proj ? D.proj.a + D.proj.b * v[0] : v[0];
+      // parties déjà jouées en ligue majeure cette saison : mélangées à l'estimation, partie pour partie (le meilleur poids sur la saison suivante)
+      if (maj) est = (est * v[1] + maj[0] * maj[1]) / (v[1] + maj[1]);
       const cmp = (L) => { L = L.filter((x) => x.id !== p.id); const a = L.filter((x) => x.note < est).length; return { a, N: L.length, share: L.length ? a / L.length : 0 }; };
       const own = cmp(ref.own), all = cmp(ref.all);
       const verdict = own.share >= 0.5 ? 2 : own.share >= 0.25 ? 1 : 0;

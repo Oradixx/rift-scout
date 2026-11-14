@@ -362,7 +362,7 @@ div.row{cursor:pointer}
             <div class="roles" id="c-roles" style="grid-template-columns:repeat(6,1fr)">
               <button data-role="">Tous</button><button data-role="Top">Top</button><button data-role="Jungle">Jungle</button><button data-role="Mid">Mid</button><button data-role="ADC">ADC</button><button data-role="Support">Support</button>
             </div></div>
-          <p class="count">Le même joueur a en moyenne 6 points de plus en ligue majeure qu'en deuxième niveau, la même saison : la note estimée en tient compte (erreur typique de 4 points sur les joueurs montés de 2025 à 2026). « Niveau titulaire » : estimé devant au moins la moitié des titulaires de la ligue majeure de sa région. « Mérite un essai » : devant au moins un quart. C'est une piste pour savoir qui regarder, pas une garantie.</p>
+          <p class="count">Le même joueur a en moyenne 6 points de plus en ligue majeure qu'en deuxième niveau, la même saison : la note estimée en tient compte (erreur typique de 4 points sur les joueurs montés de 2025 à 2026). Les parties déjà jouées en ligue majeure cette saison comptent aussi. « Niveau titulaire » : estimé devant au moins la moitié des titulaires de la ligue majeure de sa région. « Mérite un essai » : devant au moins un quart. C'est une piste pour savoir qui regarder, pas une garantie.</p>
         </div>
       </div>
       <div class="work">
@@ -461,7 +461,7 @@ div.row{cursor:pointer}
       </ul>
       <h2>Le scouting</h2>
       <p><b>Style proche</b> mesure la ressemblance avec le joueur à remplacer. <b>Apport à l'équipe</b> combine deux choses : les forces du candidat sur les facettes où les quatre autres joueurs sont en retrait, et l'équilibre des ressources (un carry de plus dans une équipe qui en a déjà trois s'intègre moins bien). Le tri recommandé part de la note et la corrige de ces deux mesures. Quand on choisit un niveau de ligue, un joueur qui y a joué sans que ce soit son niveau principal (équipe réserve, montée ou descente en cours d'année) apparaît avec sa note sur ses seules parties de ce niveau.</p>
-      <p><b>Cracks à essayer</b> liste les jeunes joueurs des ligues de deuxième niveau (et, sur demande, de troisième niveau), notés sur leurs seules parties de ce niveau. Un même joueur qui a joué aux deux niveaux la même saison a en moyenne 6 points de plus en ligue majeure : la note de deuxième niveau est donc convertie en note estimée en ligue majeure (droite ajustée sur ces joueurs), puis comparée aux titulaires de la ligue majeure de sa région. Sur les joueurs montés de 2025 à 2026, que l'ajustement n'a pas vus, l'estimation se trompe de 4 points en médiane, contre 8 en prenant la note de deuxième niveau telle quelle.</p>
+      <p><b>Cracks à essayer</b> liste les jeunes joueurs des ligues de deuxième niveau (et, sur demande, de troisième niveau), notés sur leurs seules parties de ce niveau. Un même joueur qui a joué aux deux niveaux la même saison a en moyenne 6 points de plus en ligue majeure : la note de deuxième niveau est donc convertie en note estimée en ligue majeure (droite ajustée sur ces joueurs), puis comparée aux titulaires de la ligue majeure de sa région. Ajustée sur 2025 seulement, puis essayée sur les joueurs montés en 2026, l'estimation se trompe de 4 points en médiane, contre 8 en prenant la note de deuxième niveau telle quelle. Pour un joueur qui a déjà joué en ligue majeure cette saison, ces parties sont mélangées à l'estimation, partie pour partie.</p>
       <p><b>Avant et après</b> : quand vous essayez un joueur dans une équipe, le niveau de l'effectif est la moyenne des niveaux de ses cinq joueurs. Les chances de victoire sont calculées contre une équipe moyenne de la même ligue, et le rang compare cet effectif à ceux des autres équipes de la ligue. Le profil par facette est la moyenne des cinq joueurs. C'est une estimation : elle suppose que chacun joue dans sa nouvelle équipe comme il a joué cette saison.</p>
       <h2>Les contrats</h2>
       <p>Les dates de fin de contrat viennent de la base publique des contrats reconnus par Riot (LCK, LPL, LEC, LCS, CBLOL, LCP et les principales ligues régionales). <span id="m-contracts"></span> Les joueurs absents de cette base apparaissent comme « non renseigné ».</p>
@@ -968,7 +968,9 @@ div.row{cursor:pointer}
       const key = region + p.role, ref = refs[key] || (refs[key] = majorRef(region, p.role));
       // titulaires de la ligue majeure de sa région, puis de toutes les ligues majeures (lui-même exclu s'il y est devenu titulaire)
       // note estimée en ligue majeure (droite ajustée sur les joueurs des deux niveaux la même saison) ; le troisième niveau n'a pas de projection
-      const est = cand[0] === '1' && D.proj ? D.proj.a + D.proj.b * v[0] : v[0];
+      let est = cand[0] === '1' && D.proj ? D.proj.a + D.proj.b * v[0] : v[0];
+      // parties déjà jouées en ligue majeure cette saison : mélangées à l'estimation, partie pour partie (le meilleur poids sur la saison suivante)
+      if (maj) est = (est * v[1] + maj[0] * maj[1]) / (v[1] + maj[1]);
       const cmp = (L) => { L = L.filter((x) => x.id !== p.id); const a = L.filter((x) => x.note < est).length; return { a, N: L.length, share: L.length ? a / L.length : 0 }; };
       const own = cmp(ref.own), all = cmp(ref.all);
       const verdict = own.share >= 0.5 ? 2 : own.share >= 0.25 ? 1 : 0;
