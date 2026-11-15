@@ -53,6 +53,14 @@ jobs:
         env:
           LEAGUEPEDIA_USER: ${{ secrets.LEAGUEPEDIA_USER }}
           LEAGUEPEDIA_PASSWORD: ${{ secrets.LEAGUEPEDIA_PASSWORD }}
+      - name: Notes LoL Ratings pour la note mixte (identifiant et points seulement)
+        if: steps.data.outputs.skip != 'true'
+        run: |
+          for y in $(date -u +%Y) $(($(date -u +%Y) - 1)); do
+            curl -sfL "https://raw.githubusercontent.com/Oradixx/LoL-ratings/main/results/ratings_$y.csv" -o /tmp/lr.csv \
+              && python -c "import pandas as pd; pd.read_csv('/tmp/lr.csv')[['pid','points']].to_csv('pipeline/lr_ratings_$y.csv', index=False)" \
+              || echo "::warning::Notes LoL Ratings $y non mises à jour, on garde les dernières."
+          done
       - name: Calculer les notes
         if: steps.data.outputs.skip != 'true'
         run: python -W ignore pipeline/build.py data/raw
@@ -67,7 +75,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/index.html pipeline/contracts.json pipeline/lp_players.json pipeline/lp_coverage.json pipeline/lp_timeline_*.csv.gz pipeline/lp_games_*.csv.gz
+          git add docs/index.html pipeline/contracts.json pipeline/lp_players.json pipeline/lp_coverage.json pipeline/lp_timeline_*.csv.gz pipeline/lp_games_*.csv.gz pipeline/lr_ratings_*.csv
           if git diff --cached --quiet; then echo "Rien de nouveau."; exit 0; fi
           git commit -m "Mise à jour hebdomadaire : données au $(date -u +%F)"
           git push

@@ -19,6 +19,7 @@
     <button role="tab" data-view="method">Méthode</button>
   </div>
   <span class="spacer"></span>
+  <div class="seg" id="calc" aria-label="Calcul de la note"><button data-calc="rift" title="Note Rift Scout : niveau de l'équipe et statistiques individuelles">Rift Scout</button><button data-calc="mix" title="Moitié note Rift Scout, moitié note LoL Ratings (régression sur l'écart d'or)">Mixte</button></div>
   <div class="seg" id="season" aria-label="Saison"></div>
 </div>
 
@@ -167,6 +168,8 @@
         <li><b>Grands matchs</b> : écart entre ses parties de playoffs ou de tournoi entre ligues, et ses autres parties. Les coupes et qualifications d'une seule ligue ou région n'y comptent pas.</li>
         <li><b>Style de jeu</b> : part de l'or et des dégâts, activité avant 15 minutes, prise de risque, vision, farm, type de champions joués. Il sert à mesurer la ressemblance entre deux joueurs, pas leur niveau.</li>
       </ul>
+      <h2>Rift Scout ou mixte</h2>
+      <p>Le bouton <b>Mixte</b>, en haut de la page, remplace la note de saison par une note mixte : moitié note Rift Scout, moitié note de <a href="https://oradixx.github.io/LoL-ratings/">LoL Ratings</a>, qui part du résultat des parties (régression sur l'écart d'or, joueur par joueur) plutôt que des statistiques. Les deux méthodes prédisent aussi bien les matchs des joueurs transférés la saison suivante ; leur mélange n'est jamais moins bon, et meilleur sur l'une des deux saisons testées. Elles s'accordent à 92 % sur le classement des ligues majeures ; le mélange déplace les notes de 1 point en médiane. Seule la note de saison change : facettes, notes d'événement, de ligue et de période récente restent celles de Rift Scout. Un joueur sans note LoL Ratings (petites ligues, peu de parties) garde sa note Rift Scout.</p>
       <h2>Le scouting</h2>
       <p><b>Style proche</b> mesure la ressemblance avec le joueur à remplacer. <b>Apport à l'équipe</b> combine deux choses : les forces du candidat sur les facettes où les quatre autres joueurs sont en retrait, et l'équilibre des ressources (un carry de plus dans une équipe qui en a déjà trois s'intègre moins bien). Le tri recommandé part de la note et la corrige de ces deux mesures. Quand on choisit un niveau de ligue, un joueur qui y a joué sans que ce soit son niveau principal (équipe réserve, montée ou descente en cours d'année) apparaît avec sa note sur ses seules parties de ce niveau.</p>
       <p><b>Cracks à essayer</b> liste les jeunes joueurs des ligues de deuxième niveau (et, sur demande, de troisième niveau), notés sur leurs seules parties de ce niveau. Un même joueur qui a joué aux deux niveaux la même saison a en moyenne 6 points de plus en ligue majeure : la note de deuxième niveau est donc convertie en note estimée en ligue majeure (droite ajustée sur ces joueurs), puis comparée aux titulaires de la ligue majeure de sa région. Ajustée sur 2025 seulement, puis essayée sur les joueurs montés en 2026, l'estimation se trompe de 4 points en médiane, contre 8 en prenant la note de deuxième niveau telle quelle. Pour un joueur qui a déjà joué en ligue majeure cette saison, ces parties sont mélangées à l'estimation, partie pour partie.</p>

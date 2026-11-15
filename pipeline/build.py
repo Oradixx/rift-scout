@@ -130,6 +130,12 @@ def add_lp_games(d, year):
     L = pd.read_csv(path, low_memory=False)
     L = L[~L.gameid.isin(set(d.gameid))]
     if not len(L): return d
+    # Parties récentes d'une ligue qu'Oracle's Elixir couvre : même segment et même indicateur de playoffs que ses dernières parties
+    # dans cette ligue, pour qu'elles rejoignent le même événement (la finale des Worlds dans « Worlds », pas « Worlds Main Event »).
+    last = d.sort_values('date').groupby('league')[['split', 'playoffs']].last()
+    known = L.league.isin(last.index)
+    L.loc[known, 'split'] = L.loc[known, 'league'].map(last.split)
+    L.loc[known, 'playoffs'] = L.loc[known, 'league'].map(last.playoffs)
     # or gagné (hors or de départ et revenu passif), même définition qu'Oracle's Elixir : 500 + 122,42 par minute après 1 min 50
     mins = L.gamelength / 60
     L['earnedgold'] = (L.totalgold - 500 - (122.42 * (mins - 110 / 60)).clip(lower=0)).clip(lower=0)
@@ -854,6 +860,21 @@ def main():
         st_by = {k: v for k, v in stint_table(S).groupby('pid') if len(v) > 1}
         A = A[A.n >= MIN_GAMES].copy()
         A['note'] = [to_note(v, a, b) for v in A.pts]
+        # Note mixte (bouton « Mixte » de la page) : moitié note Rift Scout, moitié note de LoL Ratings (régression sur l'écart d'or
+        # joueur par joueur, pipeline/lr_ratings_<année>.csv, repris de results/ratings_<année>.csv du dépôt LoL-ratings). Les
+        # points de LoL Ratings sont ramenés à l'échelle de la note (même moyenne et même écart-type sur les joueurs communs,
+        # 15 parties ou plus). Jugé sur les transferts : jamais moins bon que la note seule, meilleur en 2024 -> 2025 (log-loss
+        # -0,0034) ; 2025 -> 2026 : -0,0004. Sans note LoL Ratings (petites ligues, peu de parties), la note mixte = la note.
+        lr_path = os.path.join(HERE, f'lr_ratings_{y}.csv')
+        A['nm'] = np.nan
+        if os.path.exists(lr_path):
+            lr = pd.read_csv(lr_path).set_index('pid').points
+            pts_lr = lr.reindex(A.index)
+            com = pts_lr.notna() & (A.n >= 15)
+            if com.sum() > 200:
+                lr_note = A.note[com].mean() + (pts_lr - pts_lr[com].mean()) * A.note[com].std() / pts_lr[com].std()
+                A['nm'] = ((A.note + lr_note) / 2).clip(1, 99)
+                print(f'{y} : note mixte pour {int(A.nm.notna().sum())} joueurs')
         ev_by = {k: v for k, v in E.groupby('pid')}
         champs = p.groupby(['pid', 'champion']).agg(n=('result', 'size'), w=('result', 'mean')).reset_index()
         ch_by = {k: v.sort_values('n', ascending=False).head(6) for k, v in champs.groupby('pid')}
@@ -897,7 +918,7 @@ def main():
             players.append({
                 'id': pid.replace('oe:player:', ''), 'name': r['name'], 'team': r.team, 'tid': str(r.tid).replace('oe:team:', ''), 'league': r.league,
                 'region': META['region'].get(r.league, 'Autre'), 'tier': int(r.tier), 'role': r.role, 'n': int(r.n),
-                'note': r1(r.note), 'pts': r1(r.pts, 0), 'team_lvl': r1(to_note(r['T'], a, b)), 'ind': r1(r.I, 2),
+                'note': r1(r.note), 'nm': r1(r.nm), 'pts': r1(r.pts, 0), 'team_lvl': r1(to_note(r['T'], a, b)), 'ind': r1(r.I, 2),
                 'form': r1(to_note(form.get(pid, r.pts), a, b)), 'last': str(r.last_date.date()),
                 'rc': [r1(to_note(recent.pts[pid], a, b)), int(recent.n[pid]), str(recent.start[pid].date()), recent.ev[pid]] if pid in recent.index else None,
                 'f': [r1(to_note(r['p_' + f], a, b)) if not pd.isna(r['p_' + f]) else None for f in fac],

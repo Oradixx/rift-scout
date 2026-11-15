@@ -48,11 +48,28 @@
   const cMatch = (p, v) => !v || !hasCT() || (v === 'free' ? isFree(p) : v === 'signed' ? !!p.c && !isFree(p) : !p.c);
 
   const TIER_IN = ['ligue majeure', 'deuxième niveau', 'troisième niveau'];
-  const state = { season: Object.keys(D.seasons).sort().pop(), view: 'rank', role: '', tier: '0', region: '', league: '', event: '', contract: '', basis: 'season', minG: 15, q: '', shown: 100,
+  const state = { calc: 'rift', season: Object.keys(D.seasons).sort().pop(), view: 'rank', role: '', tier: '0', region: '', league: '', event: '', contract: '', basis: 'season', minG: 15, q: '', shown: 100,
     sc: { plan: {}, contract: '', maxAge: 0, res: '', tid: null, role: 'Mid', tier: '', region: '', league: '', minNote: 0, minG: 20, sort: 'score', shown: 60, ref: null, reach: true, mode: 'team',
       cr: { role: '', maxAge: 22, region: '', deep: false, minG: 15, contract: '', fresh: false, all: false, noAge: false, shown: 60 } } };
   let S, byId, med;
 
+  /* note affichée : Rift Scout ou mixte (moitié Rift Scout, moitié LoL Ratings). Seule la note de saison change ; les notes
+     d'événement, de ligue, de niveau et de période récente restent celles de Rift Scout. */
+  function invNote(n) { const x = n <= 88 ? n : 88 + 11 * Math.atanh(Math.min((n - 88) / 11, 0.999)); return (x - D.scale.a) / D.scale.b; }
+  function applyCalc() {
+    const mix = state.calc === 'mix';
+    for (const y in D.seasons) {
+      const P = D.seasons[y].players;
+      for (const p of P) {
+        if (p.note0 === undefined) { p.note0 = p.note; p.pts0 = p.pts; }
+        const m = mix && p.nm != null;
+        p.note = m ? p.nm : p.note0; p.pts = m ? invNote(p.nm) : p.pts0;
+      }
+      P.sort((a, b) => b.note - a.note);
+    }
+    document.documentElement.dataset.calc = state.calc;
+    document.querySelectorAll('#calc button').forEach((b) => b.setAttribute('aria-pressed', b.dataset.calc === state.calc));
+  }
   function load() {
     S = D.seasons[state.season];
     byId = new Map(S.players.map((p) => [p.id, p]));
@@ -264,7 +281,7 @@
     const rankIn = S.players.filter((x) => x.role === p.role && x.tier === p.tier && x.n >= 15 && x.note > p.note).length + 1;
     const d = p.rc ? p.rc[0] - p.note : 0;
     let html = `<header><span class="num note ${noteCls(p.note)}">${nInt(p.note)}</span><div><h2 id="sheet-name">${h(p.name)}</h2>
-      <p class="meta">${p.role}, ${h(p.team)}, ${h(lgName(p.league))} (${h(p.region)})<br>${(p.age || p.cty) ? [p.age ? p.age + ' ans' : null, p.cty ? h(pays(p.cty)) : null, p.res ? 'résidence ' + h(resid(p.res)) : null].filter(Boolean).join(', ') + '<br>' : ''}${rankIn}<sup>${rankIn === 1 ? 'er' : 'e'}</sup> des ${grp}, saison ${state.season}${p.now ? `<br>A ensuite joué pour ${h(p.now)} (tournoi ou intersaison)` : ''}${hasCT() ? '<br>' + (p.c ? (isFree(p) ? `<b class="down">Fin de contrat le ${cDate(p.c, true)}</b>` : `Sous contrat jusqu'au ${cDate(p.c, true)}`) : 'Contrat non renseigné dans la base de Riot') : ''}</p></div><button class="close" data-close>Fermer</button></header>`;
+      <p class="meta">${p.role}, ${h(p.team)}, ${h(lgName(p.league))} (${h(p.region)})<br>${(p.age || p.cty) ? [p.age ? p.age + ' ans' : null, p.cty ? h(pays(p.cty)) : null, p.res ? 'résidence ' + h(resid(p.res)) : null].filter(Boolean).join(', ') + '<br>' : ''}${rankIn}<sup>${rankIn === 1 ? 'er' : 'e'}</sup> des ${grp}, saison ${state.season}${p.nm != null ? `<br>Note Rift Scout ${nInt(p.note0)}, note mixte ${nInt(p.nm)}` : ''}${p.now ? `<br>A ensuite joué pour ${h(p.now)} (tournoi ou intersaison)` : ''}${hasCT() ? '<br>' + (p.c ? (isFree(p) ? `<b class="down">Fin de contrat le ${cDate(p.c, true)}</b>` : `Sous contrat jusqu'au ${cDate(p.c, true)}`) : 'Contrat non renseigné dans la base de Riot') : ''}</p></div><button class="close" data-close>Fermer</button></header>`;
     html += `<section><div class="split">
       <div><small>Niveau de son équipe${p.tse ? ', à ± ' + fmt(p.tse, 1) + ' près' : ''}</small><span class="num">${nInt(p.team_lvl)}</span></div>
       <div><small>Écart individuel</small><span class="num ${p.ind >= 0 ? 'up' : 'down'}">${p.ind >= 0 ? '+' : ''}${fmt(p.note - p.team_lvl, 1)}</span></div>
@@ -556,12 +573,15 @@
   }
   function init() {
     $('#season').innerHTML = Object.keys(D.seasons).sort().map((y) => `<button data-season="${y}">${y}</button>`).join('');
+    try { const c = localStorage.getItem('rs-calc'); if (c === 'mix' || c === 'rift') state.calc = c; } catch (e) { /* stockage indisponible */ }
+    applyCalc();
     load(); fillSelects();
     document.addEventListener('click', (e) => {
       const b = e.target.closest('button,[data-p]'); if (!b) { if (e.target.classList.contains('scrim')) closeSheet(); return; }
       if (b.dataset.try) { const p = byId.get(b.dataset.try), pl = state.sc.plan; if (pl[p.role] === p.id) delete pl[p.role]; else pl[p.role] = p.id; state.sc.role = p.role; closeSheet(); renderScout(); return; }
       if (b.dataset.untry) { if (b.dataset.untry === 'all') state.sc.plan = {}; else delete state.sc.plan[b.dataset.untry]; renderScout(); return; }
       if (b.dataset.view) { state.view = b.dataset.view; render(); window.scrollTo(0, 0); }
+      else if (b.dataset.calc) { state.calc = b.dataset.calc; try { localStorage.setItem('rs-calc', state.calc); } catch (e) { /* stockage indisponible */ } applyCalc(); load(); render(); }
       else if (b.dataset.season) { state.season = b.dataset.season; lgCache = {}; state.sc.plan = {}; state.sc.tid = null; state.sc.ref = null; $('#team-input').value = ''; load(); fillSelects(); render(); }
       else if (b.dataset.scout) { const p = byId.get(b.dataset.scout); closeSheet(); state.view = 'scout'; state.sc.plan = {}; state.sc.role = p.role; state.sc.ref = p.id; const t = S.teams.find((x) => x.roster[p.role] === p.id); state.sc.tid = t ? t.tid : null; if (!t) $('#team-input').value = ''; render(); window.scrollTo(0, 0); }
       else if (b.dataset.p) openSheet(b.dataset.p, b.dataset.cmp);
