@@ -102,21 +102,25 @@
   function insights(p) {
     const plus = [], minus = [], w = D.weights[p.role];
     const grp = ROLE_PL[p.role] + ' ' + TIER_OF[p.tier];
-    const idx = FAC.map((f, i) => i).filter((i) => p.fp[i] != null && (w[FAC[i]] > 0 || FAC[i] === 'obj'));
-    idx.slice().sort((a, b) => p.fp[b] - p.fp[a]).slice(0, 3).forEach((i) => {
-      if (p.fp[i] >= 0.7) plus.push(`<b>${fLabel(FAC[i], p.role)}</b> : ${fSay(FAC[i], p.role)} (${topTxt(p.fp[i])} des ${grp})`);
+    // Forces et points faibles : lus sur la seule part individuelle de chaque facette (fi), à niveau d'équipe égal.
+    // Les notes de facette, elles, contiennent le niveau de l'équipe : chez Gen.G, toutes seraient des forces.
+    const fi = p.fi || p.fp;
+    const idx = FAC.map((f, i) => i).filter((i) => fi[i] != null && (w[FAC[i]] > 0 || FAC[i] === 'obj'));
+    idx.slice().sort((a, b) => fi[b] - fi[a]).slice(0, 3).forEach((i) => {
+      if (fi[i] >= 0.7) plus.push(`<b>${fLabel(FAC[i], p.role)}</b> : ${fSay(FAC[i], p.role)} (${topTxt(fi[i])} des ${grp}, à niveau d'équipe égal)`);
     });
-    idx.slice().sort((a, b) => p.fp[a] - p.fp[b]).slice(0, 2).forEach((i) => {
-      if (p.fp[i] <= 0.3) minus.push(`<b>${fLabel(FAC[i], p.role)}</b> : ${fLow(FAC[i], p.role)} (${nInt(p.f[i])}, pour une note générale de ${nInt(p.note)})`);
+    idx.slice().sort((a, b) => fi[a] - fi[b]).slice(0, 2).forEach((i) => {
+      if (fi[i] <= 0.3) minus.push(`<b>${fLabel(FAC[i], p.role)}</b> : ${fLow(FAC[i], p.role)} (${Math.max(1, Math.round(fi[i] * 100))}e centile des ${grp}, à niveau d'équipe égal)`);
     });
-    if (p.weak != null && p.strong != null) {
-      if (p.weak_pc >= 0.75 && p.weak_pc >= p.strong_pc) plus.push(`<b>Weakside</b> : tient sa lane quand son jungler joue ailleurs (${topTxt(p.weak_pc)})`);
-      if (p.strong_pc >= 0.75 && p.strong_pc > p.weak_pc) plus.push(`<b>Strongside</b> : convertit l'aide reçue en avance et en dégâts (${topTxt(p.strong_pc)})`);
-      if (p.weak_pc <= 0.25) minus.push('<b>Weakside</b> : souffre quand son jungler joue ailleurs');
-      if (p.strong_pc <= 0.25) minus.push('<b>Strongside</b> : convertit peu l\'aide reçue');
+    // weakside / strongside : seulement avec les chronologies (sans elles, en LPL, la mesure ne se retrouve pas d'une saison à l'autre)
+    if (p.wi != null && p.si != null && p.st && p.st.tl >= 10) {
+      if (p.wi >= 0.8 && p.wi >= p.si) plus.push(`<b>Weakside</b> : tient sa lane quand son jungler joue ailleurs (${topTxt(p.wi)}, à niveau d'équipe égal)`);
+      if (p.si >= 0.8 && p.si > p.wi) plus.push(`<b>Strongside</b> : convertit l'aide reçue en avance et en dégâts (${topTxt(p.si)}, à niveau d'équipe égal)`);
+      if (p.wi <= 0.2) minus.push('<b>Weakside</b> : souffre quand son jungler joue ailleurs');
+      if (p.si <= 0.2) minus.push('<b>Strongside</b> : convertit peu l\'aide reçue');
     }
-    if (p.clutch != null && p.clutch >= 1) plus.push(`<b>Grands matchs</b> : meilleur en playoffs et à l'international qu'en saison régulière (${p.big_n} parties)`);
-    if (p.clutch != null && p.clutch <= -1) minus.push(`<b>Grands matchs</b> : en dessous de son niveau habituel en playoffs et à l'international (${p.big_n} parties)`);
+    // « grands matchs » (playoffs et international contre saison régulière) n'est plus présenté comme une force ou un point
+    // faible : l'écart ne se retrouve pas d'une saison à l'autre (corrélation -0,01 et -0,08), c'est du bruit.
     if (p.reg != null && p.reg >= 0.8) plus.push('<b>Régularité</b> : niveau très stable d\'une partie à l\'autre');
     if (p.reg != null && p.reg <= 0.15) minus.push('<b>Régularité</b> : niveau très variable d\'une partie à l\'autre');
     if (p.pool != null && p.pool >= 0.85) plus.push(`<b>Pool de champions</b> : large (${p.pool_n} champions joués)`);

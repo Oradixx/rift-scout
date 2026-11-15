@@ -809,6 +809,12 @@ def main():
         for f in fac + ['weak', 'strong']:
             A['pc_' + f] = A.groupby(['role', 'tier'])['p_' + f].rank(pct=True)
         A['pc_note'] = A.groupby(['role', 'tier']).pts.rank(pct=True)
+        # Centiles de la seule part individuelle (sans le niveau de l'équipe) : ce qui distingue le joueur, à niveau
+        # d'équipe égal. Les centiles des notes de facette (pc_*) répètent surtout le niveau de l'équipe (chez Gen.G, les
+        # 8 facettes au-dessus du 70e centile ; dans une équipe faible, 5 sous le 30e) : les forces et points faibles de la
+        # fiche se lisent donc sur ceux-ci.
+        for f in fac: A['pi_' + f] = A.groupby(['role', 'tier'])['i_' + f].rank(pct=True)
+        for nm in ('weak', 'strong'): A['pi_' + nm] = A.groupby(['role', 'tier'])[nm].rank(pct=True)
         A['pc_sd'] = 1 - A[A.n >= 15].groupby(['role', 'tier']).c_sd.rank(pct=True).reindex(A.index)
         A['pc_pool'] = A[A.n >= 15].groupby(['role', 'tier']).pool_eff.rank(pct=True).reindex(A.index)
         contracts, cmeta = match_contracts(A) if y == SEASONS[-1] else ({}, None)
@@ -842,7 +848,8 @@ def main():
                 'form': r1(to_note(form.get(pid, r.pts), a, b)), 'last': str(r.last_date.date()),
                 'rc': [r1(to_note(recent.pts[pid], a, b)), int(recent.n[pid]), str(recent.start[pid].date()), recent.ev[pid]] if pid in recent.index else None,
                 'f': [r1(to_note(r['p_' + f], a, b)) if not pd.isna(r['p_' + f]) else None for f in fac],
-                'fp': [r1(r['pc_' + f], 3) for f in fac], 'pc': r1(r.pc_note, 3),
+                'fp': [r1(r['pc_' + f], 3) for f in fac], 'fi': [r1(r['pi_' + f], 2) for f in fac], 'pc': r1(r.pc_note, 3),
+                'wi': r1(r.pi_weak, 2), 'si': r1(r.pi_strong, 2),
                 'weak': r1(to_note(r.p_weak, a, b)) if not pd.isna(r.p_weak) else None, 'weak_pc': r1(r.pc_weak, 3),
                 'strong': r1(to_note(r.p_strong, a, b)) if not pd.isna(r.p_strong) else None, 'strong_pc': r1(r.pc_strong, 3),
                 'clutch': r1(r.clutch, 2), 'big_n': int(r.big_n), 'reg': r1(r.pc_sd, 3), 'pool': r1(r.pc_pool, 3),
