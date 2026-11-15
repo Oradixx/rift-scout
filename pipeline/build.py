@@ -87,6 +87,14 @@ WEIGHTS = {
     'ADC':     {'lane': .18, 'early': .05, 'fight': .23, 'carry': .27, 'eco': .13, 'vision': .02, 'safe': .12, 'obj': 0},
     'Support': {'lane': .17, 'early': .14, 'fight': .28, 'carry': .02, 'eco': 0, 'vision': .22, 'safe': .12, 'obj': .05},
 }
+# Novembre 2026 : dégâts (carry) et vision ×2, survie (safe) ×0,5, puis poids ramenés à 1. Jugé sur les transferts
+# (notes d'une saison, matchs de la saison suivante des effectifs remaniés, 2024 -> 2025 et 2025 -> 2026) : prédiction
+# meilleure sur les deux paires (log-loss -0,0010 et -0,0012), là où des poids appris librement changeaient d'une
+# saison à l'autre. Les poids d'origine, choisis à la main, sont gardés ci-dessus pour mémoire.
+WEIGHTS_HAND = {r: dict(w) for r, w in WEIGHTS.items()}
+_ADJ = {'carry': 2.0, 'vision': 2.0, 'safe': 0.5}
+WEIGHTS = {r: {f: v * _ADJ.get(f, 1.0) for f, v in w.items()} for r, w in WEIGHTS_HAND.items()}
+WEIGHTS = {r: {f: round(v / sum(w.values()), 4) for f, v in w.items()} for r, w in WEIGHTS.items()}
 TL_STATS = {'nwd_pm', 'obj_part'}
 CHAMP_ADJ = ['nwd_pm', 'obj_part', 'dpm', 'damageshare', 'dmg_per_gold', 'kshare', 'cspm', 'earned gpm', 'earnedgoldshare', 'vspm', 'wcpm', 'cwpm', 'wpm',
              'golddiffat15', 'xpdiffat15', 'csdiffat15', 'golddiffat10', 'duo_gd15', 'kp', 'lkda', 'nd_pm', 'nd_share', 'ka15', 'nd15',
