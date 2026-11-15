@@ -32,7 +32,12 @@
    "RL": -223.0,
    "ROL": -475.0,
    "TCL": 2.0,
-   "VCS": 14.0
+   "VCS": 14.0,
+   "PRM2": -233.0,
+   "BAS": -500.0,
+   "AL2": -578.0,
+   "IEL": -700.0,
+   "NXT": -404.0
   },
   "2026": {
    "AL": -175.0,
@@ -64,7 +69,12 @@
    "RL": -161.0,
    "ROL": -387.0,
    "TCL": -154.0,
-   "VCS": -111.0
+   "VCS": -111.0,
+   "PRM2": -181.0,
+   "BAS": -500.0,
+   "AL2": -475.0,
+   "IEL": -700.0,
+   "NXT": -484.0
   }
  },
  "canon": {
@@ -95,7 +105,12 @@
   "HC",
   "LAS",
   "NEXO",
-  "NL"
+  "NL",
+  "PRM2",
+  "BAS",
+  "AL2",
+  "IEL",
+  "NXT"
  ],
  "region": {
   "LCK": "Corée",
@@ -151,7 +166,12 @@
   "LMF": "Brésil & Amérique latine",
   "LCO": "Asie-Pacifique",
   "PCL": "Asie-Pacifique",
-  "LJLA": "Asie-Pacifique"
+  "LJLA": "Asie-Pacifique",
+  "PRM2": "EMEA",
+  "BAS": "EMEA",
+  "AL2": "EMEA",
+  "IEL": "EMEA",
+  "NXT": "EMEA"
  },
  "desc": {
   "LCK": "Corée",
@@ -204,6 +224,11 @@
   "LMF": "Argentine (LMF)",
   "LCO": "Océanie (LCO)",
   "PCL": "Pacifique, 2e division (PCL)",
-  "LJLA": "Japon, académies"
+  "LJLA": "Japon, académies",
+  "PRM2": "Allemagne, Prime League 2e division (données Leaguepedia)",
+  "BAS": "Benelux, Ascend Series (données Leaguepedia)",
+  "AL2": "Moyen-Orient & Afrique du Nord, 2e division (données Leaguepedia)",
+  "IEL": "Islande (données Leaguepedia)",
+  "NXT": "France, Nexus Tour (données Leaguepedia)"
  }
 }

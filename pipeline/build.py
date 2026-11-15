@@ -105,7 +105,8 @@ PRETTY = {'WLDs': 'Worlds', 'FST': 'First Stand', 'EM': 'EMEA Masters', 'LCKC': 
           'AM': 'Asia Masters', 'DCup': 'Demacia Cup', 'NL': 'Nexus League', 'PRM': 'Prime League', 'AL': 'Arabian League',
           'CD': 'Circuito Desafiante', 'HM': 'Hitpoint Masters', 'HC': 'Hitpoint Challengers', 'RL': 'Rift Legends',
           'ROL': 'Road of Legends', 'LTA': 'LTA Championship', 'DCGI': 'Demacia Cup Global Invitational',
-          'WSCI': 'World Star Challengers Invitational', 'HW': 'Hitpoint Winter'}
+          'WSCI': 'World Star Challengers Invitational', 'HW': 'Hitpoint Winter',
+          'PRM2': 'Prime League, 2e division', 'BAS': 'Benelux Ascend Series', 'AL2': 'Arabian League, 2e division', 'IEL': 'Icelandic Esports League', 'NXT': 'Nexus Tour'}
 TIER_NAMES = ['Ligue majeure', 'Deuxième niveau', 'Troisième niveau']
 
 
@@ -116,9 +117,33 @@ def tier_of(lg):
 
 
 # ----------------------------------------------------------------------------- chargement
+def add_lp_games(d, year):
+    """Parties que seul Leaguepedia a (pipeline/lp_games_<année>.csv.gz, voir fetch_lp_games.py) : petites ligues de clubs,
+    et parties trop récentes pour Oracle's Elixir. Une partie présente des deux côtés garde la version d'Oracle's Elixir.
+    Joueurs et équipes sont reliés aux identifiants d'Oracle's Elixir par leur nom (même pseudo et même poste, nom unique) ;
+    sinon ils gardent un identifiant « lp: »."""
+    path = os.path.join(HERE, f'lp_games_{year}.csv.gz')
+    if not os.path.exists(path): return d
+    L = pd.read_csv(path, low_memory=False)
+    L = L[~L.gameid.isin(set(d.gameid))]
+    if not len(L): return d
+    low = lambda s: s.astype(str).str.lower().str.strip()
+    tm = d[d.position == 'team'].assign(k=low(d.teamname)).groupby(['k', 'teamid']).gameid.nunique().reset_index().sort_values('gameid').drop_duplicates('k', keep='last')
+    L['teamid'] = low(L.teamname).map(dict(zip(tm.k, tm.teamid))).fillna(L.teamid)
+    pl = d[d.position != 'team'].dropna(subset=['playerid']).assign(k=low(d.playername))
+    one = pl.groupby(['k', 'position']).playerid.agg(lambda x: x.mode().iloc[0] if x.nunique() == 1 else None).dropna()
+    one_any = pl.groupby('k').playerid.agg(lambda x: x.iloc[0] if x.nunique() == 1 else None).dropna()
+    key = list(zip(low(L.playername), L.position))
+    L['playerid'] = [one.get(k) or one_any.get(k[0]) or pid for k, pid in zip(key, L.playerid)]
+    L.loc[L.position == 'team', 'playerid'] = np.nan
+    print(f'{year} : {L.gameid.nunique()} parties ajoutées depuis Leaguepedia', L.drop_duplicates('gameid').league.value_counts().to_dict())
+    return pd.concat([d, L[[c for c in L.columns if c in d.columns]]], ignore_index=True)
+
+
 def load(year):
     f = os.path.join(RAW, f'{year}_LoL_esports_match_data_from_OraclesElixir.csv')
     d = pd.read_csv(f, low_memory=False)
+    d = add_lp_games(d, year)
     d['league'] = d['league'].map(lambda x: META['canon'].get(x, x))
     d['date'] = pd.to_datetime(d['date'], errors='coerce')
     d = d.drop_duplicates(['gameid', 'participantid']).dropna(subset=['result', 'date']).copy()

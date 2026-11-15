@@ -1,0 +1,45 @@
+name: Parties Leaguepedia
+# Récupère les parties absentes d'Oracle's Elixir (petites ligues de clubs, parties trop récentes) et les convertit au
+# format d'Oracle's Elixir : pipeline/lp_games_<année>.csv.gz. Reprend là où le lancement précédent s'est arrêté.
+# « verification » : nombre de parties de LEC à convertir aussi, pour comparer la conversion à Oracle's Elixir
+# (pipeline/lp_games_check_<année>.csv.gz, à lire avec tools/check_lp_games.py).
+on:
+  workflow_dispatch:
+    inputs:
+      annee:
+        description: Saison
+        default: '2026'
+      minutes:
+        description: Durée maximale en minutes
+        default: '150'
+      verification:
+        description: Parties de LEC converties pour vérification (0 pour aucune)
+        default: '40'
+permissions:
+  contents: write
+concurrency:
+  group: update
+  cancel-in-progress: false
+jobs:
+  games:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install requests
+      - run: python pipeline/fetch_lp_games.py ${{ inputs.annee }} ${{ inputs.minutes }} --check ${{ inputs.verification }}
+        env:
+          LEAGUEPEDIA_USER: ${{ secrets.LEAGUEPEDIA_USER }}
+          LEAGUEPEDIA_PASSWORD: ${{ secrets.LEAGUEPEDIA_PASSWORD }}
+      - name: Enregistrer
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add pipeline/lp_games_*.csv.gz || exit 0
+          if git diff --cached --quiet; then echo "Rien de nouveau."; exit 0; fi
+          git commit -m "Parties Leaguepedia au $(date -u +%F)"
+          git pull --rebase -q origin main && git push
