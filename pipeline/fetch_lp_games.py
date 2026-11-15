@@ -74,6 +74,9 @@ def when(g):
     return (g.get('DateTime_UTC') or g.get('DateTime UTC') or '').replace('T', ' ')[:19]
 
 
+def side_of(team_id): return 'Blue' if team_id == 100 else 'Red'
+
+
 def convert(g, stats, tl, sp):
     """g : ligne ScoreboardGames ; stats / tl : JSON Riot (match et chronologie) ; sp : {(côté, poste): (pseudo, équipe, champion)}"""
     P = stats['participants']; minutes = stats.get('gameDuration', 0)
@@ -97,6 +100,22 @@ def convert(g, stats, tl, sp):
     earned = {p['participantId']: max(0.0, p.get('goldEarned', 0) - 500 - passive) for p in P}
     egold = {s: sum(earned[p['participantId']] for p in P if p.get('teamId') == s) for s in (100, 200)}
     pos_of = {p['participantId']: POS.get(p.get('teamPosition') or p.get('individualPosition'), None) for p in P}
+    if None in pos_of.values():
+        # parties de tournoi : Riot ne renseigne pas le poste. On le prend dans la composition de Leaguepedia (même champion,
+        # même côté, dans un sens ou dans l'autre), sinon dans l'ordre des joueurs (top, jungle, mid, ADC, support), comme les
+        # chronologies (fetch_timelines.py, vérifié par la position du jungler).
+        nz = lambda x: re.sub(r'[^a-z]', '', (x or '').lower())
+        best = None
+        for flip in (False, True):
+            got = {}
+            for (sd, po), v in sp.items():
+                s_ = ('Red' if sd == 'Blue' else 'Blue') if flip else sd
+                for p in P:
+                    if side_of(p['teamId']) == s_ and nz(p.get('championName')) == nz(v[2]): got[p['participantId']] = po
+            if best is None or len(got) > len(best): best = got
+        order = ['top', 'jng', 'mid', 'bot', 'sup']
+        pos_of = {p['participantId']: best.get(p['participantId']) or order[(p['participantId'] - 1) % 5] for p in P}
+        if len(set((p['teamId'], pos_of[p['participantId']]) for p in P)) < 10: return why('postes en double', pos_of)
     opp = {}
     for p in P:
         for q in P:
