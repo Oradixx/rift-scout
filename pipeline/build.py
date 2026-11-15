@@ -137,6 +137,10 @@ def add_lp_games(d, year):
     pl_ = L.position != 'team'
     L.loc[pl_, 'earnedgoldshare'] = L[pl_].earnedgold / L[pl_].groupby(['gameid', 'side']).earnedgold.transform('sum')
     low = lambda s: s.astype(str).str.lower().str.strip()
+    # Leaguepedia précise parfois le nom d'une équipe (« Crystal Rose (French Team) ») : retiré, pour l'affichage et pour la
+    # relier à la même équipe chez Oracle's Elixir ou dans une autre ligue
+    L['teamname'] = L.teamname.str.replace(r'\s*\((?:\d{4} )?[^()]* Team\)$', '', regex=True)
+    L['teamid'] = np.where(L.teamid.astype(str).str.startswith('lp:'), 'lp:' + L.teamname.astype(str), L.teamid)
     tm = d[d.position == 'team'].assign(k=low(d.teamname)).groupby(['k', 'teamid']).gameid.nunique().reset_index().sort_values('gameid').drop_duplicates('k', keep='last')
     L['teamid'] = low(L.teamname).map(dict(zip(tm.k, tm.teamid))).fillna(L.teamid)
     # Joueurs : même pseudo et même poste, pseudo unique chez Oracle's Elixir. Pour une ligue que seul Leaguepedia couvre, il faut
