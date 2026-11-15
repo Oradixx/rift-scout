@@ -96,7 +96,7 @@ def convert(g, stats, tl, sp):
     tk = {s: sum(p.get('kills', 0) for p in P if p.get('teamId') == s) for s in (100, 200)}
     td = {s: sum(p.get('deaths', 0) for p in P if p.get('teamId') == s) for s in (100, 200)}
     dmg = {s: sum(p.get('totalDamageDealtToChampions', 0) for p in P if p.get('teamId') == s) for s in (100, 200)}
-    passive = max(0.0, 122.4 * (mins - 65 / 60))
+    passive = max(0.0, 122.42 * (mins - 110 / 60))   # revenu passif, recalé sur 40 parties de LEC d'Oracle's Elixir (écart < 1 pièce)
     earned = {p['participantId']: max(0.0, p.get('goldEarned', 0) - 500 - passive) for p in P}
     egold = {s: sum(earned[p['participantId']] for p in P if p.get('teamId') == s) for s in (100, 200)}
     pos_of = {p['participantId']: POS.get(p.get('teamPosition') or p.get('individualPosition'), None) for p in P}
@@ -129,8 +129,11 @@ def convert(g, stats, tl, sp):
         a, b = at(fr, pid, what), at(fr, opp.get(pid), what) if opp.get(pid) else None
         return None if a is None or b is None else a - b
     league, _ = league_of(g['Tournament'])
+    date = when(g)
+    if not date and stats.get('gameCreation'):     # quelques tournois sans date sur Leaguepedia (Islande) : date de création de la partie
+        date = dt.datetime.fromtimestamp(stats['gameCreation'] / 1000, dt.timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
     base = dict(gameid=g['RiotPlatformGameId'], league=league, split=split_of(g['Tournament']), playoffs=int('Playoff' in g['Tournament'] or 'Final' in g['Tournament']),
-                date=when(g), patch=stats.get('gameVersion', '')[:5], gamelength=round(gl), source='leaguepedia')
+                date=date, patch=stats.get('gameVersion', '')[:5], gamelength=round(gl), source='leaguepedia')
     # côté de chaque joueur : Leaguepedia note 1 / 2 ; on vérifie avec les champions joués et on inverse si besoin
     norm = lambda x: re.sub(r'[^a-z]', '', (x or '').lower())
     ok = sum(norm((sp.get((side[p['teamId']], pos_of[p['participantId']])) or (0, 0, ''))[2]) == norm(p.get('championName')) for p in P)

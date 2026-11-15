@@ -117,6 +117,9 @@ def tier_of(lg):
 
 
 # ----------------------------------------------------------------------------- chargement
+NEIGHBOR = {'PRM2': {'PRM'}, 'NXT': {'NL', 'LFL'}, 'AL2': {'AL'}, 'BAS': {'PRM', 'LFL', 'NL'}, 'IEL': set()}   # ligues voisines (voir add_lp_games)
+
+
 def add_lp_games(d, year):
     """Parties que seul Leaguepedia a (pipeline/lp_games_<année>.csv.gz, voir fetch_lp_games.py) : petites ligues de clubs,
     et parties trop récentes pour Oracle's Elixir. Une partie présente des deux côtés garde la version d'Oracle's Elixir.
@@ -127,14 +130,27 @@ def add_lp_games(d, year):
     L = pd.read_csv(path, low_memory=False)
     L = L[~L.gameid.isin(set(d.gameid))]
     if not len(L): return d
+    # or gagné (hors or de départ et revenu passif), même définition qu'Oracle's Elixir : 500 + 122,42 par minute après 1 min 50
+    mins = L.gamelength / 60
+    L['earnedgold'] = (L.totalgold - 500 - (122.42 * (mins - 110 / 60)).clip(lower=0)).clip(lower=0)
+    L['earned gpm'] = L.earnedgold / mins
+    pl_ = L.position != 'team'
+    L.loc[pl_, 'earnedgoldshare'] = L[pl_].earnedgold / L[pl_].groupby(['gameid', 'side']).earnedgold.transform('sum')
     low = lambda s: s.astype(str).str.lower().str.strip()
     tm = d[d.position == 'team'].assign(k=low(d.teamname)).groupby(['k', 'teamid']).gameid.nunique().reset_index().sort_values('gameid').drop_duplicates('k', keep='last')
     L['teamid'] = low(L.teamname).map(dict(zip(tm.k, tm.teamid))).fillna(L.teamid)
+    # Joueurs : même pseudo et même poste, pseudo unique chez Oracle's Elixir. Pour une ligue que seul Leaguepedia couvre, il faut
+    # en plus que le joueur d'Oracle's Elixir soit passé par une ligue voisine (NEIGHBOR) : sinon deux homonymes de pays
+    # différents seraient réunis (« Tent » de LJL et « Tent » du Benelux). Un joueur non relié reste propre à sa ligue.
     pl = d[d.position != 'team'].dropna(subset=['playerid']).assign(k=low(d.playername))
-    one = pl.groupby(['k', 'position']).playerid.agg(lambda x: x.mode().iloc[0] if x.nunique() == 1 else None).dropna()
-    one_any = pl.groupby('k').playerid.agg(lambda x: x.iloc[0] if x.nunique() == 1 else None).dropna()
-    key = list(zip(low(L.playername), L.position))
-    L['playerid'] = [one.get(k) or one_any.get(k[0]) or pid for k, pid in zip(key, L.playerid)]
+    one = pl.groupby(['k', 'position']).playerid.agg(lambda x: x.iloc[0] if x.nunique() == 1 else None).dropna()
+    lgs = pl.groupby('playerid').league.agg(set)
+    def link(name, pos, lg, pid):
+        o = one.get((name, pos))
+        if o is None: return f'{pid}@{lg}'
+        if lg in NEIGHBOR and not (lgs.get(o, set()) & NEIGHBOR[lg]): return f'{pid}@{lg}'
+        return o
+    L['playerid'] = [link(n, po, lg, pid) for n, po, lg, pid in zip(low(L.playername), L.position, L.league, L.playerid)]
     L.loc[L.position == 'team', 'playerid'] = np.nan
     print(f'{year} : {L.gameid.nunique()} parties ajoutées depuis Leaguepedia', L.drop_duplicates('gameid').league.value_counts().to_dict())
     return pd.concat([d, L[[c for c in L.columns if c in d.columns]]], ignore_index=True)
