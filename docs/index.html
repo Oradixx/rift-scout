@@ -700,7 +700,7 @@ div.row{cursor:pointer}
       html += `<button class="row" data-p="${p.id}"><span class="rank">${i + 1}</span><span class="num note ${noteCls(n)}">${nInt(n)}</span>
         <span class="who"><b>${h(p.name)}</b><small>${teamLine(p)}${ageTxt(p)} ${cShort(p)}</small></span>
         <span class="pos">${p.role}</span>${strip(p)}
-        <span class="trend ${tc} r trend-cell" title="${p._e ? 'Écart avec sa note sur toute la saison' : 'Période récente (dernier split et ce qui a suivi) par rapport à la saison'}">${d > 0 ? '+' : ''}${fmt(d, 1)}</span>
+        <span class="trend ${tc} r trend-cell" title="${p._e ? 'Écart avec sa note sur toute la saison' : 'Période récente (dernier split et ce qui a suivi) par rapport à la saison'}">${!p._e && !p.rc ? '–' : (d > 0 ? '+' : '') + fmt(d, 1)}</span>
         <span class="r games">${p._e ? p._e.n : p.n}</span></button>`;
     });
     if (L.length > state.shown) html += `<button class="more" id="more">Afficher 100 joueurs de plus</button>`;
