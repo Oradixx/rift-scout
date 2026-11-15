@@ -342,7 +342,7 @@ div.row{cursor:pointer}
       <div class="table">
         <div class="thead"><span>Rang</span><span>Note</span><span>Joueur</span><span>Poste</span>
           <span class="strip-head" title="Lane, début de partie, teamfight, dégâts, farm et or, vision, survie, objectifs"><span>Lane</span><span>Déb.</span><span>TF</span><span>Dég.</span><span>Or</span><span>Vis.</span><span>Surv.</span><span>Obj.</span></span>
-          <span class="r" id="th-trend">Forme</span><span class="r">Parties</span></div>
+          <span class="r" id="th-trend">Récent</span><span class="r">Parties</span></div>
         <div id="rows"></div>
       </div>
     </div>
@@ -693,18 +693,20 @@ div.row{cursor:pointer}
     let html = '';
     L.slice(0, state.shown).forEach((p, i) => {
       const n = p._e ? p._e.note : p.note;
-      const d = p._e ? p._e.note - p.note : p.form - p.note;
+      // tendance : période récente (dernier split et la suite) par rapport à la saison. La forme sur 15 parties n'est plus
+      // affichée ici : elle prédit la suite moins bien que la note de saison (log-loss +0,037 sur août-novembre 2026).
+      const d = p._e ? p._e.note - p.note : p.rc ? p.rc[0] - p.note : 0;
       const tc = d >= 1.5 ? 'up' : d <= -1.5 ? 'down' : 'flat';
       html += `<button class="row" data-p="${p.id}"><span class="rank">${i + 1}</span><span class="num note ${noteCls(n)}">${nInt(n)}</span>
         <span class="who"><b>${h(p.name)}</b><small>${teamLine(p)}${ageTxt(p)} ${cShort(p)}</small></span>
         <span class="pos">${p.role}</span>${strip(p)}
-        <span class="trend ${tc} r trend-cell" title="${p._e ? 'Écart avec sa note sur toute la saison' : 'Forme : 15 dernières parties par rapport à la saison'}">${d > 0 ? '+' : ''}${fmt(d, 1)}</span>
+        <span class="trend ${tc} r trend-cell" title="${p._e ? 'Écart avec sa note sur toute la saison' : 'Période récente (dernier split et ce qui a suivi) par rapport à la saison'}">${d > 0 ? '+' : ''}${fmt(d, 1)}</span>
         <span class="r games">${p._e ? p._e.n : p.n}</span></button>`;
     });
     if (L.length > state.shown) html += `<button class="more" id="more">Afficher 100 joueurs de plus</button>`;
     el.innerHTML = html;
     $('#f-contract').disabled = !hasCT(); $('#f-contract').value = hasCT() ? state.contract : '';
-    $('#th-trend').textContent = state.basis === 'recent' || ((state.event || state.league) && state.basis === 'only') ? 'Écart saison' : 'Forme';
+    $('#th-trend').textContent = state.basis === 'recent' || ((state.event || state.league) && state.basis === 'only') ? 'Écart saison' : 'Récent';
     const box = $('#lg-mode'), only = $('#lg-mode-only');
     only.hidden = !state.league && !state.event;
     if (!only.hidden) only.textContent = (state.event || lgName(state.league)) + ' seulement';
@@ -743,15 +745,15 @@ div.row{cursor:pointer}
     const m = med[p.role + p.tier]; const ins = insights(p); const arch = archetype(p);
     const grp = ROLE_PL[p.role] + ' ' + TIER_OF[p.tier];
     const rankIn = S.players.filter((x) => x.role === p.role && x.tier === p.tier && x.n >= 15 && x.note > p.note).length + 1;
-    const d = p.form - p.note;
+    const d = p.rc ? p.rc[0] - p.note : 0;
     let html = `<header><span class="num note ${noteCls(p.note)}">${nInt(p.note)}</span><div><h2 id="sheet-name">${h(p.name)}</h2>
       <p class="meta">${p.role}, ${h(p.team)}, ${h(lgName(p.league))} (${h(p.region)})<br>${(p.age || p.cty) ? [p.age ? p.age + ' ans' : null, p.cty ? h(pays(p.cty)) : null, p.res ? 'résidence ' + h(resid(p.res)) : null].filter(Boolean).join(', ') + '<br>' : ''}${rankIn}<sup>${rankIn === 1 ? 'er' : 'e'}</sup> des ${grp}, saison ${state.season}${p.now ? `<br>A ensuite joué pour ${h(p.now)} (tournoi ou intersaison)` : ''}${hasCT() ? '<br>' + (p.c ? (isFree(p) ? `<b class="down">Fin de contrat le ${cDate(p.c, true)}</b>` : `Sous contrat jusqu'au ${cDate(p.c, true)}`) : 'Contrat non renseigné dans la base de Riot') : ''}</p></div><button class="close" data-close>Fermer</button></header>`;
     html += `<section><div class="split">
       <div><small>Niveau de son équipe${p.tse ? ', à ± ' + fmt(p.tse, 1) + ' près' : ''}</small><span class="num">${nInt(p.team_lvl)}</span></div>
       <div><small>Écart individuel</small><span class="num ${p.ind >= 0 ? 'up' : 'down'}">${p.ind >= 0 ? '+' : ''}${fmt(p.note - p.team_lvl, 1)}</span></div>
-      <div><small>Forme, 15 dernières parties</small><span class="num ${d >= 1.5 ? 'up' : d <= -1.5 ? 'down' : ''}">${nInt(p.form)}</span></div>
+      <div><small>Période récente${p.rc ? ', ' + p.rc[1] + ' parties' : ''}</small><span class="num ${d >= 1.5 ? 'up' : d <= -1.5 ? 'down' : ''}">${p.rc ? nInt(p.rc[0]) : '–'}</span></div>
       <div><small>Parties jouées, ${pctTxt(p.st.win)} de victoires</small><span class="num">${p.n}</span></div></div>
-      ${p.rc ? `<p class="legend" style="margin-top:10px">Période récente (${h(p.rc[3])} et ce qui a suivi, ${p.rc[1]} parties depuis le ${frDate(p.rc[2])}) : <b class="${noteCls(p.rc[0])}">${nInt(p.rc[0])}</b></p>` : ''}
+      <p class="legend" style="margin-top:10px">${p.rc ? `Période récente : ${h(p.rc[3])} et ce qui a suivi, depuis le ${frDate(p.rc[2])}. ` : ''}Sur ses 15 dernières parties : ${nInt(p.form)} (indicatif : sur 15 parties, la note varie beaucoup et prédit la suite moins bien que la note de saison).</p>
       ${p.tr && Object.keys(p.tr).length > 1 ? `<p class="legend" style="margin-top:10px">Par niveau de ligue : ${Object.keys(p.tr).sort().map((k) => `${TIER_IN[k]} <b class="${noteCls(p.tr[k][0])}">${nInt(p.tr[k][0])}</b> (${p.tr[k][1]} parties, ${h(p.tr[k][2])})`).join(' ; ')}</p>` : ''}
       <div class="tags">${arch ? `<span class="tag gold">${arch}</span>` : ''}${styleTags(p).map((t) => `<span class="tag">${t}</span>`).join('')}</div></section>`;
     if (ins.plus.length || ins.minus.length) html += `<section><div class="two"><div><h3>Forces</h3>${ins.plus.length ? `<ul class="say">${ins.plus.map((x) => `<li>${x}</li>`).join('')}</ul>` : '<p class="legend">Rien qui ressorte nettement par rapport à son poste.</p>'}</div>
