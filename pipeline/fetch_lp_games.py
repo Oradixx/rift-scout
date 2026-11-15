@@ -61,6 +61,19 @@ def unwrap(txt):
     return d.get('info', d) if isinstance(d, dict) else d
 
 
+WHY = {}
+
+
+def why(reason, detail=''):
+    WHY[reason] = WHY.get(reason, 0) + 1
+    if WHY[reason] <= 2: print('  rejet :', reason, str(detail)[:400])
+    return None
+
+
+def when(g):
+    return (g.get('DateTime_UTC') or g.get('DateTime UTC') or '').replace('T', ' ')[:19]
+
+
 def convert(g, stats, tl, sp):
     """g : ligne ScoreboardGames ; stats / tl : JSON Riot (match et chronologie) ; sp : {(côté, poste): (pseudo, équipe, champion)}"""
     P = stats['participants']; minutes = stats.get('gameDuration', 0)
@@ -98,7 +111,7 @@ def convert(g, stats, tl, sp):
         return None if a is None or b is None else a - b
     league, _ = league_of(g['Tournament'])
     base = dict(gameid=g['RiotPlatformGameId'], league=league, split=split_of(g['Tournament']), playoffs=int('Playoff' in g['Tournament'] or 'Final' in g['Tournament']),
-                date=(g.get('DateTime_UTC') or '').replace('T', ' ')[:19], patch=stats.get('gameVersion', '')[:5], gamelength=round(gl), source='leaguepedia')
+                date=when(g), patch=stats.get('gameVersion', '')[:5], gamelength=round(gl), source='leaguepedia')
     # côté de chaque joueur : Leaguepedia note 1 / 2 ; on vérifie avec les champions joués et on inverse si besoin
     norm = lambda x: re.sub(r'[^a-z]', '', (x or '').lower())
     ok = sum(norm((sp.get((side[p['teamId']], pos_of[p['participantId']])) or (0, 0, ''))[2]) == norm(p.get('championName')) for p in P)
@@ -107,9 +120,9 @@ def convert(g, stats, tl, sp):
     rows, teamname = [], {}
     for p in P:
         pid, s = p['participantId'], p['teamId']; po = pos_of[pid]
-        if po is None: return None
+        if po is None: return why('poste inconnu', {k: p.get(k) for k in ('teamPosition', 'individualPosition', 'role', 'lane')})
         nm, team, champ = sp.get((side[s], po), (None, None, None))
-        if not nm or not team: return None
+        if not nm or not team: return why('joueur absent de ScoreboardPlayers', (g['RiotPlatformGameId'], side[s], po, sorted(sp)))
         teamname[s] = team
         cs = p.get('totalMinionsKilled', 0) + p.get('neutralMinionsKilled', 0)
         r = dict(base, participantid=pid, side=side[s], position=po, playername=nm, playerid='lp:' + nm, teamname=team, teamid='lp:' + team,
@@ -178,16 +191,17 @@ def run(lp, games, path, budget, t0):
         rid = g['RiotPlatformGameId']
         try:
             st = lp.page(g.get('StatsPage') or f'V5 data:{rid}'); tl = lp.page(g.get('TimelinePage') or f'V5 data:{rid}/Timeline')
-            if not st: skipped += 1; continue
+            if not st: skipped += 1; why('page de statistiques absente', g.get('StatsPage') or rid); continue
+            if g is todo[0] or n == 0: print('  exemple de page :', (g.get('StatsPage') or rid), st[:200].replace('\n', ' '))
             out = convert(g, unwrap(st), unwrap(tl) if tl else None, sp.get(rid, {}))
         except Exception as e:
             fails += 1; print('échec', rid, type(e).__name__, str(e)[:120]); time.sleep(5); continue
         fails = 0
-        if not out: skipped += 1; continue
+        if not out: skipped += 1; WHY.setdefault('conversion impossible', 0); continue
         rows += out; n += 1
         if n % 100 == 0: save(path, rows); print(f'{n} parties, {int(time.time() - t0)} s')
     save(path, rows)
-    print(f'{n} parties ajoutées, {skipped} sans données exploitables, {len(todo) - n - skipped} restantes')
+    print(f'{n} parties ajoutées, {skipped} sans données exploitables, {len(todo) - n - skipped} restantes ; motifs de rejet : {WHY}')
 
 
 def main():
@@ -206,16 +220,16 @@ def main():
         allg = lp.cargo('ScoreboardGames=SG,PostgameJsonMetadata=PJ', 'SG.RiotPlatformGameId,SG.Tournament,SG.DateTime_UTC,PJ.TimelinePage',
                         join_on='SG.GameId=PJ.GameId', where=where, order_by='SG.DateTime_UTC DESC')
     allg = [g for g in allg if g.get('RiotPlatformGameId') and g.get('Tournament')]
-    recent = (dt.datetime.utcnow() - dt.timedelta(days=RECENT_DAYS)).strftime('%Y-%m-%d')
+    recent = (dt.datetime.now(dt.timezone.utc) - dt.timedelta(days=RECENT_DAYS)).strftime('%Y-%m-%d')
     games = []
     for g in allg:
         code, lp_only = league_of(g['Tournament'])
-        if code and (lp_only or (g.get('DateTime_UTC') or '') >= recent): games.append(g)
+        if code and (lp_only or when(g) >= recent): games.append(g)
     print(f'{len(allg)} parties sur Leaguepedia en {year}, {len(games)} retenues (ligues absentes d\'Oracle\'s Elixir, ou jouées depuis le {recent})')
     t0 = time.time()
     run(lp, games, os.path.join(HERE, f'lp_games_{year}.csv.gz'), budget, t0)
     if check:
-        lec = [g for g in allg if g['Tournament'].startswith('LEC') and (g.get('DateTime_UTC') or '') < recent][:check]
+        lec = [g for g in allg if g['Tournament'].startswith('LEC') and '' < when(g) < recent][:check]
         run(lp, lec, os.path.join(HERE, f'lp_games_check_{year}.csv.gz'), budget + 600, t0)
 
 
