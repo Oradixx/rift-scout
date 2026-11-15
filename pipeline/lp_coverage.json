@@ -1,10 +1,10 @@
 {
-"fetched": "2026-11-12",
+"fetched": "2026-11-15",
 "year": 2026,
 "total": {
-"games": 12405,
-"stats": 11377,
-"timeline": 11377
+"games": 12441,
+"stats": 11413,
+"timeline": 11413
 },
 "tournaments": {
 "Demacia Cup 2025": {
@@ -1313,9 +1313,9 @@
 "timeline": 20
 },
 "PRM 2nd Division 26-27 Fall": {
-"games": 119,
-"stats": 119,
-"timeline": 119
+"games": 130,
+"stats": 130,
+"timeline": 130
 },
 "Worlds 2026 Play-In": {
 "games": 22,
@@ -1323,9 +1323,9 @@
 "timeline": 22
 },
 "Worlds 2026 Main Event": {
-"games": 72,
-"stats": 72,
-"timeline": 72
+"games": 76,
+"stats": 76,
+"timeline": 76
 },
 "LigaGG CELOL A 2026 Split 2 Playoffs": {
 "games": 18,
@@ -1348,9 +1348,9 @@
 "timeline": 19
 },
 "HLL 2026 Super Cup": {
-"games": 5,
-"stats": 5,
-"timeline": 5
+"games": 12,
+"stats": 12,
+"timeline": 12
 },
 "Arabian League 2nd Division 2026 Summer Playoffs": {
 "games": 18,
@@ -1363,9 +1363,14 @@
 "timeline": 24
 },
 "LCP 2027 Promotion": {
-"games": 9,
-"stats": 9,
-"timeline": 9
+"games": 18,
+"stats": 18,
+"timeline": 18
+},
+"Komplettligaen 2026 Autumn Playoffs": {
+"games": 5,
+"stats": 5,
+"timeline": 5
 }
 }
 }

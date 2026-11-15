@@ -1,6 +1,6 @@
 {
 "source": "https://lol.fandom.com",
-"fetched": "2026-11-12",
+"fetched": "2026-11-15",
 "players": [
 {
 "name": "0131",
@@ -320,7 +320,7 @@
 "country": "China",
 "residency": "China",
 "birth": null,
-"contract": null
+"contract": "2026-11-17"
 },
 {
 "name": "666",
@@ -410,6 +410,16 @@
 "country": "Spain",
 "residency": "EMEA",
 "birth": "1996-12-29",
+"contract": null
+},
+{
+"name": "Aakash",
+"page": "Aakash",
+"team": null,
+"role": "Support",
+"country": "Chile",
+"residency": "Latin America",
+"birth": "2001-01-25",
 "contract": null
 },
 {
@@ -1285,12 +1295,12 @@
 {
 "name": "Ahn",
 "page": "Ahn",
-"team": "ThunderTalk Gaming",
+"team": null,
 "role": "Bot",
 "country": "China",
 "residency": "China",
 "birth": "2001-03-15",
-"contract": "2026-07-01"
+"contract": null
 },
 {
 "name": "Ahnyfar",
@@ -1930,7 +1940,7 @@
 "country": "China",
 "residency": "China",
 "birth": "2004-02-07",
-"contract": null
+"contract": "2026-11-15"
 },
 {
 "name": "Alleycat",
@@ -2405,7 +2415,7 @@
 {
 "name": "Angel",
 "page": "Angel (Xiang Tao)",
-"team": "JD Gaming",
+"team": null,
 "role": "Mid",
 "country": "China",
 "residency": "China",
@@ -3700,7 +3710,7 @@
 "country": "China",
 "residency": "China",
 "birth": "2003-11-30",
-"contract": null
+"contract": "2026-11-17"
 },
 {
 "name": "Asta",
@@ -4670,7 +4680,7 @@
 "country": "China",
 "residency": "China",
 "birth": null,
-"contract": null
+"contract": "2026-11-15"
 },
 {
 "name": "bao",
@@ -6890,7 +6900,7 @@
 "country": "China",
 "residency": "China",
 "birth": "2001-02-19",
-"contract": null
+"contract": "2027-11-16"
 },
 {
 "name": "Breeze",
@@ -7260,7 +7270,7 @@
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2005-04-15",
-"contract": null
+"contract": "2026-11-17"
 },
 {
 "name": "BuLuKaKa",
@@ -7340,7 +7350,7 @@
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2003-12-25",
-"contract": null
+"contract": "2027-11-16"
 },
 {
 "name": "burningstar",
@@ -7690,16 +7700,6 @@
 "country": "Sweden",
 "residency": "EMEA",
 "birth": "2002-05-11",
-"contract": null
-},
-{
-"name": "Calumma",
-"page": "Calumma",
-"team": null,
-"role": "Jungle",
-"country": "Belgium",
-"residency": "EMEA",
-"birth": "1999-07-27",
 "contract": null
 },
 {
@@ -8075,12 +8075,12 @@
 {
 "name": "Carzzy",
 "page": "Carzzy",
-"team": "Team Vitality",
+"team": null,
 "role": "Bot",
 "country": "Czech Republic",
 "residency": "EMEA",
 "birth": "2002-01-31",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Casper",
@@ -8375,12 +8375,12 @@
 {
 "name": "Celo",
 "page": "Celo",
-"team": "RMD Gaming",
+"team": null,
 "role": "Bot",
 "country": "Brazil",
 "residency": "Brazil",
 "birth": "2000-07-30",
-"contract": "2026-11-10"
+"contract": null
 },
 {
 "name": "Celuss",
@@ -8537,7 +8537,7 @@
 "page": "Chain1",
 "team": "KH Tech",
 "role": "Mid",
-"country": "South Korea",
+"country": "Taiwan",
 "residency": "Asia Pacific",
 "birth": null,
 "contract": null
@@ -9730,7 +9730,7 @@
 "country": "China",
 "residency": "China",
 "birth": "2004-03-25",
-"contract": null
+"contract": "2026-11-17"
 },
 {
 "name": "Closer",
@@ -10875,7 +10875,7 @@
 {
 "name": "Crisp",
 "page": "Crisp",
-"team": "LGD Gaming",
+"team": null,
 "role": "Support",
 "country": "China",
 "residency": "China",
@@ -11136,7 +11136,7 @@
 "name": "Cryin",
 "page": "Cryin",
 "team": "Weibo Gaming",
-"role": "Mid",
+"role": "Coach",
 "country": "China",
 "residency": "China",
 "birth": "2000-11-05",
@@ -14430,7 +14430,7 @@
 "country": "China",
 "residency": "China",
 "birth": null,
-"contract": null
+"contract": "2026-11-15"
 },
 {
 "name": "Dory",
@@ -17175,12 +17175,12 @@
 {
 "name": "Exofeng",
 "page": "Exofeng",
-"team": "Skillcamp",
+"team": "G2 NORD",
 "role": "Bot",
 "country": "Bulgaria",
 "residency": "EMEA",
 "birth": "2007-07-17",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Exoo000",
@@ -18505,12 +18505,12 @@
 {
 "name": "Flakked",
 "page": "Flakked",
-"team": "GIANTX",
+"team": null,
 "role": "Bot",
 "country": "Spain",
 "residency": "EMEA",
 "birth": "2001-04-25",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Flame",
@@ -18550,7 +18550,7 @@
 "country": "China",
 "residency": "China",
 "birth": "1998-08-28",
-"contract": null
+"contract": "2026-11-17"
 },
 {
 "name": "Flare",
@@ -20259,7 +20259,7 @@
 "role": "Bot",
 "country": "Greece",
 "residency": "EMEA",
-"birth": null,
+"birth": "2005-07-12",
 "contract": null
 },
 {
@@ -23145,12 +23145,12 @@
 {
 "name": "Heru",
 "page": "Heru",
-"team": "ThunderTalk Gaming",
+"team": null,
 "role": "Mid",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2006-08-21",
-"contract": "2026-09-30"
+"contract": null
 },
 {
 "name": "Hery",
@@ -23160,7 +23160,7 @@
 "country": "China",
 "residency": "China",
 "birth": "2001-09-29",
-"contract": null
+"contract": "2026-11-17"
 },
 {
 "name": "Hespo",
@@ -23605,7 +23605,7 @@
 {
 "name": "Hollow",
 "page": "Hollow (Alexander Bachmann)",
-"team": "Mental Rush",
+"team": "MT1 Vision",
 "role": "Coach",
 "country": "Austria",
 "residency": "EMEA",
@@ -25325,12 +25325,12 @@
 {
 "name": "ISMA",
 "page": "ISMA",
-"team": "GIANTX",
+"team": null,
 "role": "Jungle",
 "country": "France",
 "residency": "EMEA",
 "birth": "2001-06-20",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Isma",
@@ -25615,7 +25615,7 @@
 {
 "name": "Izo",
 "page": "Izo",
-"team": "GMBLERS Esports",
+"team": null,
 "role": "Jungle",
 "country": "Poland",
 "residency": "EMEA",
@@ -25735,12 +25735,12 @@
 {
 "name": "Jackies",
 "page": "Jackies",
-"team": "GIANTX",
+"team": null,
 "role": "Mid",
 "country": "Czech Republic",
 "residency": "EMEA",
 "birth": "2004-10-06",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "JackieWind",
@@ -26550,7 +26550,7 @@
 "country": "China",
 "residency": "China",
 "birth": "2004-05-31",
-"contract": null
+"contract": "2026-11-17"
 },
 {
 "name": "Jiashi",
@@ -26580,7 +26580,7 @@
 "country": "China",
 "residency": "China",
 "birth": "2001-10-27",
-"contract": null
+"contract": "2026-11-17"
 },
 {
 "name": "Jihoo",
@@ -27605,12 +27605,12 @@
 {
 "name": "Jun",
 "page": "Jun (Yoon Se-jun)",
-"team": "GIANTX",
+"team": null,
 "role": "Support",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2000-08-02",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Jun1or",
@@ -27645,12 +27645,12 @@
 {
 "name": "Junhao",
 "page": "Junhao",
-"team": "ThunderTalk Gaming",
+"team": null,
 "role": "Jungle",
 "country": "China",
 "residency": "China",
 "birth": "2004-05-13",
-"contract": "2026-09-30"
+"contract": null
 },
 {
 "name": "Junichi",
@@ -27790,7 +27790,7 @@
 "country": "China",
 "residency": "China",
 "birth": "2003-01-05",
-"contract": null
+"contract": "2026-11-17"
 },
 {
 "name": "K B",
@@ -29435,12 +29435,12 @@
 {
 "name": "Keshi",
 "page": "Keshi (Li Qing-Hua)",
-"team": "ThunderTalk Gaming",
+"team": null,
 "role": "Top",
 "country": "China",
 "residency": "China",
 "birth": "2006-03-02",
-"contract": "2026-09-30"
+"contract": null
 },
 {
 "name": "Keter Class SCP",
@@ -29524,7 +29524,7 @@
 },
 {
 "name": "Key",
-"page": "Key",
+"page": "Key (Kim Han-gi)",
 "team": "BNK FEARX Youth",
 "role": "Coach",
 "country": "South Korea",
@@ -33420,7 +33420,7 @@
 "country": "China",
 "residency": "China",
 "birth": "2005-02-09",
-"contract": null
+"contract": "2026-11-15"
 },
 {
 "name": "Ling",
@@ -34015,12 +34015,12 @@
 {
 "name": "Lot",
 "page": "Lot",
-"team": "GIANTX",
+"team": null,
 "role": "Top",
 "country": "Turkey",
 "residency": "EMEA",
 "birth": "2004-01-02",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Lothen",
@@ -34200,7 +34200,7 @@
 "country": "China",
 "residency": "China",
 "birth": "2002-08-04",
-"contract": null
+"contract": "2026-11-17"
 },
 {
 "name": "LS",
@@ -38530,7 +38530,7 @@
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2002-08-08",
-"contract": null
+"contract": "2026-11-17"
 },
 {
 "name": "Moita",
@@ -39275,12 +39275,12 @@
 {
 "name": "murilao",
 "page": "Murilao",
-"team": "RMD Gaming",
+"team": null,
 "role": "Support",
 "country": "Brazil",
 "residency": "Brazil",
 "birth": "2005-08-09",
-"contract": "2026-10-06"
+"contract": null
 },
 {
 "name": "Murrinho",
@@ -39455,12 +39455,12 @@
 {
 "name": "Myrwn",
 "page": "Myrwn",
-"team": "Movistar KOI",
+"team": null,
 "role": "Top",
 "country": "Spain",
 "residency": "EMEA",
 "birth": "2003-06-13",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "MySaber",
@@ -40183,6 +40183,16 @@
 "contract": null
 },
 {
+"name": "Nelliely",
+"page": "Nelliely",
+"team": null,
+"role": "Mid",
+"country": "Poland",
+"residency": "EMEA",
+"birth": "1999-10-28",
+"contract": null
+},
+{
 "name": "Nelson",
 "page": "Nelson",
 "team": null,
@@ -40530,7 +40540,7 @@
 "country": "China",
 "residency": "China",
 "birth": "2006-08-27",
-"contract": null
+"contract": "2027-11-16"
 },
 {
 "name": "Nias",
@@ -41035,12 +41045,12 @@
 {
 "name": "Noah",
 "page": "Noah (Oh Hyeon-taek)",
-"team": "GIANTX",
+"team": null,
 "role": "Bot",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2001-10-04",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "NoAtz",
@@ -42445,12 +42455,12 @@
 {
 "name": "Oscarinin",
 "page": "Oscarinin",
-"team": "GIANTX",
+"team": null,
 "role": "Top",
 "country": "Spain",
 "residency": "EMEA",
 "birth": "2003-06-11",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Oshiro",
@@ -43970,7 +43980,7 @@
 "country": "China",
 "residency": "China",
 "birth": "2002-10-11",
-"contract": null
+"contract": "2026-11-17"
 },
 {
 "name": "Photon",
@@ -44575,7 +44585,7 @@
 {
 "name": "Pokson",
 "page": "Pokson",
-"team": "DOCISK",
+"team": null,
 "role": "Coach",
 "country": "Poland",
 "residency": "EMEA",
@@ -47633,16 +47643,6 @@
 "contract": null
 },
 {
-"name": "Relife",
-"page": "Relife",
-"team": null,
-"role": "Jungle",
-"country": "China",
-"residency": "China",
-"birth": "2003-08-06",
-"contract": null
-},
-{
 "name": "Relinquished",
 "page": "Relinquished",
 "team": null,
@@ -48425,12 +48425,12 @@
 {
 "name": "Rin",
 "page": "Rin (Khalil Sahraoui)",
-"team": "G2 NORD",
+"team": null,
 "role": "Bot",
 "country": "Algeria",
 "residency": "EMEA",
 "birth": "2002-11-05",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Rinji",
@@ -53170,7 +53170,7 @@
 "country": "China",
 "residency": "China",
 "birth": null,
-"contract": null
+"contract": "2029-11-20"
 },
 {
 "name": "Sinmivak",
@@ -57580,7 +57580,7 @@
 "country": "South Korea",
 "residency": "Korea",
 "birth": "1999-11-11",
-"contract": null
+"contract": "2026-11-17"
 },
 {
 "name": "TheSlamboy",
@@ -57780,7 +57780,7 @@
 "country": "China",
 "residency": "China",
 "birth": "2000-07-24",
-"contract": "2028-11-21"
+"contract": "2026-11-17"
 },
 {
 "name": "Tianzhen",
@@ -59530,7 +59530,7 @@
 "country": "China",
 "residency": "China",
 "birth": "2006-01-14",
-"contract": null
+"contract": "2028-11-21"
 },
 {
 "name": "Tyrone",
@@ -59815,7 +59815,7 @@
 {
 "name": "Unkraut",
 "page": "Unkraut",
-"team": "Mental Rush",
+"team": null,
 "role": "Coach",
 "country": "Germany",
 "residency": "EMEA",
@@ -61020,7 +61020,7 @@
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2000-10-19",
-"contract": "2027-11-16"
+"contract": "2026-11-17"
 },
 {
 "name": "Viperoon",
@@ -63440,7 +63440,7 @@
 "country": "China",
 "residency": "China",
 "birth": "2004-07-06",
-"contract": null
+"contract": "2026-11-17"
 },
 {
 "name": "xiaogao",
@@ -63460,7 +63460,7 @@
 "country": "China",
 "residency": "China",
 "birth": "2002-07-19",
-"contract": null
+"contract": "2026-11-17"
 },
 {
 "name": "Xiaohu",
@@ -63630,16 +63630,6 @@
 "country": "Taiwan",
 "residency": "Asia Pacific",
 "birth": "2004-11-11",
-"contract": null
-},
-{
-"name": "Xing",
-"page": "Xing (Liu Jia-Xing)",
-"team": null,
-"role": "Bot",
-"country": "China",
-"residency": "China",
-"birth": "2002-04-17",
 "contract": null
 },
 {
@@ -65880,7 +65870,7 @@
 "country": "China",
 "residency": "China",
 "birth": "2001-02-13",
-"contract": null
+"contract": "2026-11-17"
 },
 {
 "name": "Zicssi",
