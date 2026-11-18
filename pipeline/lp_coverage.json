@@ -1,10 +1,10 @@
 {
-"fetched": "2026-11-15",
+"fetched": "2026-11-18",
 "year": 2026,
 "total": {
-"games": 12441,
-"stats": 11413,
-"timeline": 11413
+"games": 12479,
+"stats": 11444,
+"timeline": 11444
 },
 "tournaments": {
 "Demacia Cup 2025": {
@@ -1313,9 +1313,9 @@
 "timeline": 20
 },
 "PRM 2nd Division 26-27 Fall": {
-"games": 130,
-"stats": 130,
-"timeline": 130
+"games": 139,
+"stats": 139,
+"timeline": 139
 },
 "Worlds 2026 Play-In": {
 "games": 22,
@@ -1328,7 +1328,7 @@
 "timeline": 76
 },
 "LigaGG CELOL A 2026 Split 2 Playoffs": {
-"games": 18,
+"games": 25,
 "stats": 2,
 "timeline": 2
 },
@@ -1343,14 +1343,14 @@
 "timeline": 35
 },
 "Breeze of Glory 2026": {
-"games": 19,
-"stats": 19,
-"timeline": 19
+"games": 23,
+"stats": 23,
+"timeline": 23
 },
 "HLL 2026 Super Cup": {
-"games": 12,
-"stats": 12,
-"timeline": 12
+"games": 14,
+"stats": 14,
+"timeline": 14
 },
 "Arabian League 2nd Division 2026 Summer Playoffs": {
 "games": 18,
@@ -1358,9 +1358,9 @@
 "timeline": 18
 },
 "GG Arena by Teknosa Season 2": {
-"games": 24,
-"stats": 24,
-"timeline": 24
+"games": 32,
+"stats": 32,
+"timeline": 32
 },
 "LCP 2027 Promotion": {
 "games": 18,
@@ -1371,6 +1371,11 @@
 "games": 5,
 "stats": 5,
 "timeline": 5
+},
+"Arabian League 2027 Promotion": {
+"games": 8,
+"stats": 8,
+"timeline": 8
 }
 }
 }

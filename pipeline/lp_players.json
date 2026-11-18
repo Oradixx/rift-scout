@@ -1,6 +1,6 @@
 {
 "source": "https://lol.fandom.com",
-"fetched": "2026-11-15",
+"fetched": "2026-11-18",
 "players": [
 {
 "name": "0131",
@@ -663,7 +663,7 @@
 "contract": null
 },
 {
-"name": "Acheron",
+"name": "Kaze",
 "page": "Acheron (Hu Ting-Yeh)",
 "team": "Cheng Shiu Dragon",
 "role": "Support",
@@ -1355,12 +1355,12 @@
 {
 "name": "Aiming",
 "page": "Aiming",
-"team": "Kiwoom DRX",
+"team": null,
 "role": "Bot",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2000-07-20",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Air",
@@ -1640,6 +1640,16 @@
 "country": "Kuwait",
 "residency": "EMEA",
 "birth": "2001-06-01",
+"contract": null
+},
+{
+"name": "akostas47",
+"page": "Akostas47",
+"team": "ALMO Players",
+"role": "Jungle",
+"country": "Greece",
+"residency": "EMEA",
+"birth": null,
 "contract": null
 },
 {
@@ -2075,7 +2085,7 @@
 {
 "name": "Alphari",
 "page": "Alphari",
-"team": "Movistar KOI",
+"team": null,
 "role": "Coach",
 "country": "United Kingdom",
 "residency": "EMEA",
@@ -2135,7 +2145,7 @@
 {
 "name": "Alves",
 "page": "Alves",
-"team": "Clã NKZ VÓRAX",
+"team": null,
 "role": "Coach",
 "country": "Brazil",
 "residency": "Brazil",
@@ -2165,7 +2175,7 @@
 {
 "name": "aly",
 "page": "Aly",
-"team": "Barcząca Esports Babylon",
+"team": "The Six Tung Tung Tung Sahurs",
 "role": "Jungle",
 "country": "Germany",
 "residency": "EMEA",
@@ -2225,7 +2235,7 @@
 {
 "name": "Ambush",
 "page": "Ambush",
-"team": "ALMO Players",
+"team": null,
 "role": "Jungle",
 "country": "Greece",
 "residency": "EMEA",
@@ -2335,12 +2345,12 @@
 {
 "name": "Andil",
 "page": "Andil",
-"team": "Kiwoom DRX",
+"team": null,
 "role": "Support",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2002-10-05",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "andrei",
@@ -2885,7 +2895,7 @@
 {
 "name": "Aquila",
 "page": "Aquila",
-"team": "NOVEX",
+"team": null,
 "role": "Jungle",
 "country": "South Korea",
 "residency": "Korea",
@@ -3935,7 +3945,7 @@
 {
 "name": "Avalanche",
 "page": "Avalanche (Valdemar Cumberland)",
-"team": "The ParadOx Invaders",
+"team": null,
 "role": "Jungle",
 "country": "Denmark",
 "residency": "EMEA",
@@ -6335,12 +6345,12 @@
 {
 "name": "Bluffing",
 "page": "Bluffing",
-"team": "Hanwha Life Esports Challengers",
+"team": null,
 "role": "Support",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2008-12-07",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Bluux",
@@ -6605,7 +6615,7 @@
 {
 "name": "bon0",
 "page": "Bon0",
-"team": "Nongshim Esports Academy",
+"team": "Nongshim RedForce",
 "role": "Coach",
 "country": "South Korea",
 "residency": "Korea",
@@ -6705,12 +6715,12 @@
 {
 "name": "Booki",
 "page": "Booki",
-"team": "Leviatan",
+"team": null,
 "role": "Jungle",
 "country": "Peru",
 "residency": "Brazil",
 "birth": "2007-03-27",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Boomin",
@@ -6775,12 +6785,12 @@
 {
 "name": "Boukada",
 "page": "Boukada",
-"team": "Shifters",
+"team": "Solary",
 "role": "Jungle",
 "country": "France",
 "residency": "EMEA",
 "birth": "2002-10-01",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Bounty",
@@ -7225,12 +7235,12 @@
 {
 "name": "bulas",
 "page": "Bulas",
-"team": "7REX",
+"team": null,
 "role": "Support",
 "country": "Brazil",
 "residency": "Brazil",
 "birth": "2003-10-02",
-"contract": "2026-11-05"
+"contract": null
 },
 {
 "name": "Buli",
@@ -7421,16 +7431,6 @@
 "residency": "Asia Pacific",
 "birth": "1995-10-26",
 "contract": null
-},
-{
-"name": "Bvoy",
-"page": "Bvoy",
-"team": "Shopify Rebellion",
-"role": "Bot",
-"country": "South Korea",
-"residency": "Korea",
-"birth": "1997-12-18",
-"contract": "2026-11-17"
 },
 {
 "name": "Bwipo",
@@ -7665,12 +7665,12 @@
 {
 "name": "Callme",
 "page": "Callme",
-"team": "Disguised",
+"team": null,
 "role": "Mid",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2003-05-30",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "callum koi",
@@ -7695,7 +7695,7 @@
 {
 "name": "Caltys",
 "page": "Caltys",
-"team": "G2 Esports",
+"team": "The Six Tung Tung Tung Sahurs",
 "role": "Mid",
 "country": "Sweden",
 "residency": "EMEA",
@@ -7835,12 +7835,12 @@
 {
 "name": "Canyon",
 "page": "Canyon",
-"team": "Gen.G",
+"team": null,
 "role": "Jungle",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2001-06-18",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Capivara",
@@ -8195,12 +8195,12 @@
 {
 "name": "Catch",
 "page": "Catch (Yun Sang-ho)",
-"team": "Kiwoom DRX Challengers",
+"team": null,
 "role": "Coach",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "1997-04-03",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "CaTzzz",
@@ -8735,12 +8735,12 @@
 {
 "name": "Chawy",
 "page": "Chawy",
-"team": "CTBC Flying Oyster",
+"team": null,
 "role": "Coach",
 "country": "Singapore",
 "residency": "Asia Pacific",
 "birth": "1991-11-28",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "CHECKFIDER",
@@ -8820,16 +8820,6 @@
 "country": "United Kingdom",
 "residency": "EMEA",
 "birth": "1996-09-29",
-"contract": null
-},
-{
-"name": "chen",
-"page": "Chen (Chang Chia-Chen)",
-"team": "International Esports Industry Center",
-"role": "Jungle",
-"country": "Taiwan",
-"residency": "Asia Pacific",
-"birth": null,
 "contract": null
 },
 {
@@ -9615,12 +9605,12 @@
 {
 "name": "Clear",
 "page": "Clear (Song Hyeon-min)",
-"team": "BNK FEARX",
+"team": null,
 "role": "Top",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2002-12-19",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Clear",
@@ -9665,8 +9655,8 @@
 {
 "name": "Clef",
 "page": "Clef",
-"team": null,
-"role": "Support",
+"team": "The Six Tung Tung Tung Sahurs",
+"role": "Bot",
 "country": "Germany",
 "residency": "EMEA",
 "birth": "2001-10-20",
@@ -9745,12 +9735,12 @@
 {
 "name": "Cloud",
 "page": "Cloud (Moon Hyeon-ho)",
-"team": "T1 Esports Academy",
+"team": null,
 "role": "Support",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2007-04-25",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Cloud",
@@ -9815,12 +9805,12 @@
 {
 "name": "Clozer",
 "page": "Clozer",
-"team": "DN SOOPers",
+"team": null,
 "role": "Mid",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2003-07-27",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Cluelith",
@@ -10245,12 +10235,12 @@
 {
 "name": "Contractz",
 "page": "Contractz",
-"team": "Shopify Rebellion",
+"team": null,
 "role": "Jungle",
 "country": "United States",
 "residency": "North America",
 "birth": "1999-08-25",
-"contract": "2026-11-17"
+"contract": null
 },
 {
 "name": "Convivita",
@@ -10475,12 +10465,12 @@
 {
 "name": "Courage",
 "page": "Courage (Jeon Hyun-min)",
-"team": "Gen.G Global Academy",
+"team": null,
 "role": "Jungle",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2005-03-09",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "CouT",
@@ -10585,7 +10575,7 @@
 {
 "name": "CrabLord",
 "page": "CrabLord",
-"team": "ALMO Players",
+"team": null,
 "role": "Support",
 "country": "Russia",
 "residency": "EMEA",
@@ -10615,12 +10605,12 @@
 {
 "name": "Cracker",
 "page": "Cracker (Lee Jeong-wook)",
-"team": "Hanwha Life Esports Challengers",
+"team": null,
 "role": "Mid",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2008-01-20",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Cracker",
@@ -10695,12 +10685,12 @@
 {
 "name": "Crazy",
 "page": "Crazy (Kim Jae-hee)",
-"team": "Nongshim RedForce",
+"team": "DN SOOPers",
 "role": "Coach",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "1996-09-20",
-"contract": "2026-11-16"
+"contract": "2027-11-15"
 },
 {
 "name": "Crazylegs",
@@ -11220,7 +11210,7 @@
 "country": "South Korea",
 "residency": "Korea",
 "birth": "1996-08-16",
-"contract": "2026-11-16"
+"contract": "2028-11-20"
 },
 {
 "name": "Cubo",
@@ -11305,12 +11295,12 @@
 {
 "name": "Cuzz",
 "page": "Cuzz",
-"team": "KT Rolster",
+"team": "DN SOOPers",
 "role": "Jungle",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "1999-10-30",
-"contract": "2027-11-15"
+"contract": null
 },
 {
 "name": "cvMax",
@@ -11365,12 +11355,12 @@
 {
 "name": "Cypher",
 "page": "Cypher",
-"team": "T1 Esports Academy",
+"team": "Solary",
 "role": "Bot",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2006-01-20",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "cyraXx",
@@ -11605,12 +11595,12 @@
 {
 "name": "Daglas",
 "page": "Daglas",
-"team": "Team Heretics",
+"team": null,
 "role": "Jungle",
 "country": "Poland",
 "residency": "EMEA",
 "birth": "2005-10-23",
-"contract": "2027-11-15"
+"contract": null
 },
 {
 "name": "Dahlia",
@@ -11755,7 +11745,7 @@
 {
 "name": "Damonte",
 "page": "Damonte",
-"team": "Shopify Rebellion",
+"team": null,
 "role": "Coach",
 "country": "United States",
 "residency": "North America",
@@ -12435,12 +12425,12 @@
 {
 "name": "Daystar",
 "page": "Daystar",
-"team": "BNK FEARX",
+"team": null,
 "role": "Mid",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2003-09-23",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "DD1",
@@ -12455,22 +12445,22 @@
 {
 "name": "DDahyuk",
 "page": "DDahyuk",
-"team": "HANJIN BRION Challengers",
+"team": null,
 "role": "Top",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2004-09-04",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "DDoiV",
 "page": "DDoiV",
-"team": "DN SOOPers Challengers",
+"team": null,
 "role": "Jungle",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2003-10-21",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "DDOSS",
@@ -13103,16 +13093,6 @@
 "contract": null
 },
 {
-"name": "Denathor",
-"page": "Denathor",
-"team": "Dignitas",
-"role": "Top",
-"country": "United States",
-"residency": "North America",
-"birth": null,
-"contract": "2028-11-20"
-},
-{
 "name": "Dengleng",
 "page": "Dengleng",
 "team": "Embrace Whatever Happens",
@@ -13415,12 +13395,12 @@
 {
 "name": "Devost",
 "page": "Devost",
-"team": "Leviatan",
+"team": null,
 "role": "Top",
 "country": "Colombia",
 "residency": "Brazil",
 "birth": "2008-01-24",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Devoured",
@@ -13525,12 +13505,12 @@
 {
 "name": "Diable",
 "page": "Diable",
-"team": "Nongshim RedForce",
+"team": null,
 "role": "Bot",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2007-10-17",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Diamond",
@@ -13565,8 +13545,8 @@
 {
 "name": "Diane",
 "page": "Diane",
-"team": "Brest Esport",
-"role": "Jungle",
+"team": "Mental Rush",
+"role": "Coach",
 "country": "France",
 "residency": "EMEA",
 "birth": "2002-09-11",
@@ -13785,7 +13765,7 @@
 {
 "name": "Dionelux",
 "page": "Dionelux",
-"team": "JSK Esports",
+"team": "Team Phantasma",
 "role": "Top",
 "country": "Turkey",
 "residency": "EMEA",
@@ -14105,12 +14085,12 @@
 {
 "name": "Doggo",
 "page": "Doggo",
-"team": "CTBC Flying Oyster",
+"team": null,
 "role": "Bot",
 "country": "Taiwan",
 "residency": "Asia Pacific",
 "birth": "2003-01-14",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Dogla",
@@ -15030,7 +15010,7 @@
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2001-03-08",
-"contract": "2026-11-16"
+"contract": "2028-11-20"
 },
 {
 "name": "Duduhh",
@@ -15055,7 +15035,7 @@
 {
 "name": "Duffman",
 "page": "Duffman",
-"team": "SK Gaming",
+"team": null,
 "role": "Coach",
 "country": "United Kingdom",
 "residency": "EMEA",
@@ -15085,12 +15065,12 @@
 {
 "name": "Duke",
 "page": "Duke (Lee Ho-seong)",
-"team": "HANJIN BRION",
+"team": null,
 "role": "Coach",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "1994-12-19",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Dunks",
@@ -15545,12 +15525,12 @@
 {
 "name": "Effort",
 "page": "Effort",
-"team": "KT Rolster",
+"team": null,
 "role": "Support",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2000-11-23",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Effortless",
@@ -16043,16 +16023,6 @@
 "contract": null
 },
 {
-"name": "Emi",
-"page": "Emi",
-"team": "Dignitas",
-"role": "Coach",
-"country": "Romania",
-"residency": "EMEA",
-"birth": null,
-"contract": null
-},
-{
 "name": "EMiL",
 "page": "EMiL (Emil H.)",
 "team": null,
@@ -16213,6 +16183,16 @@
 "contract": null
 },
 {
+"name": "Emrys",
+"page": "Emrys",
+"team": "Next Level Esports",
+"role": "Jungle",
+"country": "United States",
+"residency": "North America",
+"birth": "2003-01-17",
+"contract": null
+},
+{
 "name": "Emtest",
 "page": "Emtest",
 "team": null,
@@ -16325,12 +16305,12 @@
 {
 "name": "Enga",
 "page": "Enga",
-"team": "Leviatan",
+"team": null,
 "role": "Mid",
 "country": "Argentina",
 "residency": "Brazil",
 "birth": "2000-01-24",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Enigma",
@@ -16375,12 +16355,12 @@
 {
 "name": "Enosh",
 "page": "Enosh",
-"team": "DN SOOPers Challengers",
+"team": null,
 "role": "Bot",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2004-10-01",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Enricfh",
@@ -16580,6 +16560,16 @@
 "country": "Spain",
 "residency": "EMEA",
 "birth": "2000-08-06",
+"contract": null
+},
+{
+"name": "Erenn",
+"page": "Erenn",
+"team": "ALMO Players",
+"role": "Top",
+"country": "Turkey",
+"residency": "EMEA",
+"birth": null,
 "contract": null
 },
 {
@@ -17323,16 +17313,6 @@
 "contract": null
 },
 {
-"name": "F3reak",
-"page": "F3reak",
-"team": "ALMO Players",
-"role": "Mid",
-"country": "Greece",
-"residency": "EMEA",
-"birth": null,
-"contract": null
-},
-{
 "name": "f4ke",
 "page": "F4ke",
 "team": "VARREL YOUTH",
@@ -17615,7 +17595,7 @@
 {
 "name": "Fallen",
 "page": "Fallen (Viktor Kordanovski)",
-"team": "Ancient Ones",
+"team": "Team Phantasma",
 "role": "Jungle",
 "country": "North Macedonia",
 "residency": "EMEA",
@@ -17855,12 +17835,12 @@
 {
 "name": "FBI",
 "page": "FBI",
-"team": "Dignitas",
+"team": null,
 "role": "Bot",
 "country": "Australia",
 "residency": "North America",
 "birth": "1999-02-11",
-"contract": "2027-11-15"
+"contract": null
 },
 {
 "name": "Fear",
@@ -18113,6 +18093,16 @@
 "contract": null
 },
 {
+"name": "Fenix",
+"page": "Fenix",
+"team": "University of California Los Angeles",
+"role": "Mid",
+"country": "South Korea",
+"residency": "North America",
+"birth": "1995-12-07",
+"contract": null
+},
+{
 "name": "FenRir",
 "page": "FenRir (Park Kang-jun)",
 "team": "KT Rolster Challengers",
@@ -18265,12 +18255,12 @@
 {
 "name": "FIESTA",
 "page": "FIESTA (An Hyeon-seo)",
-"team": "Team Vitality",
+"team": null,
 "role": "Mid",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2003-05-04",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "fietz",
@@ -18595,12 +18585,12 @@
 {
 "name": "Flauren",
 "page": "Flauren",
-"team": "Deep Cross Gaming",
+"team": null,
 "role": "Top",
 "country": "Hong Kong",
 "residency": "Asia Pacific",
 "birth": "2006-10-30",
-"contract": "2026-11-17"
+"contract": null
 },
 {
 "name": "Flawed",
@@ -18645,12 +18635,12 @@
 {
 "name": "Fleshy",
 "page": "Fleshy",
-"team": "Team Vitality",
+"team": null,
 "role": "Support",
 "country": "Turkey",
 "residency": "EMEA",
 "birth": "2000-11-24",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "FlickeR",
@@ -19365,12 +19355,12 @@
 {
 "name": "Frog",
 "page": "Frog (Lee Min-hoi)",
-"team": "Kiwoom DRX",
+"team": null,
 "role": "Top",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2005-06-30",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "From Iron",
@@ -19470,7 +19460,7 @@
 "country": "South Korea",
 "residency": "Korea",
 "birth": "1994-11-04",
-"contract": "2025-11-17"
+"contract": "2026-11-16"
 },
 {
 "name": "FROZENNN",
@@ -19505,12 +19495,12 @@
 {
 "name": "Fudge",
 "page": "Fudge",
-"team": "Shopify Rebellion",
+"team": null,
 "role": "Top",
 "country": "Australia",
 "residency": "North America",
 "birth": "2002-05-23",
-"contract": "2026-11-17"
+"contract": null
 },
 {
 "name": "Fugu",
@@ -19955,7 +19945,7 @@
 {
 "name": "GaraXy",
 "page": "GaraXy",
-"team": "Team Phantasma",
+"team": null,
 "role": "Jungle",
 "country": "Greece",
 "residency": "EMEA",
@@ -19975,12 +19965,12 @@
 {
 "name": "Garden",
 "page": "Garden (Seol Jeong-won)",
-"team": "Dplus Kia Challengers",
+"team": null,
 "role": "Mid",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2007-11-15",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Gardoum",
@@ -20255,7 +20245,7 @@
 {
 "name": "Gero",
 "page": "Gero",
-"team": "The ParadOx Invaders",
+"team": null,
 "role": "Bot",
 "country": "Greece",
 "residency": "EMEA",
@@ -20330,7 +20320,7 @@
 "country": "South Korea",
 "residency": "Korea",
 "birth": "1993-06-26",
-"contract": "2026-11-16"
+"contract": "2028-11-20"
 },
 {
 "name": "Ghidi",
@@ -20355,12 +20345,12 @@
 {
 "name": "Ghost",
 "page": "Ghost (Jang Yong-jun)",
-"team": "KT Rolster Challengers",
+"team": null,
 "role": "Bot",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "1999-03-18",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Ghost2",
@@ -21515,12 +21505,12 @@
 {
 "name": "Guigo",
 "page": "Guigo",
-"team": "FURIA",
+"team": null,
 "role": "Top",
 "country": "Brazil",
 "residency": "Brazil",
 "birth": "2002-01-28",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Guigs",
@@ -21695,12 +21685,12 @@
 {
 "name": "Guti",
 "page": "Guti (Moon Jeong-hwan)",
-"team": "T1 Esports Academy",
+"team": null,
 "role": "Mid",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2004-04-09",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Guubi",
@@ -22035,7 +22025,7 @@
 {
 "name": "Hairost",
 "page": "Hairost",
-"team": "Skillcamp",
+"team": "Solary",
 "role": "Coach",
 "country": "France",
 "residency": "EMEA",
@@ -22075,12 +22065,12 @@
 {
 "name": "Hakari",
 "page": "Hakari",
-"team": "7REX",
+"team": null,
 "role": "Top",
 "country": "Brazil",
 "residency": "Brazil",
 "birth": "2005-03-11",
-"contract": "2026-11-05"
+"contract": null
 },
 {
 "name": "Half",
@@ -22460,16 +22450,6 @@
 "country": "Italy",
 "residency": "EMEA",
 "birth": "1999-01-21",
-"contract": null
-},
-{
-"name": "Harunabi",
-"page": "Harunabi",
-"team": null,
-"role": "Mid",
-"country": "Turkey",
-"residency": "EMEA",
-"birth": "1997-03-23",
 "contract": null
 },
 {
@@ -23125,7 +23105,7 @@
 {
 "name": "Heroic",
 "page": "Heroic",
-"team": "The ParadOx Invaders",
+"team": null,
 "role": "Mid",
 "country": "Portugal",
 "residency": "EMEA",
@@ -23655,12 +23635,12 @@
 {
 "name": "Homme",
 "page": "Homme",
-"team": "Hanwha Life Esports",
+"team": null,
 "role": "Coach",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "1985-01-01",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Honda",
@@ -23705,12 +23685,12 @@
 {
 "name": "HongSuo",
 "page": "HongSuo",
-"team": "Deep Cross Gaming",
+"team": null,
 "role": "Mid",
 "country": "Taiwan",
 "residency": "Asia Pacific",
 "birth": "2003-03-18",
-"contract": "2026-11-17"
+"contract": null
 },
 {
 "name": "Honks",
@@ -24655,7 +24635,7 @@
 {
 "name": "ido",
 "page": "Ido",
-"team": "Disguised",
+"team": null,
 "role": "Coach",
 "country": "United States",
 "residency": "North America",
@@ -24915,7 +24895,7 @@
 {
 "name": "Inero",
 "page": "Inero",
-"team": null,
+"team": "Shopify Rebellion",
 "role": "Coach",
 "country": "United States",
 "residency": "North America",
@@ -26414,16 +26394,6 @@
 },
 {
 "name": "Jerry",
-"page": "Jerry (Kang Sung-jun)",
-"team": "Gen.G Global Academy",
-"role": "Coach",
-"country": "South Korea",
-"residency": "Korea",
-"birth": null,
-"contract": "2026-11-16"
-},
-{
-"name": "Jerry",
 "page": "Jerry (Zhou Ke-Xue)",
 "team": "EDward Gaming Youth Team",
 "role": "Support",
@@ -26715,12 +26685,12 @@
 {
 "name": "Jiwoo",
 "page": "Jiwoo",
-"team": "KT Rolster",
+"team": null,
 "role": "Bot",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2004-03-20",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "JJ EX",
@@ -27025,12 +26995,12 @@
 {
 "name": "Joker",
 "page": "Joker (Cho Jae-eup)",
-"team": "Kiwoom DRX",
+"team": null,
 "role": "Coach",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "1991-12-11",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Joker",
@@ -27145,12 +27115,12 @@
 {
 "name": "Jopa",
 "page": "Jopa",
-"team": "SK Gaming",
+"team": null,
 "role": "Bot",
 "country": "Croatia",
 "residency": "EMEA",
 "birth": "2003-11-03",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Jorch",
@@ -28465,12 +28435,12 @@
 {
 "name": "Kangin",
 "page": "Kangin",
-"team": "BNK FEARX Youth",
+"team": null,
 "role": "Top",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2003-01-14",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Kangkuk",
@@ -29085,12 +29055,12 @@
 {
 "name": "Kellin",
 "page": "Kellin",
-"team": "BNK FEARX",
+"team": null,
 "role": "Support",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2001-02-01",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Kelpo",
@@ -29135,12 +29105,12 @@
 {
 "name": "Kemish",
 "page": "Kemish",
-"team": "Gen.G Global Academy",
+"team": "Nongshim Esports Academy",
 "role": "Mid",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2005-04-01",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Kenai",
@@ -29675,12 +29645,12 @@
 {
 "name": "Kiaya",
 "page": "Kiaya",
-"team": "GAM Esports",
+"team": null,
 "role": "Top",
 "country": "Vietnam",
 "residency": "Asia Pacific",
 "birth": "2001-05-17",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Kiba",
@@ -29765,12 +29735,12 @@
 {
 "name": "Kiin",
 "page": "Kiin",
-"team": "Gen.G",
+"team": null,
 "role": "Top",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "1999-05-28",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Kiino",
@@ -30035,12 +30005,12 @@
 {
 "name": "Kino",
 "page": "Kino",
-"team": "CTBC Flying Oyster",
+"team": null,
 "role": "Support",
 "country": "Taiwan",
 "residency": "Asia Pacific",
 "birth": "1998-04-12",
-"contract": "2026-11-17"
+"contract": null
 },
 {
 "name": "Kio",
@@ -30131,16 +30101,6 @@
 "residency": "Asia Pacific",
 "birth": "2000-04-13",
 "contract": null
-},
-{
-"name": "Kisee",
-"page": "Kisee",
-"team": "Estral Esports",
-"role": "Mid",
-"country": "Australia",
-"residency": "Asia Pacific",
-"birth": "2003-03-07",
-"contract": "2026-11-16"
 },
 {
 "name": "Kisno",
@@ -30365,7 +30325,7 @@
 {
 "name": "Klein",
 "page": "Klein",
-"team": "Smoke Tram",
+"team": null,
 "role": "Mid",
 "country": "Brazil",
 "residency": "Brazil",
@@ -30825,7 +30785,7 @@
 {
 "name": "Kouke",
 "page": "Kouke",
-"team": "Leviatan",
+"team": null,
 "role": "Coach",
 "country": "Peru",
 "residency": "Brazil",
@@ -31225,12 +31185,12 @@
 {
 "name": "KryRa",
 "page": "KryRa",
-"team": "Disguised",
+"team": null,
 "role": "Jungle",
 "country": "Canada",
 "residency": "North America",
 "birth": "2005-08-14",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Krystof",
@@ -31745,12 +31705,12 @@
 {
 "name": "Labrov",
 "page": "Labrov",
-"team": "G2 Esports",
+"team": null,
 "role": "Support",
 "country": "Greece",
 "residency": "EMEA",
 "birth": "2002-02-12",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Lac",
@@ -31790,16 +31750,6 @@
 "country": "Argentina",
 "residency": "Brazil",
 "birth": "1986-03-24",
-"contract": null
-},
-{
-"name": "Lagas",
-"page": "Lagas",
-"team": "The ParadOx Invaders",
-"role": "Support",
-"country": "Greece",
-"residency": "EMEA",
-"birth": null,
 "contract": null
 },
 {
@@ -31965,12 +31915,12 @@
 {
 "name": "Lancer",
 "page": "Lancer",
-"team": "DN SOOPers Challengers",
+"team": null,
 "role": "Top",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2004-08-11",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "LANDY",
@@ -32105,7 +32055,7 @@
 {
 "name": "LautaLoval",
 "page": "LautaLoval",
-"team": "Leviatan",
+"team": null,
 "role": "Coach",
 "country": "Argentina",
 "residency": "EMEA",
@@ -32475,12 +32425,12 @@
 {
 "name": "Lehends",
 "page": "Lehends",
-"team": "Nongshim RedForce",
+"team": null,
 "role": "Support",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "1998-12-24",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Leigg",
@@ -33075,12 +33025,12 @@
 {
 "name": "LIDER",
 "page": "LIDER",
-"team": "SK Gaming",
+"team": null,
 "role": "Mid",
 "country": "Russia",
 "residency": "EMEA",
 "birth": "1999-07-03",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Liet",
@@ -33095,12 +33045,12 @@
 {
 "name": "Life",
 "page": "Life",
-"team": "DN SOOPers",
+"team": null,
 "role": "Support",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2000-07-07",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Lifeless",
@@ -33215,12 +33165,12 @@
 {
 "name": "Lilac",
 "page": "Lilac (Jeon Ho-jin)",
-"team": "KT Rolster Challengers",
+"team": null,
 "role": "Coach",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "1992-02-17",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Lili",
@@ -33423,16 +33373,6 @@
 "contract": "2026-11-15"
 },
 {
-"name": "Ling",
-"page": "Ling (Huang Yu-Chi)",
-"team": "International Esports Industry Center",
-"role": "Support",
-"country": "Taiwan",
-"residency": "Asia Pacific",
-"birth": null,
-"contract": null
-},
-{
 "name": "Lingwi",
 "page": "Lingwi",
 "team": "Skillcamp",
@@ -33580,7 +33520,7 @@
 "country": "South Korea",
 "residency": "Korea",
 "birth": "1995-01-15",
-"contract": "2026-11-16"
+"contract": "2027-11-15"
 },
 {
 "name": "Lirua",
@@ -33905,12 +33845,12 @@
 {
 "name": "Loopy",
 "page": "Loopy",
-"team": "Dplus Kia Challengers",
+"team": null,
 "role": "Support",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2004-06-09",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Lopon",
@@ -34483,6 +34423,16 @@
 "contract": null
 },
 {
+"name": "Lumi",
+"page": "Lumi",
+"team": "The Six Tung Tung Tung Sahurs",
+"role": "Support",
+"country": "Germany",
+"residency": "EMEA",
+"birth": null,
+"contract": null
+},
+{
 "name": "Lumity",
 "page": "Lumity",
 "team": "Bohemian Guardians",
@@ -34495,12 +34445,12 @@
 {
 "name": "Lumos",
 "page": "Lumos",
-"team": "Gen.G Global Academy",
+"team": null,
 "role": "Support",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2007-04-06",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Luna",
@@ -34715,12 +34665,12 @@
 {
 "name": "Lxz",
 "page": "Lxz (Chiu Liang-Jung)",
-"team": "Deep Cross Gaming",
+"team": null,
 "role": "Coach",
 "country": "Taiwan",
 "residency": "Asia Pacific",
 "birth": "1994-03-10",
-"contract": "2026-11-17"
+"contract": null
 },
 {
 "name": "Lychee",
@@ -34765,12 +34715,12 @@
 {
 "name": "Lyn",
 "page": "Lyn",
-"team": "Gen.G",
+"team": null,
 "role": "Coach",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "1996-08-25",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Lyncas",
@@ -34835,12 +34785,12 @@
 {
 "name": "Lyonz",
 "page": "Lyonz",
-"team": "Disguised",
+"team": null,
 "role": "Support",
 "country": "Argentina",
 "residency": "North America",
 "birth": "2001-11-29",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Lyovik",
@@ -35835,7 +35785,7 @@
 {
 "name": "Marbirius",
 "page": "Marbirius",
-"team": "Veni Vidi Vici (Spanish Team)",
+"team": "Caldya Esport",
 "role": "Mid",
 "country": "Sweden",
 "residency": "EMEA",
@@ -36575,12 +36525,12 @@
 {
 "name": "Maynter",
 "page": "Maynter",
-"team": "Natus Vincere",
+"team": null,
 "role": "Top",
 "country": "Ukraine",
 "residency": "EMEA",
 "birth": "2000-12-15",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "MayR",
@@ -37345,12 +37295,12 @@
 {
 "name": "MG",
 "page": "MG (Lee Ji-hoon)",
-"team": "BNK FEARX Youth",
+"team": null,
 "role": "Mid",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2002-06-03",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Miang",
@@ -37745,12 +37695,12 @@
 {
 "name": "Mikyx",
 "page": "Mikyx",
-"team": "SK Gaming",
+"team": null,
 "role": "Support",
 "country": "Slovenia",
 "residency": "EMEA",
 "birth": "1998-11-02",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Mila",
@@ -37855,12 +37805,12 @@
 {
 "name": "Millimas",
 "page": "Millimas",
-"team": "DN SOOPers",
+"team": null,
 "role": "Analyst",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2001-12-15",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Milly",
@@ -37910,16 +37860,6 @@
 "country": "Ecuador",
 "residency": "North America",
 "birth": "2005-07-09",
-"contract": null
-},
-{
-"name": "Min",
-"page": "Min (Shen Li-Min)",
-"team": "International Esports Industry Center",
-"role": "Bot",
-"country": "Taiwan",
-"residency": "Asia Pacific",
-"birth": "2004-10-28",
 "contract": null
 },
 {
@@ -38020,7 +37960,7 @@
 "country": "South Korea",
 "residency": "Korea",
 "birth": "1998-02-03",
-"contract": "2026-11-16"
+"contract": "2027-11-15"
 },
 {
 "name": "Minji",
@@ -38845,12 +38785,12 @@
 {
 "name": "Morttheus",
 "page": "Morttheus",
-"team": "RED Canids",
+"team": "Vivo Keyd Stars",
 "role": "Bot",
 "country": "Brazil",
 "residency": "Brazil",
 "birth": "2002-06-18",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Mortuario",
@@ -39095,7 +39035,7 @@
 {
 "name": "MrPhant0m",
 "page": "MrPhant0m",
-"team": null,
+"team": "ALMO Players",
 "role": "Bot",
 "country": "Greece",
 "residency": "EMEA",
@@ -39165,12 +39105,12 @@
 {
 "name": "MUDAI",
 "page": "MUDAI",
-"team": "Gen.G Global Academy",
+"team": null,
 "role": "Bot",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2005-05-21",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Muffinhawker",
@@ -39555,12 +39495,12 @@
 {
 "name": "Naehyun",
 "page": "Naehyun",
-"team": "Kiwoom DRX",
+"team": null,
 "role": "Coach",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "1996-02-07",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Nael",
@@ -40143,16 +40083,6 @@
 "contract": null
 },
 {
-"name": "Neczo",
-"page": "Neczo",
-"team": "ALMO Players",
-"role": "Mid",
-"country": "Greece",
-"residency": "EMEA",
-"birth": null,
-"contract": null
-},
-{
 "name": "NeedyHenry",
 "page": "NeedyHenry",
 "team": "Dorado Gaming",
@@ -40180,16 +40110,6 @@
 "country": "Brazil",
 "residency": "Brazil",
 "birth": "1995-11-18",
-"contract": null
-},
-{
-"name": "Nelliely",
-"page": "Nelliely",
-"team": null,
-"role": "Mid",
-"country": "Poland",
-"residency": "EMEA",
-"birth": "1999-10-28",
 "contract": null
 },
 {
@@ -41415,12 +41335,12 @@
 {
 "name": "Nova",
 "page": "Nova (Park Chan-ho)",
-"team": "Gen.G",
+"team": null,
 "role": "Coach",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "1997-11-27",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Novais",
@@ -41805,7 +41725,7 @@
 {
 "name": "Obsess",
 "page": "Obsess",
-"team": "Fnatic",
+"team": "No Need Orga",
 "role": "Jungle",
 "country": "Germany",
 "residency": "EMEA",
@@ -42255,12 +42175,12 @@
 {
 "name": "OnFleek",
 "page": "OnFleek",
-"team": null,
-"role": "Jungle",
+"team": "HANJIN BRION",
+"role": "Coach",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "1997-12-20",
-"contract": null
+"contract": "2027-11-15"
 },
 {
 "name": "Oniikhan",
@@ -43255,7 +43175,7 @@
 {
 "name": "Path",
 "page": "Path",
-"team": null,
+"team": "The Bandits Prime",
 "role": "Coach",
 "country": "United Kingdom",
 "residency": "EMEA",
@@ -43745,12 +43665,12 @@
 {
 "name": "Peter",
 "page": "Peter (Jeong Yoon-su)",
-"team": "DN SOOPers",
+"team": null,
 "role": "Support",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2003-04-28",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "PeterL",
@@ -44425,12 +44345,12 @@
 {
 "name": "Pleata",
 "page": "Pleata",
-"team": "Nongshim Esports Academy",
+"team": null,
 "role": "Support",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2003-03-28",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Ploxy",
@@ -44615,12 +44535,12 @@
 {
 "name": "Pollu",
 "page": "Pollu",
-"team": "KT Rolster Challengers",
+"team": "Nongshim Esports Academy",
 "role": "Support",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2006-01-07",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Polochon",
@@ -44825,12 +44745,12 @@
 {
 "name": "Poss",
 "page": "Poss",
-"team": null,
-"role": "Top",
+"team": "HANJIN BRION Challengers",
+"role": "Coach",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "1998-05-02",
-"contract": null
+"contract": "2027-11-15"
 },
 {
 "name": "Potatopanda",
@@ -44885,12 +44805,12 @@
 {
 "name": "Pout",
 "page": "POUT",
-"team": "CTBC Flying Oyster",
+"team": null,
 "role": "Mid",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2003-10-03",
-"contract": "2026-11-17"
+"contract": null
 },
 {
 "name": "Poweh",
@@ -45225,12 +45145,12 @@
 {
 "name": "ProDelta",
 "page": "ProDelta",
-"team": "Fluxo W7M",
+"team": null,
 "role": "Support",
 "country": "Brazil",
 "residency": "Brazil",
 "birth": "2001-05-08",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Prodigy",
@@ -45505,12 +45425,12 @@
 {
 "name": "Pungyeon",
 "page": "Pungyeon",
-"team": "HANJIN BRION",
+"team": null,
 "role": "Mid",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2004-06-22",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Puppe",
@@ -45625,12 +45545,12 @@
 {
 "name": "Pyosik",
 "page": "Pyosik",
-"team": "DN SOOPers",
+"team": null,
 "role": "Jungle",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2000-03-12",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Pyres",
@@ -45885,12 +45805,12 @@
 {
 "name": "Quantum",
 "page": "Quantum (Son Jeong-hwan)",
-"team": "DN SOOPers Challengers",
+"team": null,
 "role": "Support",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2004-08-20",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Quax",
@@ -46515,7 +46435,7 @@
 {
 "name": "Raizy",
 "page": "Raizy",
-"team": "HatTrick Gaming",
+"team": "ALMO Players",
 "role": "Mid",
 "country": "Greece",
 "residency": "EMEA",
@@ -46755,12 +46675,12 @@
 {
 "name": "RapidStar",
 "page": "RapidStar",
-"team": "DN SOOPers Challengers",
+"team": null,
 "role": "Coach",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "1993-05-05",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Rapport",
@@ -46775,12 +46695,12 @@
 {
 "name": "Raptor",
 "page": "Raptor (Jeon Eo-jin)",
-"team": "BNK FEARX",
+"team": null,
 "role": "Jungle",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2004-11-15",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Raqo",
@@ -46910,7 +46830,7 @@
 "country": "South Korea",
 "residency": "Korea",
 "birth": "1996-11-26",
-"contract": "2026-11-16"
+"contract": "2028-11-20"
 },
 {
 "name": "Raticait",
@@ -47185,12 +47105,12 @@
 {
 "name": "Razork",
 "page": "Razork",
-"team": "Fnatic",
+"team": null,
 "role": "Jungle",
 "country": "Spain",
 "residency": "EMEA",
 "birth": "2000-10-07",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Razvan",
@@ -47485,12 +47405,12 @@
 {
 "name": "REFRA1N",
 "page": "REFRA1N",
-"team": "Deep Cross Gaming",
+"team": null,
 "role": "Coach",
 "country": "Taiwan",
 "residency": "Asia Pacific",
 "birth": "1993-10-19",
-"contract": "2026-11-17"
+"contract": null
 },
 {
 "name": "refugo",
@@ -47915,12 +47835,12 @@
 {
 "name": "Rest",
 "page": "Rest",
-"team": "CTBC Flying Oyster",
+"team": null,
 "role": "Top",
 "country": "Taiwan",
 "residency": "Asia Pacific",
 "birth": "1998-12-11",
-"contract": "2026-11-17"
+"contract": null
 },
 {
 "name": "Resu",
@@ -48015,12 +47935,12 @@
 {
 "name": "Reven",
 "page": "Reven (Seong Sang-hyeon)",
-"team": "Shopify Rebellion",
+"team": null,
 "role": "Coach",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "1994-12-15",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Revenant",
@@ -48295,12 +48215,12 @@
 {
 "name": "Rich",
 "page": "Rich (Lee Jae-won)",
-"team": "Kiwoom DRX Challengers",
+"team": null,
 "role": "Top",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "1998-02-16",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Richu",
@@ -48455,12 +48375,12 @@
 {
 "name": "Ripple",
 "page": "Ripple",
-"team": "Gen.G Global Academy",
+"team": null,
 "role": "Top",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2006-10-05",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Riron",
@@ -49715,12 +49635,12 @@
 {
 "name": "sajed",
 "page": "Sajed",
-"team": "Disguised",
+"team": null,
 "role": "Bot",
 "country": "United States",
 "residency": "North America",
 "birth": "2004-04-10",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "SAKEN",
@@ -49885,12 +49805,12 @@
 {
 "name": "SamD",
 "page": "SamD",
-"team": "Natus Vincere",
+"team": null,
 "role": "Bot",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2001-03-14",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Samikin",
@@ -50825,12 +50745,12 @@
 {
 "name": "Scout",
 "page": "Scout",
-"team": "Nongshim RedForce",
+"team": null,
 "role": "Mid",
 "country": "South Korea",
 "residency": "China",
 "birth": "1998-03-14",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Scouter",
@@ -51365,7 +51285,7 @@
 {
 "name": "Send0o",
 "page": "Send0o",
-"team": "Veni Vidi Vici (Spanish Team)",
+"team": "G2 Esports",
 "role": "Top",
 "country": "Spain",
 "residency": "EMEA",
@@ -51475,7 +51395,7 @@
 {
 "name": "Sephis",
 "page": "Sephis",
-"team": "LOUD",
+"team": null,
 "role": "Coach",
 "country": "Brazil",
 "residency": "Brazil",
@@ -51635,12 +51555,12 @@
 {
 "name": "SeTab",
 "page": "SeTab",
-"team": "Nongshim Esports Academy",
+"team": "HANJIN BRION",
 "role": "Mid",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2004-10-13",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "SethHS",
@@ -51745,12 +51665,12 @@
 {
 "name": "Shad0w",
 "page": "Shad0w",
-"team": "CTBC Flying Oyster",
+"team": null,
 "role": "Jungle",
 "country": "Italy",
 "residency": "China",
 "birth": "2001-02-25",
-"contract": "2026-11-17"
+"contract": null
 },
 {
 "name": "Shadon",
@@ -52005,12 +51925,12 @@
 {
 "name": "Sharvel",
 "page": "Sharvel",
-"team": "DN SOOPers",
+"team": null,
 "role": "Jungle",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2007-08-26",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Shaunz",
@@ -52225,12 +52145,12 @@
 {
 "name": "ShiauC",
 "page": "ShiauC",
-"team": "Deep Cross Gaming",
+"team": null,
 "role": "Support",
 "country": "Taiwan",
 "residency": "Asia Pacific",
 "birth": "1999-07-12",
-"contract": "2026-11-17"
+"contract": null
 },
 {
 "name": "shiba",
@@ -52365,12 +52285,12 @@
 {
 "name": "Shiku",
 "page": "Shiku",
-"team": "Leviatan",
+"team": null,
 "role": "Support",
 "country": "Peru",
 "residency": "Brazil",
 "birth": "2004-04-28",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Shiloh",
@@ -52460,16 +52380,6 @@
 "country": "Mexico",
 "residency": "North America",
 "birth": "1989-11-29",
-"contract": null
-},
-{
-"name": "Shinn",
-"page": "Shinn",
-"team": "ALMO Players",
-"role": "Top",
-"country": "Russia",
-"residency": "EMEA",
-"birth": null,
 "contract": null
 },
 {
@@ -53135,12 +53045,12 @@
 {
 "name": "Sin",
 "page": "Sin (Yeon Hyeong-mo)",
-"team": "Hanwha Life Esports",
+"team": null,
 "role": "Coach",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "1991-12-12",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Sinatra",
@@ -53225,12 +53135,12 @@
 {
 "name": "SIRIUSS",
 "page": "SIRIUSS",
-"team": "Gen.G Global Academy",
+"team": null,
 "role": "Support",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2006-06-27",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "SiroN1",
@@ -53395,12 +53305,12 @@
 {
 "name": "Skeanz",
 "page": "Skeanz",
-"team": "SK Gaming",
+"team": null,
 "role": "Jungle",
 "country": "France",
 "residency": "EMEA",
 "birth": "2000-09-25",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Skeat",
@@ -53705,12 +53615,12 @@
 {
 "name": "Slayer",
 "page": "Slayer (Kim Jin-young)",
-"team": "BNK FEARX Youth",
+"team": null,
 "role": "Bot",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2003-04-15",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Slayer",
@@ -54356,7 +54266,7 @@
 "name": "SofM",
 "page": "SofM",
 "team": "MVK Esports",
-"role": "Jungle",
+"role": "Coach",
 "country": "Vietnam",
 "residency": "Asia Pacific",
 "birth": "1998-02-05",
@@ -54605,12 +54515,12 @@
 {
 "name": "Sonstar",
 "page": "Sonstar",
-"team": "KT Rolster",
+"team": null,
 "role": "Coach",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "1994-08-31",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Sony",
@@ -54855,12 +54765,12 @@
 {
 "name": "Spark",
 "page": "Spark (Kang Byung-ryul)",
-"team": "KT Rolster Challengers",
+"team": null,
 "role": "Coach",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "1989-12-06",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Spartan",
@@ -55045,12 +54955,12 @@
 {
 "name": "Sponge",
 "page": "Sponge",
-"team": "Nongshim RedForce",
+"team": null,
 "role": "Jungle",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2004-07-25",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Spooder",
@@ -55155,7 +55065,7 @@
 {
 "name": "Spyke",
 "page": "Spyke",
-"team": "FlameHard",
+"team": "The Bandits Prime",
 "role": "Coach",
 "country": "Romania",
 "residency": "EMEA",
@@ -55205,12 +55115,12 @@
 {
 "name": "Srtty",
 "page": "Srtty",
-"team": "Disguised",
+"team": null,
 "role": "Top",
 "country": "Australia",
 "residency": "North America",
 "birth": "2002-01-12",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "SrVenancio",
@@ -55275,12 +55185,12 @@
 {
 "name": "Ssumday",
 "page": "Ssumday",
-"team": "HANJIN BRION Challengers",
+"team": "HANJIN BRION",
 "role": "Coach",
 "country": "South Korea",
 "residency": "North America",
 "birth": "1996-07-03",
-"contract": "2026-11-16"
+"contract": "2027-11-15"
 },
 {
 "name": "SSUN",
@@ -55795,12 +55705,12 @@
 {
 "name": "Strensh",
 "page": "Strensh",
-"team": "Leviatan",
+"team": null,
 "role": "Bot",
 "country": "Chile",
 "residency": "Brazil",
 "birth": "2004-07-21",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Striker",
@@ -56125,12 +56035,12 @@
 {
 "name": "Supa",
 "page": "Supa",
-"team": "Movistar KOI",
+"team": null,
 "role": "Bot",
 "country": "Spain",
 "residency": "EMEA",
 "birth": "2000-10-23",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "SuperCleber",
@@ -56275,7 +56185,7 @@
 {
 "name": "Swiffer",
 "page": "Swiffer",
-"team": "Dignitas",
+"team": null,
 "role": "Coach",
 "country": "Australia",
 "residency": "Asia Pacific",
@@ -56445,12 +56355,12 @@
 {
 "name": "Sylvie",
 "page": "Sylvie",
-"team": "KT Rolster Challengers",
+"team": null,
 "role": "Jungle",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2002-12-04",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Sym",
@@ -56685,12 +56595,12 @@
 {
 "name": "Taeyoon",
 "page": "Taeyoon (Kim Tae-yoon)",
-"team": "BNK FEARX",
+"team": null,
 "role": "Bot",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2002-06-02",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Tahahy",
@@ -57185,12 +57095,12 @@
 {
 "name": "Tempester",
 "page": "Tempester",
-"team": "HANJIN BRION Challengers",
+"team": null,
 "role": "Mid",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2005-07-06",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "TemTem",
@@ -57395,12 +57305,12 @@
 {
 "name": "Thayger",
 "page": "Thayger",
-"team": "Galions",
+"team": null,
 "role": "Jungle",
 "country": "Spain",
 "residency": "EMEA",
 "birth": "2002-01-27",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "The Law",
@@ -57565,7 +57475,7 @@
 {
 "name": "TheSerius",
 "page": "TheSerius",
-"team": "Team Phantasma",
+"team": null,
 "role": "Top",
 "country": "Greece",
 "residency": "EMEA",
@@ -57715,7 +57625,7 @@
 {
 "name": "Thumb",
 "page": "Thumb",
-"team": null,
+"team": "Solary",
 "role": "Support",
 "country": "South Korea",
 "residency": "Korea",
@@ -58285,12 +58195,12 @@
 {
 "name": "Tockimo",
 "page": "Tockimo",
-"team": "G2 NORD",
+"team": null,
 "role": "Support",
 "country": "Germany",
 "residency": "EMEA",
 "birth": "2002-02-22",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Today",
@@ -59029,7 +58939,7 @@
 "role": "Streamer",
 "country": "Greece",
 "residency": "EMEA",
-"birth": null,
+"birth": "1992-09-09",
 "contract": null
 },
 {
@@ -59575,12 +59485,12 @@
 {
 "name": "Ucal",
 "page": "Ucal",
-"team": "Kiwoom DRX",
+"team": "DN SOOPers",
 "role": "Mid",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2001-01-30",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "uciu",
@@ -60145,12 +60055,12 @@
 {
 "name": "Valiant",
 "page": "Valiant (Han Kang-hyun)",
-"team": "Hanwha Life Esports Challengers",
+"team": null,
 "role": "Mid",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2009-05-01",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Valiant",
@@ -60625,7 +60535,7 @@
 {
 "name": "Veteran",
 "page": "Veteran",
-"team": null,
+"team": "The Six Tung Tung Tung Sahurs",
 "role": "Coach",
 "country": "United Kingdom",
 "residency": "EMEA",
@@ -60720,7 +60630,7 @@
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2003-11-27",
-"contract": "2026-11-16"
+"contract": "2027-11-15"
 },
 {
 "name": "VicSakra",
@@ -60915,12 +60825,12 @@
 {
 "name": "Vincenzo",
 "page": "Vincenzo (Ha Seung-min)",
-"team": "Kiwoom DRX",
+"team": "BNK FEARX",
 "role": "Jungle",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2004-04-03",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "VindoM",
@@ -61915,12 +61825,12 @@
 {
 "name": "Wayne",
 "page": "Wayne (Hwang Seo-hyeon)",
-"team": "Dplus Kia Challengers",
+"team": null,
 "role": "Bot",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2003-05-27",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Wayward",
@@ -62093,16 +62003,6 @@
 "contract": null
 },
 {
-"name": "Wenli",
-"page": "Wenli",
-"team": "International Esports Industry Center",
-"role": "Top",
-"country": "Taiwan",
-"residency": "Asia Pacific",
-"birth": null,
-"contract": null
-},
-{
 "name": "Went",
 "page": "Went",
 "team": "San Jose State University",
@@ -62265,7 +62165,7 @@
 {
 "name": "WhoisGone",
 "page": "WhoisGone",
-"team": "International Esports Industry Center",
+"team": null,
 "role": "Mid",
 "country": "Taiwan",
 "residency": "Asia Pacific",
@@ -62405,12 +62305,12 @@
 {
 "name": "Willer",
 "page": "Willer",
-"team": "Kiwoom DRX",
+"team": null,
 "role": "Jungle",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2003-04-24",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Willy",
@@ -62515,12 +62415,12 @@
 {
 "name": "Winner",
 "page": "Winner (Woo Joo-sung)",
-"team": "Kiwoom DRX Challengers",
+"team": null,
 "role": "Jungle",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2003-03-27",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "winnie",
@@ -62565,7 +62465,7 @@
 {
 "name": "Wiosna",
 "page": "Wiosna",
-"team": "The Bandits Prime",
+"team": "The Six Tung Tung Tung Sahurs",
 "role": "Top",
 "country": "France",
 "residency": "EMEA",
@@ -62575,8 +62475,8 @@
 {
 "name": "Wish",
 "page": "Wish (Shin Dong-seok)",
-"team": "HANJIN BRION Academy",
-"role": "Coach",
+"team": "HANJIN BRION",
+"role": "Analyst",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2004-05-16",
@@ -62955,22 +62855,22 @@
 {
 "name": "Wulala",
 "page": "Wulala",
-"team": "CTBC Flying Oyster",
+"team": null,
 "role": "Coach",
 "country": "Taiwan",
 "residency": "Asia Pacific",
 "birth": "1993-12-05",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Wunder",
 "page": "Wunder",
-"team": "SK Gaming",
+"team": null,
 "role": "Top",
 "country": "Denmark",
 "residency": "EMEA",
 "birth": "1998-11-09",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "WXZ",
@@ -64163,16 +64063,6 @@
 "contract": null
 },
 {
-"name": "Yashiro",
-"page": "Yashiro",
-"team": "Veni Vidi Vici (Spanish Team)",
-"role": "Bot",
-"country": "Lithuania",
-"residency": "EMEA",
-"birth": null,
-"contract": null
-},
-{
 "name": "Yashiro2",
 "page": "Yashiro2",
 "team": "SN CyberCore Esports",
@@ -64405,12 +64295,12 @@
 {
 "name": "Yike",
 "page": "Yike",
-"team": "Karmine Corp",
+"team": null,
 "role": "Jungle",
 "country": "Sweden",
 "residency": "EMEA",
 "birth": "2000-11-11",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "YiNova",
@@ -64510,6 +64400,16 @@
 "country": "Finland",
 "residency": "EMEA",
 "birth": null,
+"contract": null
+},
+{
+"name": "YonYon",
+"page": "YonYon",
+"team": "Bamboo Juice",
+"role": "Mid",
+"country": "China",
+"residency": "Asia Pacific",
+"birth": "2001-11-06",
 "contract": null
 },
 {
@@ -65105,7 +65005,7 @@
 {
 "name": "ZaFiR",
 "page": "ZaFiR",
-"team": null,
+"team": "ALMO Players",
 "role": "Support",
 "country": "Greece",
 "residency": "EMEA",
@@ -65545,12 +65445,12 @@
 {
 "name": "Zephyr",
 "page": "Zephyr (Hwang Hyeok-su)",
-"team": "BNK FEARX Youth",
+"team": null,
 "role": "Jungle",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2007-01-08",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Zer0Fa",
@@ -65765,12 +65665,12 @@
 {
 "name": "Zeyzal",
 "page": "Zeyzal",
-"team": "Shopify Rebellion",
+"team": null,
 "role": "Support",
 "country": "United States",
 "residency": "North America",
 "birth": "1999-07-07",
-"contract": "2026-11-14"
+"contract": null
 },
 {
 "name": "Zfat",
@@ -65925,12 +65825,12 @@
 {
 "name": "Zinie",
 "page": "Zinie",
-"team": "Shopify Rebellion",
+"team": null,
 "role": "Mid",
 "country": "South Korea",
 "residency": "Korea",
 "birth": "2005-08-31",
-"contract": "2026-11-17"
+"contract": null
 },
 {
 "name": "Zirreal",
@@ -66015,12 +65915,12 @@
 {
 "name": "Zoelys",
 "page": "Zoelys",
-"team": "Galions",
+"team": "G2 NORD",
 "role": "Support",
 "country": "France",
 "residency": "EMEA",
 "birth": "2003-05-16",
-"contract": "2026-11-16"
+"contract": null
 },
 {
 "name": "Zoen",
