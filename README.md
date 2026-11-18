@@ -13,6 +13,7 @@ La page est un seul fichier : `docs/index.html` (ouvrable directement dans un na
 - **Avant et après** : dans le scouting, on essaie un ou plusieurs joueurs dans une équipe et on compare l'effectif obtenu à l'actuel (niveau, chances de victoire, rang estimé dans la ligue, profil par facette).
 - **Âge, nationalité, résidence** : sur la fiche et en filtres dans le scouting (source : Leaguepedia).
 - **Méthode** : le calcul expliqué, les poids par poste, le niveau des ligues.
+- **Trois calculs de la note de saison** (bouton en haut de page) : Rift Scout (par défaut), Mixte (moitié [LoL Ratings](https://oradixx.github.io/LoL-ratings/)) et Unifiée (un seul modèle joueur par joueur : statistiques au départ, résultats des parties pour corriger, marge par joueur). Les trois sont jugés par le même test des transferts (`tools/bench_transfers.py`) ; aucun ne fait mieux que la note Rift Scout sur les deux paires de saisons de réglage.
 
 ## La note
 

@@ -8,12 +8,14 @@ Notes de 1 à 100 pour les joueurs professionnels de League of Legends, fiches j
 - Notes sur une partie des parties d'un joueur (forme sur 15 parties, période récente, note par équipe, par ligue, par événement) : toutes passent par les mêmes fonctions de `build.py` (`window_notes`, `event_table`, `league_table`, `tier_table`, `stint_table`) ; en ajouter une passe par là, pas par un calcul à part.
 - Identités dans `build.py` : `load()` réunit une équipe enregistrée sous deux identifiants (même nom, même ligue) ; `season()` réunit un joueur sous deux identifiants et sépare les équipes remaniées, dont l'identifiant porte le suffixe `REMANIEE` (`#remaniee`). Ce suffixe ne doit jamais apparaître sur la page : la liste des équipes l'exclut, le parcours d'un joueur et la mention « puis … » le retirent. Tout nouvel usage de `tid` côté affichage doit faire de même.
 - `tools/bench_team_levels.py` : banc d'essai des variantes du niveau d'équipe (validation croisée, playoffs cachés, matchs entre ligues majeures cachés). L'utiliser avant de changer le modèle de niveau d'équipe.
+- `tools/bench_transfers.py` : le test des transferts (notes d'une saison, matchs de la saison suivante des effectifs remaniés ; protocole en tête du fichier). Juge tout changement du partage équipe / individuel ou de la note. Paires 2024 → 2025 et 2025 → 2026 pour régler ; 2023 → 2024 seulement en contrôle final, réglage figé. Calcule 2023 et 2024 avec leurs propres niveaux de ligue de départ (moyenne des points LoL Ratings par ligue) et leurs ligues majeures de l'époque : il lit pour cela `results/ratings_<année>.csv` et `src/leagues.py` du dépôt LoL-ratings cloné à côté (ou dans la variable `LOL_RATINGS`). Une méthode = une fonction (saison calculée, année) -> note par joueur.
+- `pipeline/unified.py` : note unifiée (`nu`, marge `nue`), troisième calcul du bouton. Un seul modèle joueur par joueur : victoire et écart d'or de chaque partie = somme des niveaux des dix joueurs + côté ; niveau de départ tiré des statistiques (indice `Z` de `season()`), corrigé par les résultats. Réglages dans `DEFAULT` (`KAPPA`, `TAU`, réglés sur `tools/bench_transfers.py`) ; options essayées et éteintes : jeu collectif (`omega`), duels de lane (`lane_weight`), demi-vie (`half_life`). Marge affichée (`nue`) = bruit de mesure `NOISE_C` / √parties, mesuré et vérifié d'une saison à l'autre par `tools/check_margins.py` ; l'écart-type a posteriori (`se`) n'est pas affiché.
 - `pipeline/fetch_data.py` : télécharge les CSV de matchs dans `data/raw/`.
 - `pipeline/fetch_contracts.py` : télécharge la base publique de contrats de Riot, écrit `pipeline/contracts.json`.
 - `pipeline/leaguepedia.py`, `pipeline/fetch_leaguepedia.py` : connexion à Leaguepedia et récupération des fiches joueurs (`pipeline/lp_players.json` : âge, pays, résidence, contrat) et de la couverture des données détaillées (`pipeline/lp_coverage.json`). Demandent `LEAGUEPEDIA_USER` et `LEAGUEPEDIA_PASSWORD`, présents seulement dans les secrets GitHub : ces scripts se lancent par le workflow « Leaguepedia », pas en local.
 - `pipeline/fetch_timelines.py` : chronologies des parties hors LPL, réduites à quelques mesures par joueur (morts inutiles, objectifs, proximité du jungler) dans `pipeline/lp_timeline_<année>.csv.gz` (2025 et 2026 complets). Se lance par le workflow « Chronologies Leaguepedia », reprend où il s'est arrêté. Utilisé par `build.py` quand le fichier de la saison existe (morts inutiles dans « Survie », présence dans « Objectifs », weakside/strongside, style) ; sans lui, ou pour une partie de LPL, le calcul retombe sur les stats de base avec les mêmes proportions. La clé `gameid` + `pid` correspond à `gameid` + `participantid` d'Oracle's Elixir.
 - `pipeline/fetch_lp_games.py` : parties absentes d'Oracle's Elixir (petites ligues de clubs, parties trop récentes), récupérées sur Leaguepedia (fichier de stats Riot et chronologie) et converties au format d'Oracle's Elixir dans `pipeline/lp_games_<année>.csv.gz`. Workflow « Parties Leaguepedia » (manuel, avec `verification` : parties de LEC converties dans `lp_games_check_<année>.csv.gz`, à comparer avec `tools/check_lp_games.py`) et étape de la mise à jour hebdomadaire. Lu par `add_lp_games()` dans `build.py` : Oracle's Elixir prioritaire pour une même partie ; joueurs reliés par le pseudo, et pour une petite ligue seulement via une ligue voisine (`NEIGHBOR`) ; précisions « (… Team) » retirées des noms d'équipe ; or gagné recalculé. Pour ajouter une ligue : `LP_LEAGUES` (script), `leagues.json` (région, niveau de départ, `tier3`), `PRETTY` et `NEIGHBOR` (`build.py`).
-- `pipeline/lr_ratings_<année>.csv` : points de saison de LoL Ratings (identifiant et points seulement, repris de `results/ratings_<année>.csv` du dépôt LoL-ratings ; la mise à jour hebdomadaire les retélécharge). Servent à la note mixte (`nm`) : moitié note Rift Scout, moitié LoL Ratings ramené à l'échelle de la note. Côté page, le bouton « Rift Scout / Mixte » (`applyCalc()` dans `app.js`) remplace la note de saison (et `pts`) partout ; les autres notes restent Rift Scout ; en mode mixte la teinte passe du cobalt au vert sapin (`:root[data-calc="mix"]`, clair et sombre).
+- `pipeline/lr_ratings_<année>.csv` : points de saison de LoL Ratings (identifiant et points seulement, repris de `results/ratings_<année>.csv` du dépôt LoL-ratings ; la mise à jour hebdomadaire les retélécharge). Servent à la note mixte (`nm`) : moitié note Rift Scout, moitié LoL Ratings ramené à l'échelle de la note. Côté page, le bouton « Rift Scout / Mixte / Unifiée » (`applyCalc()` dans `app.js`, `nm` ou `nu`) remplace la note de saison (et `pts`) partout ; les autres notes restent Rift Scout ; la teinte passe du cobalt au vert sapin en mode mixte (`:root[data-calc="mix"]`) et au prune en mode unifié (`:root[data-calc="uni"]`), clair et sombre.
 - `pipeline/leagues.json` : niveau de départ, région et noms des ligues.
 - `pipeline/check.py` : garde-fou avant publication, compare aussi au `docs/index.html` déjà publié.
 - `app/` : sources de la page (`index.template.html`, `style.css`, `app.js`). Le scouting a deux onglets : « Renforcer une équipe » et « Cracks à essayer » (`cracks()`, `renderCracks()` : jeunes des ligues inférieures, note de deuxième niveau convertie en note estimée en ligue majeure par la droite `proj` calculée dans `build.py`, mélangée partie pour partie aux parties déjà jouées en ligue majeure ; seuils sur les titulaires de la ligue majeure de la région). La note par niveau de ligue (`tr`, depuis `tier_table`) sert aussi au classement et au scouting quand un niveau est choisi : un joueur de passage y figure avec sa note sur ces seules parties, signalée sur la ligne.
@@ -22,13 +24,25 @@ Notes de 1 à 100 pour les joueurs professionnels de League of Legends, fiches j
 ## Commandes
 
 ```bash
-pip install -r requirements.txt
+pip install -r requirements.txt        # pandas < 3 : pandas 3 casse build.py
 python pipeline/fetch_data.py          # CSV de matchs -> data/raw/ (environ 80 Mo par saison)
 python pipeline/fetch_contracts.py     # contrats -> pipeline/contracts.json
 python pipeline/build.py data/raw      # -> app/data.json
 python pipeline/check.py               # garde-fou sur le résultat
 python build_page.py                   # -> docs/index.html
+python tools/bench_transfers.py        # test des transferts, 2024 -> 2025 et 2025 -> 2026 (environ 1 minute)
 ```
+
+Google Drive refuse souvent les téléchargements par script (quota). Les fichiers d'Oracle's Elixir 2022-2026 (relevé du 14 novembre 2026) sont aussi sur la branche `donnees-oe`, compressés :
+
+```bash
+mkdir -p data/raw
+for f in 2023 2024 2025 2026; do
+  curl -sL "https://raw.githubusercontent.com/Oradixx/rift-scout/donnees-oe/${f}_LoL_esports_match_data_from_OraclesElixir.csv.gz" | gunzip > "data/raw/${f}_LoL_esports_match_data_from_OraclesElixir.csv"
+done
+```
+
+Avec ces fichiers, `build.py` doit afficher « 2026 : 1122 parties ajoutées depuis Leaguepedia » et « 2026 joueurs 2264 ».
 
 ## Mise à jour automatique
 
@@ -41,7 +55,7 @@ Les chronologies d'une saison complète se téléchargent avec le workflow « Ch
 ## Règles
 
 - Lire « Ce qui a été testé et écarté » dans `PRODUCT.md` avant de changer le calcul : plusieurs ressentis (groupes de niveau, joueurs occidentaux, bas de la LCK, supports engage) ont déjà été testés sans justifier de correction.
-- Un changement du calcul se valide sur des données qu'il n'a pas vues (validation croisée sur les parties, joueurs transférés, matchs internationaux), pas seulement en regardant le classement.
+- Un changement du calcul se valide sur des données qu'il n'a pas vues (validation croisée sur les parties, joueurs transférés avec `tools/bench_transfers.py`, matchs internationaux), pas seulement en regardant le classement.
 - À filtres égaux, une note ne doit jamais changer à cause d'une modification de l'interface. Après un changement d'affichage, comparer la page à la version précédente (joueurs, notes, nombres de parties) sur plusieurs combinaisons de filtres.
 - Annoncer à l'utilisateur toute variation de notes, avec son ampleur (médiane et maximum) et les joueurs qui bougent le plus.
 - Une estimation qui n'est pas une note (comme celle de l'onglet Cracks) s'ajuste sur une saison et se valide sur une autre (joueurs montés l'année suivante), et s'affiche à part de la note, libellée comme une estimation.

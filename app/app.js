@@ -53,17 +53,18 @@
       cr: { role: '', maxAge: 22, region: '', deep: false, minG: 15, contract: '', fresh: false, all: false, noAge: false, shown: 60 } } };
   let S, byId, med;
 
-  /* note affichée : Rift Scout ou mixte (moitié Rift Scout, moitié LoL Ratings). Seule la note de saison change ; les notes
-     d'événement, de ligue, de niveau et de période récente restent celles de Rift Scout. */
+  /* note affichée : Rift Scout, mixte (moitié Rift Scout, moitié LoL Ratings) ou unifiée (un seul modèle, champ nu). Seule la
+     note de saison change ; les notes d'événement, de ligue, de niveau et de période récente restent celles de Rift Scout. */
   function invNote(n) { const x = n <= 88 ? n : 88 + 11 * Math.atanh(Math.min((n - 88) / 11, 0.999)); return (x - D.scale.a) / D.scale.b; }
   function applyCalc() {
-    const mix = state.calc === 'mix';
+    const mix = state.calc === 'mix', uni = state.calc === 'uni';
     for (const y in D.seasons) {
       const P = D.seasons[y].players;
       for (const p of P) {
         if (p.note0 === undefined) { p.note0 = p.note; p.pts0 = p.pts; }
-        const m = mix && p.nm != null;
-        p.note = m ? p.nm : p.note0; p.pts = m ? invNote(p.nm) : p.pts0;
+        const m = mix && p.nm != null, u = uni && p.nu != null;
+        const alt = m ? p.nm : u ? p.nu : null;
+        p.note = alt != null ? alt : p.note0; p.pts = alt != null ? invNote(alt) : p.pts0;
       }
       P.sort((a, b) => b.note - a.note);
     }
@@ -281,7 +282,7 @@
     const rankIn = S.players.filter((x) => x.role === p.role && x.tier === p.tier && x.n >= 15 && x.note > p.note).length + 1;
     const d = p.rc ? p.rc[0] - p.note : 0;
     let html = `<header><span class="num note ${noteCls(p.note)}">${nInt(p.note)}</span><div><h2 id="sheet-name">${h(p.name)}</h2>
-      <p class="meta">${p.role}, ${h(p.team)}, ${h(lgName(p.league))} (${h(p.region)})<br>${(p.age || p.cty) ? [p.age ? p.age + ' ans' : null, p.cty ? h(pays(p.cty)) : null, p.res ? 'résidence ' + h(resid(p.res)) : null].filter(Boolean).join(', ') + '<br>' : ''}${rankIn}<sup>${rankIn === 1 ? 'er' : 'e'}</sup> des ${grp}, saison ${state.season}${p.nm != null ? `<br>Note Rift Scout ${nInt(p.note0)}, note mixte ${nInt(p.nm)}` : ''}${p.now ? `<br>A ensuite joué pour ${h(p.now)} (tournoi ou intersaison)` : ''}${hasCT() ? '<br>' + (p.c ? (isFree(p) ? `<b class="down">Fin de contrat le ${cDate(p.c, true)}</b>` : `Sous contrat jusqu'au ${cDate(p.c, true)}`) : 'Contrat non renseigné dans la base de Riot') : ''}</p></div><button class="close" data-close>Fermer</button></header>`;
+      <p class="meta">${p.role}, ${h(p.team)}, ${h(lgName(p.league))} (${h(p.region)})<br>${(p.age || p.cty) ? [p.age ? p.age + ' ans' : null, p.cty ? h(pays(p.cty)) : null, p.res ? 'résidence ' + h(resid(p.res)) : null].filter(Boolean).join(', ') + '<br>' : ''}${rankIn}<sup>${rankIn === 1 ? 'er' : 'e'}</sup> des ${grp}, saison ${state.season}${(p.nm != null || p.nu != null) ? '<br>' + ['Note Rift Scout ' + nInt(p.note0), p.nm != null ? 'note mixte ' + nInt(p.nm) : null, p.nu != null ? 'note unifiée ' + nInt(p.nu) + (p.nue != null ? ' (± ' + nInt(p.nue) + ')' : '') : null].filter(Boolean).join(', ') : ''}${p.now ? `<br>A ensuite joué pour ${h(p.now)} (tournoi ou intersaison)` : ''}${hasCT() ? '<br>' + (p.c ? (isFree(p) ? `<b class="down">Fin de contrat le ${cDate(p.c, true)}</b>` : `Sous contrat jusqu'au ${cDate(p.c, true)}`) : 'Contrat non renseigné dans la base de Riot') : ''}</p></div><button class="close" data-close>Fermer</button></header>`;
     html += `<section><div class="split">
       <div><small>Niveau de son équipe${p.tse ? ', à ± ' + fmt(p.tse, 1) + ' près' : ''}</small><span class="num">${nInt(p.team_lvl)}</span></div>
       <div><small>Écart individuel</small><span class="num ${p.ind >= 0 ? 'up' : 'down'}">${p.ind >= 0 ? '+' : ''}${fmt(p.note - p.team_lvl, 1)}</span></div>
@@ -573,7 +574,7 @@
   }
   function init() {
     $('#season').innerHTML = Object.keys(D.seasons).sort().map((y) => `<button data-season="${y}">${y}</button>`).join('');
-    try { const c = localStorage.getItem('rs-calc'); if (c === 'mix' || c === 'rift') state.calc = c; } catch (e) { /* stockage indisponible */ }
+    try { const c = localStorage.getItem('rs-calc'); if (c === 'mix' || c === 'rift' || c === 'uni') state.calc = c; } catch (e) { /* stockage indisponible */ }
     applyCalc();
     load(); fillSelects();
     document.addEventListener('click', (e) => {

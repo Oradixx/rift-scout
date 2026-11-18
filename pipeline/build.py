@@ -14,6 +14,7 @@ La note d'un joueur (1-100) = niveau de son équipe + écart individuel.
 """
 import json, os, sys, math
 import numpy as np, pandas as pd
+import unified
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 RAW = sys.argv[1] if len(sys.argv) > 1 else 'data/raw'
@@ -89,8 +90,9 @@ WEIGHTS = {
 }
 # Novembre 2026 : dégâts (carry) et vision ×2, survie (safe) ×0,5, puis poids ramenés à 1. Jugé sur les transferts
 # (notes d'une saison, matchs de la saison suivante des effectifs remaniés, 2024 -> 2025 et 2025 -> 2026) : prédiction
-# meilleure sur les deux paires (log-loss -0,0010 et -0,0012), là où des poids appris librement changeaient d'une
-# saison à l'autre. Les poids d'origine, choisis à la main, sont gardés ci-dessus pour mémoire.
+# meilleure sur les deux paires, là où des poids appris librement changeaient d'une saison à l'autre. Revérifié avec
+# tools/bench_transfers.py (saison 2024 avec ses propres niveaux de ligue) : les poids d'origine font +0,0015 et +0,0009
+# de log-loss. Les poids d'origine, choisis à la main, sont gardés ci-dessus pour mémoire.
 WEIGHTS_HAND = {r: dict(w) for r, w in WEIGHTS.items()}
 _ADJ = {'carry': 2.0, 'vision': 2.0, 'safe': 0.5}
 WEIGHTS = {r: {f: v * _ADJ.get(f, 1.0) for f, v in w.items()} for r, w in WEIGHTS_HAND.items()}
@@ -558,6 +560,10 @@ def season(year, prior):
     ok = ~np.isnan(rv)
     p['c'] = np.where(ok, rv * wmat, 0).sum(1) / np.where(ok, wmat, 0).sum(1).clip(min=1e-9)
     p.loc[(np.where(ok, wmat, 0).sum(1) < 0.5), 'c'] = np.nan
+    # Même indice sur les facettes avant retrait de l'écart de niveau entre les équipes : point de départ de la note
+    # unifiée (pipeline/unified.py), où ce sont les résultats des parties qui font la part du niveau d'équipe.
+    zv = F[facets].values.astype(float); okz = ~np.isnan(zv); dz = np.where(okz, wmat, 0).sum(1)
+    p['c_raw'] = np.where(dz >= 0.5, np.where(okz, zv * wmat, 0).sum(1) / dz.clip(min=1e-9), np.nan)
     # ligue et équipe actuelles du joueur
     # Équipe et ligue affichées = celles de ses dernières parties de LIGUE de la saison. Un joueur passé d'une ligue à une
     # autre en cours d'année est rangé avec sa dernière équipe de ligue. S'il a ensuite joué un tournoi ou une coupe avec
@@ -582,7 +588,7 @@ def season(year, prior):
     # agrégats saison
     g = p.groupby('pid')
     n = g.size()
-    A = pd.DataFrame({'n': n, 'T': g.R_own.mean(), 'Ropp': g.R_opp.mean(), 'c': g.c.mean()})
+    A = pd.DataFrame({'n': n, 'T': g.R_own.mean(), 'Ropp': g.R_opp.mean(), 'c': g.c.mean(), 'c_raw': g.c_raw.mean()})
     shr = A.n / (A.n + K_SHRINK)
     A['c_s'] = A.c * shr
     for f in facets: A['r_' + f] = g['r_' + f].mean() * (g['r_' + f].count() / (g['r_' + f].count() + K_SHRINK))
@@ -590,6 +596,7 @@ def season(year, prior):
     q15 = A[A.n >= 15]
     sd_c = q15.groupby('role').c_s.std()
     A['I'] = A.c_s / A.role.map(sd_c)
+    A['Z'] = A.c_raw * shr / A.role.map((q15.c_raw * shr[q15.index]).groupby(q15.role).std())   # note unifiée
     for f in facets:
         sd_f = q15.groupby('role')['r_' + f].std()
         A['i_' + f] = A['r_' + f] / A.role.map(sd_f)
@@ -863,8 +870,9 @@ def main():
         # Note mixte (bouton « Mixte » de la page) : moitié note Rift Scout, moitié note de LoL Ratings (régression sur l'écart d'or
         # joueur par joueur, pipeline/lr_ratings_<année>.csv, repris de results/ratings_<année>.csv du dépôt LoL-ratings). Les
         # points de LoL Ratings sont ramenés à l'échelle de la note (même moyenne et même écart-type sur les joueurs communs,
-        # 15 parties ou plus). Jugé sur les transferts : jamais moins bon que la note seule, meilleur en 2024 -> 2025 (log-loss
-        # -0,0034) ; 2025 -> 2026 : -0,0004. Sans note LoL Ratings (petites ligues, peu de parties), la note mixte = la note.
+        # 15 parties ou plus). Jugé sur les transferts (tools/bench_transfers.py, novembre 2026, saison 2024 avec ses propres
+        # niveaux de ligue) : log-loss +0,0024 en 2024 -> 2025, +0,0003 en 2025 -> 2026, -0,0001 en 2023 -> 2024 : pas mieux
+        # que la note seule. Sans note LoL Ratings (petites ligues, peu de parties), la note mixte = la note.
         lr_path = os.path.join(HERE, f'lr_ratings_{y}.csv')
         A['nm'] = np.nan
         if os.path.exists(lr_path):
@@ -875,6 +883,19 @@ def main():
                 lr_note = A.note[com].mean() + (pts_lr - pts_lr[com].mean()) * A.note[com].std() / pts_lr[com].std()
                 A['nm'] = ((A.note + lr_note) / 2).clip(1, 99)
                 print(f'{y} : note mixte pour {int(A.nm.notna().sum())} joueurs')
+        # Note unifiée (troisième calcul du bouton, pipeline/unified.py) : un seul modèle, joueur par joueur, où les
+        # statistiques donnent le point de départ et les résultats des parties le corrigent. Son niveau en points est ramené
+        # à l'échelle des points Rift Scout (même moyenne et même écart-type, joueurs à 15 parties ou plus), puis converti
+        # en note comme eux. Marge (`nue`) : bruit de mesure, de combien la note bougerait avec un autre tirage des parties de
+        # la saison (un écart-type, unified.NOISE_C / racine(parties), vérifié par tools/check_margins.py), convertie en
+        # points de note au niveau du joueur (la conversion tasse le haut de l'échelle). Elle ne couvre pas l'erreur du modèle.
+        U_ = unified.fit(S, META['prior'][str(y)], tier_of, {'with_se': False}, S['A'].Z)
+        th = U_['theta'].reindex(A.index); ref_ = th.notna() & (A.n >= 15)
+        k_ = A.pts[ref_].std() / th[ref_].std(); m_ = A.pts[ref_].mean() - k_ * th[ref_].mean()
+        A['nu'] = [to_note(m_ + k_ * v, a, b) if not pd.isna(v) else np.nan for v in th]
+        sig_ = unified.NOISE_C / np.sqrt(A.n)
+        A['nue'] = [to_note(m_ + k_ * (v + s), a, b) - to_note(m_ + k_ * v, a, b) if not pd.isna(v) else np.nan for v, s in zip(th, sig_)]
+        print(f'{y} : note unifiée pour {int(A.nu.notna().sum())} joueurs ({U_["games"]} parties), marge médiane {A.nue.median():.1f}')
         ev_by = {k: v for k, v in E.groupby('pid')}
         champs = p.groupby(['pid', 'champion']).agg(n=('result', 'size'), w=('result', 'mean')).reset_index()
         ch_by = {k: v.sort_values('n', ascending=False).head(6) for k, v in champs.groupby('pid')}
@@ -918,7 +939,7 @@ def main():
             players.append({
                 'id': pid.replace('oe:player:', ''), 'name': r['name'], 'team': r.team, 'tid': str(r.tid).replace('oe:team:', ''), 'league': r.league,
                 'region': META['region'].get(r.league, 'Autre'), 'tier': int(r.tier), 'role': r.role, 'n': int(r.n),
-                'note': r1(r.note), 'nm': r1(r.nm), 'pts': r1(r.pts, 0), 'team_lvl': r1(to_note(r['T'], a, b)), 'ind': r1(r.I, 2),
+                'note': r1(r.note), 'nm': r1(r.nm), 'nu': r1(r.nu), 'nue': r1(r.nue), 'pts': r1(r.pts, 0), 'team_lvl': r1(to_note(r['T'], a, b)), 'ind': r1(r.I, 2),
                 'form': r1(to_note(form.get(pid, r.pts), a, b)), 'last': str(r.last_date.date()),
                 'rc': [r1(to_note(recent.pts[pid], a, b)), int(recent.n[pid]), str(recent.start[pid].date()), recent.ev[pid]] if pid in recent.index else None,
                 'f': [r1(to_note(r['p_' + f], a, b)) if not pd.isna(r['p_' + f]) else None for f in fac],
