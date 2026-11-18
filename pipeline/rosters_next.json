@@ -1,0 +1,19 @@
+{
+  "season": "2027",
+  "source": "Sheep Esports, suivi des effectifs (relevé à la main le 18 novembre 2026)",
+  "note": "Effectifs annoncés pour la saison suivante, par ligue puis par équipe (nom d'équipe de la saison en cours). null = poste pas encore annoncé. Une équipe absente garde son effectif actuel, signalé comme non annoncé. Pseudos seulement.",
+  "leagues": {
+    "LEC": {
+      "Fnatic":         {"Top": "Soboro",      "Jungle": "Yike",     "Mid": "Vladi",    "ADC": "Doggo",     "Support": "Labrov"},
+      "G2 Esports":     {"Top": "Rooster",     "Jungle": "Lyncas",   "Mid": "Caps",     "ADC": "Hans Sama", "Support": "Mikyx"},
+      "GIANTX":         {"Top": "Myrwn",       "Jungle": "Thayger",  "Mid": "Feisty",   "ADC": "Harpoon",   "Support": "Piero"},
+      "Karmine Corp":   {"Top": "Canna",       "Jungle": "SkewMond", "Mid": "kyeahoo",  "ADC": "Caliste",   "Support": "Busio"},
+      "Movistar KOI":   {"Top": "BrokenBlade", "Jungle": "Elyoya",   "Mid": "Jojopyun", "ADC": "Carzzy",    "Support": "Alvaro"},
+      "SK Gaming":      {"Top": "Kryze",       "Jungle": "Zicssi",   "Mid": "SlowQ",    "ADC": "3XA",       "Support": "Lospa"},
+      "Team Heretics":  {"Top": "Tracyn",      "Jungle": "Razork",   "Mid": "Jackies",  "ADC": "Hype",      "Support": "Jun"},
+      "Natus Vincere":  {"Top": "Zest",        "Jungle": "Rhilech",  "Mid": null,       "ADC": "Supa",      "Support": "Parus"},
+      "Team Vitality":  {"Top": null,          "Jungle": "Sheo",     "Mid": "Guti",     "ADC": "Jopa",      "Support": null},
+      "Shifters":       {"Top": null,          "Jungle": null,       "Mid": null,       "ADC": null,        "Support": null}
+    }
+  }
+}

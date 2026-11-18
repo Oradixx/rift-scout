@@ -842,6 +842,43 @@ def match_leaguepedia(A, today):
     return out, L
 
 
+def next_rosters(S, A, teams):
+    """Effectifs de la saison suivante (onglet Transferts). Équipes de la saison en cours : celles qui ont joué le dernier
+    segment de leur ligue (une équipe invitée sur un seul segment, comme Los Ratones et Karmine Corp Blue en LEC Winter
+    2026, n'en fait pas partie). Effectif annoncé : pipeline/rosters_next.json (Sheep Esports, relevé à la main), pseudo
+    relié au joueur noté de même pseudo (au même poste s'il y en a plusieurs, sinon le plus joué). Pseudo inconnu : gardé
+    tel quel, sans note. Poste à null : pas encore annoncé. Équipe absente du fichier : effectif actuel, non annoncé."""
+    path = os.path.join(HERE, 'rosters_next.json')
+    if not os.path.exists(path): return None
+    F = json.load(open(path, encoding='utf-8'))
+    p = S['p']
+    by_name = {}
+    for pid, r in A.iterrows(): by_name.setdefault(norm(r['name']), []).append((pid, r.role, r.n))
+
+    def link(name, role):
+        c = by_name.get(norm(name), [])
+        if not c: return {'name': name}
+        same = [x for x in c if x[1] == role] or c
+        return max(same, key=lambda x: x[2])[0].replace('oe:player:', '')
+    out = []
+    file_lg = {lg: {norm(k): (k, v) for k, v in tm.items()} for lg, tm in F.get('leagues', {}).items()}
+    seen = set()
+    for t in teams:
+        if not t['end']: continue
+        ann = file_lg.get(t['league'], {}).get(norm(t['name']))
+        seen.add((t['league'], norm(t['name'])))
+        row = {'tid': t['tid'], 'name': t['name'], 'league': t['league'], 'tier': t['tier'], 'region': t['region'], 'cur': t['roster'], 'nxt': None}
+        if ann: row['nxt'] = {ro: (link(nm, ro) if nm else None) for ro, nm in ann[1].items()}
+        out.append(row)
+    for lg, tm in file_lg.items():        # équipe annoncée qui n'a pas joué la saison en cours dans cette ligue
+        for k, (name, ros) in tm.items():
+            if (lg, k) in seen: continue
+            out.append({'tid': None, 'name': name, 'league': lg, 'tier': tier_of(lg), 'region': META['region'].get(lg, 'Autre'), 'cur': {},
+                        'nxt': {ro: (link(nm, ro) if nm else None) for ro, nm in ros.items()}})
+    print('effectifs de la saison suivante :', sum(r['nxt'] is not None for r in out), 'équipes annoncées sur', len(out))
+    return {'season': F.get('season'), 'source': F.get('source'), 'teams': out}
+
+
 def r1(x, k=1):
     return None if x is None or (isinstance(x, float) and (math.isnan(x) or math.isinf(x))) else round(float(x), k)
 
@@ -977,12 +1014,20 @@ def main():
                           'region': META['region'].get(lg, 'Autre'), 'lvl': r1(to_note(S['R'][tid], a, b)), 'se': r1(float(S['R_se'][tid]) * b), 'n': int(tr.n), 'win': r1(tr.win, 3),
                           'last': str(tr['last'].date()),
                           'roster': {ro: ros[ro].replace('oe:player:', '') for ro in ROLES if ro in ros.index and ros[ro] in A.index}})
+        # équipe présente au dernier segment de sa ligue (sinon : invitée sur un seul segment ou reléguée en cours d'année,
+        # comme Los Ratones et Karmine Corp Blue en LEC Winter 2026) ; le power ranking ne montre que celles-là
+        lg_q = p[p.scope == 'ligue']; last_ev = lg_q.sort_values('date').groupby('league').event.last()
+        fin = lg_q[lg_q.event == lg_q.league.map(last_ev)].groupby('league').tid.agg(lambda x: {str(v).replace('oe:team:', '') for v in x})
+        for t_ in teams: t_['end'] = t_['tid'] in fin.get(t_['league'], set())
         out['seasons'][str(y)] = {
             'players': players, 'teams': teams,
             'leagues': {l: r1(to_note(v, a, b)) for l, v in S['lvl'].items()},
             'games': int(p.gameid.nunique()), 'from': str(p.date.min().date()), 'to': str(p.date.max().date()),
         }
         print(y, 'joueurs', len(players), 'équipes', len(teams), 'parties', p.gameid.nunique(), 'avantage côté bleu', round(S['side'], 3))
+        if y == SEASONS[-1]:
+            nx = next_rosters(S, A, teams)
+            if nx: out['next'] = nx
     # note projetée en ligue majeure pour un joueur de deuxième niveau (onglet Cracks) : droite ajustée sur les joueurs qui ont
     # joué aux deux niveaux la même saison (au moins 15 parties de chaque côté). Validée sur les joueurs montés de 2025 à 2026 :
     # erreur absolue médiane 4,1 points contre 7,8 en prenant la note de deuxième niveau telle quelle.
