@@ -16,6 +16,8 @@
   <div class="tabs" role="tablist">
     <button role="tab" data-view="rank">Classement</button>
     <button role="tab" data-view="scout">Scouting</button>
+    <button role="tab" data-view="power">Power ranking</button>
+    <button role="tab" data-view="transfers">Transferts</button>
     <button role="tab" data-view="method">Méthode</button>
   </div>
   <span class="spacer"></span>
@@ -140,6 +142,44 @@
     </div>
   </div>
 
+  <!-- ======================= power ranking -->
+  <div class="view" id="view-power" hidden>
+    <div class="five-head"><h1>Power ranking</h1><p id="p-sub"></p></div>
+    <div class="work">
+      <aside class="filters" aria-label="Filtres du power ranking">
+        <div class="wide"><span class="count" id="p-count"></span></div>
+        <div><label for="p-tier">Niveau de ligue</label>
+          <select id="p-tier"><option value="">Tous</option><option value="0">Ligues majeures</option><option value="1">Deuxième niveau</option><option value="2">Troisième niveau</option></select></div>
+        <div><label for="p-region">Région</label><select id="p-region"></select></div>
+        <div><label for="p-league">Ligue</label><select id="p-league"></select></div>
+      </aside>
+      <div class="table ptable">
+        <div class="thead"><span>Rang</span><span>Niveau</span><span>Équipe</span><span>Titulaires</span></div>
+        <div id="p-rows"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================= transferts -->
+  <div class="view" id="view-transfers" hidden>
+    <div class="five-head"><h1>Transferts</h1><p id="t-sub"></p></div>
+    <p class="brief" id="t-src"></p>
+    <p class="brief" id="t-warn" hidden></p>
+    <div class="work" style="margin-top:18px">
+      <aside class="filters" aria-label="Choix de la ligue">
+        <div class="wide"><label for="t-league">Ligue</label><select id="t-league"></select></div>
+        <p class="count wide" id="t-count"></p>
+      </aside>
+      <div>
+        <div class="table ttable">
+          <div class="thead"><span>Rang</span><span>Équipe</span><span>Niveau attendu</span><span class="r">Écart</span><span>Rang actuel</span><span>Effectif</span></div>
+          <div id="t-rank"></div>
+        </div>
+        <div class="tcards" id="t-cards"></div>
+      </div>
+    </div>
+  </div>
+
   <!-- ======================= méthode -->
   <div class="view" id="view-method" hidden>
     <div class="prose">
@@ -178,6 +218,11 @@
         <tr><td>Unifiée</td><td>+0,0038</td><td>+0,0028</td><td>−0,0023</td></tr>
         <tr><td>LoL Ratings seul</td><td>+0,0073</td><td>+0,0051</td><td>+0,0020</td></tr></tbody></table></div>
       <p>La note Rift Scout reste la plus sûre : aucun autre calcul ne fait mieux qu'elle sur les trois paires de saisons. La note unifiée fait mieux sur 2023 → 2024 et moins bien sur les deux autres. Les écarts restent petits : la note Rift Scout est à 0,646 de log-loss en 2024 → 2025, un tirage à pile ou face à 0,693.</p>
+      <h2>Power ranking et transferts</h2>
+      <p>Le <b>power ranking</b> classe les équipes selon leur niveau d'équipe de la saison (voir « Le niveau de l'équipe »), commun à toutes les ligues.</p>
+      <p>Le <b>power ranking attendu</b> de l'onglet Transferts prend la moyenne des notes de saison des cinq joueurs annoncés. Une note de deuxième ou troisième niveau est d'abord convertie en note estimée en ligue majeure (comme dans l'onglet Cracks). Un joueur sans note, ou un poste pas encore annoncé, vaut le 25e centile des titulaires de la ligue.</p>
+      <p>Essayé sur les saisons passées, avec les effectifs réellement alignés en début de saison suivante, ce calcul range les équipes de chaque ligue majeure dans un ordre qui suit l'ordre réel avec une corrélation de rang de 0,77 en moyenne (2024 → 2025 et 2025 → 2026). En reprenant simplement le niveau de l'équipe la saison d'avant, la corrélation tombe à 0,55 et 0,62. L'écart moyen est d'environ 3 points de note.</p>
+      <p>C'est une estimation : elle suppose que chaque joueur joue la saison suivante comme la précédente, et elle ne voit ni l'entente, ni le coaching, ni la langue.</p>
       <h2>Le scouting</h2>
       <p><b>Style proche</b> mesure la ressemblance avec le joueur à remplacer. <b>Apport à l'équipe</b> combine deux choses : les forces du candidat sur les facettes où les quatre autres joueurs sont en retrait, et l'équilibre des ressources (un carry de plus dans une équipe qui en a déjà trois s'intègre moins bien). Le tri recommandé part de la note et la corrige de ces deux mesures. Quand on choisit un niveau de ligue, un joueur qui y a joué sans que ce soit son niveau principal (équipe réserve, montée ou descente en cours d'année) apparaît avec sa note sur ses seules parties de ce niveau.</p>
       <p><b>Cracks à essayer</b> liste les jeunes joueurs des ligues de deuxième niveau (et, sur demande, de troisième niveau), notés sur leurs seules parties de ce niveau. Un même joueur qui a joué aux deux niveaux la même saison a en moyenne 6 points de plus en ligue majeure : la note de deuxième niveau est donc convertie en note estimée en ligue majeure (droite ajustée sur ces joueurs), puis comparée aux titulaires de la ligue majeure de sa région. Ajustée sur 2025 seulement, puis essayée sur les joueurs montés en 2026, l'estimation se trompe de 4 points en médiane, contre 8 en prenant la note de deuxième niveau telle quelle. Pour un joueur qui a déjà joué en ligue majeure cette saison, ces parties sont mélangées à l'estimation, partie pour partie.</p>

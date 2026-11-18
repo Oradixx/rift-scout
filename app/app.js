@@ -48,7 +48,7 @@
   const cMatch = (p, v) => !v || !hasCT() || (v === 'free' ? isFree(p) : v === 'signed' ? !!p.c && !isFree(p) : !p.c);
 
   const TIER_IN = ['ligue majeure', 'deuxième niveau', 'troisième niveau'];
-  const state = { calc: 'rift', season: Object.keys(D.seasons).sort().pop(), view: 'rank', role: '', tier: '0', region: '', league: '', event: '', contract: '', basis: 'season', minG: 15, q: '', shown: 100,
+  const state = { pw: { tier: '0', region: '', league: '', shown: 100 }, tr: { league: '' }, calc: 'rift', season: Object.keys(D.seasons).sort().pop(), view: 'rank', role: '', tier: '0', region: '', league: '', event: '', contract: '', basis: 'season', minG: 15, q: '', shown: 100,
     sc: { plan: {}, contract: '', maxAge: 0, res: '', tid: null, role: 'Mid', tier: '', region: '', league: '', minNote: 0, minG: 20, sort: 'score', shown: 60, ref: null, reach: true, mode: 'team',
       cr: { role: '', maxAge: 22, region: '', deep: false, minG: 15, contract: '', fresh: false, all: false, noAge: false, shown: 60 } } };
   let S, byId, med;
@@ -258,6 +258,7 @@
         .map((l) => `<option value="${h(l)}"${l === sel ? ' selected' : ''}>${h(lgName(l))}${D.desc[l] && lgName(l) === l ? ' (' + h(D.desc[l]) + ')' : ''}</option>`).join('') + '</optgroup>').join('');
     const rgOpts = (sel) => '<option value="">Toutes</option>' + [...regions].sort().map((r) => `<option${r === sel ? ' selected' : ''}>${h(r)}</option>`).join('');
     $('#f-league').innerHTML = lgOpts(state.league); $('#f-region').innerHTML = rgOpts(state.region);
+    $('#p-league').innerHTML = lgOpts(state.pw.league); $('#p-region').innerHTML = rgOpts(state.pw.region);
     $('#s-league').innerHTML = lgOpts(state.sc.league); $('#s-region').innerHTML = rgOpts(state.sc.region);
     const rs = {}; for (const p of S.players) if (p.res) rs[p.res] = (rs[p.res] || 0) + 1;
     $('#s-res').innerHTML = '<option value="">Toutes</option>' + Object.keys(rs).sort((a, b) => rs[b] - rs[a]).map((r) => `<option value="${h(r)}"${r === state.sc.res ? ' selected' : ''}>${h(resid(r))}</option>`).join('');
@@ -341,7 +342,17 @@
     }
     return out.slice(0, 4);
   }
-  function closeSheet() { $('#sheet-wrap').classList.remove('open'); }
+  /* Transferts : les joueurs sont ceux de la dernière saison. Si une saison plus ancienne est choisie, la fiche s'ouvre sur la dernière,
+     puis la saison choisie est rétablie à la fermeture. */
+  let savedSeason = null;
+  function openLast(id) {
+    if (state.season !== LAST) { if (!savedSeason) savedSeason = state.season; state.season = LAST; load(); }
+    openSheet(id);
+  }
+  function closeSheet() {
+    $('#sheet-wrap').classList.remove('open');
+    if (savedSeason) { state.season = savedSeason; savedSeason = null; load(); }
+  }
 
   /* ------------------------------------------------------------ scouting */
   function team(tid) { return S.teams.find((t) => t.tid === tid); }
@@ -553,6 +564,91 @@
     box.hidden = false;
   }
 
+  /* ------------------------------------------------------------ power ranking */
+  /* Niveau d'équipe de la saison choisie (modèle de victoire, le même que « niveau de l'équipe » de la fiche) : il ne dépend pas
+     du bouton Rift Scout / Mixte / Unifiée. */
+  function renderPower() {
+    const f = state.pw;
+    $('#p-tier').value = f.tier; $('#p-region').value = f.region; $('#p-league').value = f.league;
+    const Lall = S.teams.filter((t) => (f.tier === '' || t.tier === +f.tier) && (!f.region || t.region === f.region) && (!f.league || t.league === f.league));
+    const L = Lall.filter((t) => t.end !== false).sort((a, b) => b.lvl - a.lvl);   // présentes au dernier segment de leur ligue
+    const gone = Lall.length - L.length;
+    const inLg = {}; for (const t of S.teams) if (t.end !== false) (inLg[t.league] = inLg[t.league] || []).push(t.lvl);
+    $('#p-sub').textContent = `Le niveau d'une équipe vient du modèle de victoire de la saison ${state.season}, le même que le « niveau de l'équipe » de la fiche d'un joueur. Il est commun à toutes les ligues et ne dépend pas du choix Rift Scout, Mixte ou Unifiée.`;
+    $('#p-count').textContent = `${fmt(L.length)} équipe${L.length > 1 ? 's' : ''}, saison ${state.season}${gone ? `. ${fmt(gone)} autre${gone > 1 ? 's' : ''} absente${gone > 1 ? 's' : ''} du dernier segment de sa ligue (invitée ou partie en cours d'année), non classée${gone > 1 ? 's' : ''}` : ''}`;
+    const el = $('#p-rows');
+    if (!L.length) { el.innerHTML = '<p class="none">Aucune équipe ne correspond à ces filtres.</p>'; return; }
+    const late = Date.parse(S.to) - 180 * 864e5;
+    el.innerHTML = L.slice(0, f.shown).map((t, i) => {
+      const lu = ROLES.map((r) => { const p = byId.get(t.roster[r]); return p ? `<button class="pl" data-p="${p.id}" title="${r}, note ${nInt(p.note)}"><small>${r}</small>${h(p.name)}</button>` : `<span class="pl"><small>${r}</small>–</span>`; }).join('');
+      const rk = inLg[t.league].filter((v) => v > t.lvl).length + 1;
+      return `<div class="prow"><span class="rank">${i + 1}</span>
+        <span class="lvl"><span class="num note ${noteCls(t.lvl)}">${nInt(t.lvl)}</span>${t.se ? `<small>± ${fmt(t.se, 1)}</small>` : ''}</span>
+        <span class="who"><b>${h(t.name)}</b><small>${h(lgName(t.league))}${f.league ? '' : ', ' + ord(rk) + ' en ' + h(lgName(t.league))}</small>
+          <small>${fmt(t.n)} parties, ${pctTxt(t.win)} de victoires${Date.parse(t.last) < late ? `, dernière partie le ${frDate(t.last)}` : ''}</small></span>
+        <span class="lu">${lu}</span></div>`;
+    }).join('') + (L.length > f.shown ? '<button class="more" id="p-more">Afficher 100 équipes de plus</button>' : '');
+  }
+
+  /* ------------------------------------------------------------ transferts */
+  const LAST = Object.keys(D.seasons).sort().pop();
+  const tvalue = (p) => (p.tier === 0 ? p.note : D.proj.a + D.proj.b * p.note);   // note estimée en ligue majeure ; suit le bouton de calcul
+  function quantile(a, q) { a = a.slice().sort((x, y) => x - y); const i = (a.length - 1) * q, lo = Math.floor(i); return a[lo] + (a[Math.min(lo + 1, a.length - 1)] - a[lo]) * (i - lo); }
+  const rankOf = (v, all) => all.filter((x) => x > v).length + 1;
+  const dCls = (d) => (d > 0.05 ? 'up' : d < -0.05 ? 'down' : 'flat');
+  const sgn = (d) => (d > 0.05 ? '+' : d < -0.05 ? '−' : '') + fmt(Math.abs(d), 1);
+  function nextLeagues() {
+    const tier = {}, cnt = {};
+    for (const t of D.next.teams) { tier[t.league] = t.tier; cnt[t.league] = (cnt[t.league] || 0) + 1; }
+    return Object.keys(tier).sort((a, b) => tier[a] - tier[b] || cnt[b] - cnt[a] || lgName(a).localeCompare(lgName(b)));
+  }
+  function renderTransfers() {
+    const N = D.next, LP = new Map(D.seasons[LAST].players.map((p) => [p.id, p]));
+    const lgs = nextLeagues();
+    if (!lgs.includes(state.tr.league)) state.tr.league = lgs.includes('LEC') ? 'LEC' : lgs[0];
+    const lg = state.tr.league, tierOf = {}; N.teams.forEach((t) => { tierOf[t.league] = t.tier; });
+    $('#t-league').innerHTML = [0, 1, 2].map((k) => { const ls = lgs.filter((l) => tierOf[l] === k); return ls.length ? `<optgroup label="${TIERS[k]}">` + ls.map((l) => `<option value="${h(l)}"${l === lg ? ' selected' : ''}>${h(lgName(l))}${D.desc[l] && lgName(l) === l ? ' (' + h(D.desc[l]) + ')' : ''}</option>`).join('') + '</optgroup>' : ''; }).join('');
+    $('#t-src').innerHTML = `Effectifs annoncés : ${h(N.source)}. Effectif actuel : 12 dernières parties de chaque équipe.`;
+    const warn = $('#t-warn'); warn.hidden = state.season === LAST;
+    warn.textContent = state.season === LAST ? '' : `Cet onglet porte toujours sur la dernière saison (${LAST}), quelle que soit la saison choisie en haut de la page : ${LAST} pour l'effectif actuel, ${N.season} pour l'effectif annoncé.`;
+    const T = N.teams.filter((t) => t.league === lg);
+    // valeur par défaut : 25e centile des valeurs des titulaires actuels de la ligue
+    const known = []; for (const t of T) for (const r of ROLES) { const p = LP.get(t.cur[r]); if (p) known.push(tvalue(p)); }
+    const def = known.length ? quantile(known, 0.25) : 0;
+    const slot = (x) => { const p = typeof x === 'string' ? LP.get(x) : null; return p ? tvalue(p) : def; };
+    const level = (ros) => mean(ROLES.map((r) => slot(ros[r])));
+    const X = T.map((t) => {
+      const cur = t.tid ? level(t.cur) : null, nAnn = t.nxt ? ROLES.filter((r) => t.nxt[r]).length : 0;
+      return { t, cur, exp: t.nxt ? level(t.nxt) : cur, nAnn, state: !t.nxt || !nAnn ? 'pas annoncé' : nAnn === 5 ? 'annoncé' : `partiel (${nAnn} poste${nAnn > 1 ? 's' : ''})` };
+    }).sort((a, b) => b.exp - a.exp);
+    const curs = X.filter((x) => x.cur != null).map((x) => x.cur), exps = X.map((x) => x.exp);
+    X.forEach((x) => { x.rc = x.cur != null ? rankOf(x.cur, curs) : null; x.re = rankOf(x.exp, exps); x.d = x.cur != null ? x.exp - x.cur : null; });
+    $('#t-sub').textContent = `Effectif actuel et effectif annoncé pour la saison ${N.season}, ${lgName(lg)}. Le niveau d'un effectif est la moyenne des valeurs de ses cinq joueurs.`;
+    $('#t-count').innerHTML = `${X.length} équipes. Valeur d'un joueur : sa note de saison ; pour un joueur de deuxième ou troisième niveau, sa note estimée en ligue majeure. Joueur sans note ou poste pas encore annoncé : ${fmt(def, 1)}, le 25<sup>e</sup> centile des titulaires actuels de ${h(lgName(lg))}.`;
+    $('#t-rank').innerHTML = X.map((x) => {
+      const t = x.t, mv = x.rc == null ? '<span class="flat">nouvelle dans la ligue</span>' : `<span class="${x.re < x.rc ? 'up' : x.re > x.rc ? 'down' : 'flat'}">${ord(x.rc)} → ${ord(x.re)}</span>`;
+      return `<div class="trow"><span class="rank">${x.re}</span><span class="who"><b>${h(t.name)}</b></span>
+        <span class="num note ${noteCls(x.exp)}">${fmt(x.exp, 1)}</span><span class="trend r ${x.d == null ? 'flat' : dCls(x.d)}">${x.d == null ? '–' : sgn(x.d)}</span>
+        <span class="mv">${mv}</span><span class="st">${x.state}${t.nxt ? '' : '<small>effectif actuel conservé</small>'}</span></div>`;
+    }).join('');
+    const who = (x, cur, same) => {
+      const p = typeof x === 'string' ? LP.get(x) : null, strong = !same && x ? ' in' : '';
+      if (p) return `<button class="pl2${strong}" data-p="${p.id}">${h(p.name)}</button> <span class="pn ${noteCls(p.note)}">${nInt(p.note)}</span>${p.tier > 0 ? ` <small>${TIER_IN[p.tier]}</small>` : ''}`;
+      if (x && x.name) return `<span class="${strong.trim()}">${h(x.name)}</span> <small>sans note</small>`;
+      if (typeof x === 'string') return '<small>joueur introuvable</small>';
+      return cur ? '<span class="tbd">–</span>' : '<span class="tbd">pas encore annoncé</span>';
+    };
+    $('#t-cards').innerHTML = X.map((x) => {
+      const t = x.t;
+      return `<section class="tcard"><header><h3>${h(t.name)}</h3><span class="tlvl">${x.cur != null ? fmt(x.cur, 1) + ' → ' : ''}<b class="${noteCls(x.exp)}">${fmt(x.exp, 1)}</b>${x.d != null ? ` <em class="${dCls(x.d)}">${sgn(x.d)}</em>` : ''}</span></header>
+        <p class="legend">${t.tid ? (t.nxt ? x.state : 'effectif pas encore annoncé') : 'nouvelle dans la ligue'}</p>
+        ${ROLES.map((r) => {
+          const c = t.cur[r], n = t.nxt ? t.nxt[r] : c, same = !t.nxt || (typeof n === 'string' && n === c);
+          return `<div class="tline"><span class="role">${r}</span><span>${c ? who(c, true, true) : '<span class="tbd">–</span>'}</span><span class="arrow" aria-hidden="true">→</span><span>${who(n, !t.nxt, same)}</span></div>`;
+        }).join('')}</section>`;
+    }).join('');
+  }
+
   /* ------------------------------------------------------------ méthode */
   function renderMethod() {
     const w = D.weights;
@@ -570,7 +666,7 @@
     document.querySelectorAll('.tabs button').forEach((b) => b.setAttribute('aria-selected', b.dataset.view === state.view));
     document.querySelectorAll('.view').forEach((v) => (v.hidden = v.id !== 'view-' + state.view));
     document.querySelectorAll('#season button').forEach((b) => b.setAttribute('aria-pressed', b.dataset.season === state.season));
-    if (state.view === 'rank') renderRank(); else if (state.view === 'scout') renderScout(); else renderMethod();
+    if (state.view === 'rank') renderRank(); else if (state.view === 'scout') renderScout(); else if (state.view === 'power') renderPower(); else if (state.view === 'transfers') renderTransfers(); else renderMethod();
   }
   function init() {
     $('#season').innerHTML = Object.keys(D.seasons).sort().map((y) => `<button data-season="${y}">${y}</button>`).join('');
@@ -584,14 +680,15 @@
       if (b.dataset.view) { state.view = b.dataset.view; render(); window.scrollTo(0, 0); }
       else if (b.dataset.calc) { state.calc = b.dataset.calc; try { localStorage.setItem('rs-calc', state.calc); } catch (e) { /* stockage indisponible */ } applyCalc(); load(); render(); }
       else if (b.dataset.season) { state.season = b.dataset.season; lgCache = {}; state.sc.plan = {}; state.sc.tid = null; state.sc.ref = null; $('#team-input').value = ''; load(); fillSelects(); render(); }
-      else if (b.dataset.scout) { const p = byId.get(b.dataset.scout); closeSheet(); state.view = 'scout'; state.sc.plan = {}; state.sc.role = p.role; state.sc.ref = p.id; const t = S.teams.find((x) => x.roster[p.role] === p.id); state.sc.tid = t ? t.tid : null; if (!t) $('#team-input').value = ''; render(); window.scrollTo(0, 0); }
-      else if (b.dataset.p) openSheet(b.dataset.p, b.dataset.cmp);
+      else if (b.dataset.scout) { if (savedSeason) { savedSeason = null; lgCache = {}; fillSelects(); } const p = byId.get(b.dataset.scout); closeSheet(); state.view = 'scout'; state.sc.plan = {}; state.sc.role = p.role; state.sc.ref = p.id; const t = S.teams.find((x) => x.roster[p.role] === p.id); state.sc.tid = t ? t.tid : null; if (!t) $('#team-input').value = ''; render(); window.scrollTo(0, 0); }
+      else if (b.dataset.p) { if (state.view === 'transfers') openLast(b.dataset.p); else openSheet(b.dataset.p, b.dataset.cmp); }
       else if (b.hasAttribute('data-close')) closeSheet();
       else if (b.dataset.tid) { $('#suggest').hidden = true; setTeam(b.dataset.tid); }
       else if (b.dataset.scmode) { state.sc.mode = b.dataset.scmode; renderScout(); }
       else if (b.id === 'crack-more') { state.sc.cr.shown += 60; renderScout(); }
       else if (b.closest('#c-roles')) { state.sc.cr.role = b.dataset.role; state.sc.cr.shown = 60; renderScout(); }
       else if (b.dataset.lgmode) { state.basis = b.dataset.lgmode; state.shown = 100; renderRank(); }
+      else if (b.id === 'p-more') { state.pw.shown += 100; renderPower(); }
       else if (b.id === 'more') { state.shown += 100; renderRank(); }
       else if (b.id === 'scout-more') { state.sc.shown += 60; renderScout(); }
       else if (b.id === 'reset') { Object.assign(state, { role: '', tier: '0', region: '', league: '', event: '', contract: '', basis: 'season', minG: 15, q: '', shown: 100 }); syncFilters(); fillSelects(); renderRank(); }
@@ -609,6 +706,10 @@
     bind('#s-tier', (v) => { state.sc.tier = v; }); bind('#s-region', (v) => { state.sc.region = v; }); bind('#s-league', (v) => { state.sc.league = v; });
     bind('#s-sort', (v) => { state.sc.sort = v; }); $('#s-reach').addEventListener('change', (e) => { state.sc.reach = e.target.checked; state.sc.shown = 60; renderScout(); });
     bind('#s-note', (v) => { state.sc.minNote = +v || 0; }); bind('#s-min', (v) => { state.sc.minG = +v || 0; });
+    const pwBind = (id, fn) => $(id).addEventListener('input', (e) => { fn(e.target.value); state.pw.shown = 100; renderPower(); });
+    pwBind('#p-tier', (v) => { state.pw.tier = v; state.pw.league = ''; }); pwBind('#p-region', (v) => { state.pw.region = v; state.pw.league = ''; });
+    pwBind('#p-league', (v) => { state.pw.league = v; if (v) { state.pw.tier = ''; state.pw.region = ''; } });
+    $('#t-league').addEventListener('input', (e) => { state.tr.league = e.target.value; renderTransfers(); });
     const cr = state.sc.cr;
     bind('#c-age', (v) => { cr.maxAge = +v || 22; }); bind('#c-region', (v) => { cr.region = v; }); bind('#c-min', (v) => { cr.minG = +v || 0; }); bind('#c-contract', (v) => { cr.contract = v; });
     [['#c-deep', 'deep'], ['#c-fresh', 'fresh'], ['#c-all', 'all'], ['#c-noage', 'noAge']].forEach(([id, k]) => $(id).addEventListener('change', (e) => { cr[k] = e.target.checked; cr.shown = 60; renderScout(); }));
