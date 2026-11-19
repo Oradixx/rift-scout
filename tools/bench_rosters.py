@@ -33,6 +33,16 @@ def expected(roster, notes, fill):
     return v.fillna(fill.reindex(roster.index).to_frame().values @ np.ones((1, len(ROLES)))).mean(axis=1) if hasattr(fill, 'reindex') else v.fillna(fill).mean(axis=1)
 
 
+def next_lines(y):
+    """Note en ligue majeure la saison suivante, d'après la note de N : une droite pour les joueurs déjà en ligue majeure,
+    une pour ceux qui montent d'un niveau inférieur (au moins 15 parties de chaque côté). Tient compte du retour vers la
+    moyenne : un joueur très bien noté une saison l'est en moyenne un peu moins la suivante."""
+    A0, A1 = T.rated(T.season(y)), T.rated(T.season(y + 1))
+    j = A0[A0.n >= 15].join(A1[(A1.n >= 15) & (A1.tier == 0)][['pts']], rsuffix='_1', how='inner')
+    x, z = j.pts.map(to_note), j.pts_1.map(to_note)
+    return {k: tuple(np.polyfit(x[m], z[m], 1)[::-1]) + (int(m.sum()),) for k, m in (('maj', j.tier == 0), ('low', j.tier > 0))}
+
+
 def run(y):
     S0, S1 = T.season(y), T.season(y + 1)
     A0 = T.rated(S0); notes = A0.pts.map(to_note)
@@ -58,6 +68,23 @@ def run(y):
     conv = notes.where(A0.tier == 0, ic + sl * notes)
     fill = lg.map(st.quantile(0.25))
     out['notes N converties au niveau majeur, inconnu = 25e centile'] = ros.apply(lambda c: c.map(conv)).apply(lambda c: c.fillna(fill)).mean(axis=1)
+    # variante : droites « saison suivante » réglées sur l'AUTRE paire de saisons (retour vers la moyenne, montées)
+    Lw = next_lines(2025 if y == 2024 else 2024)
+    print(f'  droites réglées sur l\'autre paire : majeure {Lw["maj"][0]:.1f} + {Lw["maj"][1]:.2f} x ({Lw["maj"][2]} joueurs), '
+          f'montée {Lw["low"][0]:.1f} + {Lw["low"][1]:.2f} x ({Lw["low"][2]})')
+    nx = pd.Series(np.where(A0.tier == 0, Lw['maj'][0] + Lw['maj'][1] * notes, Lw['low'][0] + Lw['low'][1] * notes), index=notes.index)
+    fill_n = lg.map(ros.stack().map(nx).groupby(lg.reindex(ros.stack().index.get_level_values(0)).values).quantile(0.25))
+    out['droites saison suivante (autre paire), inconnu = 25e centile'] = ros.apply(lambda c: c.map(nx)).apply(lambda c: c.fillna(fill_n)).mean(axis=1)
+    # variantes : saison N-1 mêlée à N au prorata des parties (N-1 comptée alpha fois), avec ou sans conversion
+    Am = T.rated(T.season(y - 1)); nm_ = Am.pts.map(to_note)
+    for alpha in (0.25, 0.5, 1.0):
+        n0 = A0.n; n1 = (alpha * Am.n).reindex(A0.index.union(Am.index)).fillna(0)
+        for lab, base in (('sans conversion', notes), ('convertie', conv)):
+            idx = base.index.union(nm_.index)
+            bv, mv = base.reindex(idx), nm_.reindex(idx)
+            w0, w1 = n0.reindex(idx).fillna(0).where(bv.notna(), 0), n1.reindex(idx).fillna(0).where(mv.notna(), 0)
+            mix = (w0 * bv.fillna(0) + w1 * mv.fillna(0)) / (w0 + w1).replace(0, np.nan)
+            out[f'N + N-1 x{alpha}, {lab}'] = ros.apply(lambda c: c.map(mix)).apply(lambda c: c.fillna(fill)).mean(axis=1)
     out['naïf : niveau de l\'équipe en N'] = R0.reindex(ros.index).fillna(lg.map(R0.groupby(pd.Series(S0['team_home'])).mean()))
     rows = []
     for k, pred in out.items():
