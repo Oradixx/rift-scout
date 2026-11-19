@@ -53,8 +53,8 @@
       cr: { role: '', maxAge: 22, region: '', deep: false, minG: 15, contract: '', fresh: false, all: false, noAge: false, shown: 60 } } };
   let S, byId, med;
 
-  /* note affichée : Rift Scout, mixte (moitié Rift Scout, moitié LoL Ratings) ou unifiée (un seul modèle, champ nu). Seule la
-     note de saison change ; les notes d'événement, de ligue, de niveau et de période récente restent celles de Rift Scout. */
+  /* note affichée : Rift Scout, mixte (moitié Rift Scout, moitié LoL Ratings) ou unifiée (un seul modèle, champ nu). La note de
+     saison et les notes par événement changent ; les notes de ligue, de niveau et de période récente restent celles de Rift Scout. */
   function invNote(n) { const x = n <= 88 ? n : 88 + 11 * Math.atanh(Math.min((n - 88) / 11, 0.999)); return (x - D.scale.a) / D.scale.b; }
   function applyCalc() {
     const mix = state.calc === 'mix', uni = state.calc === 'uni';
@@ -65,6 +65,11 @@
         const m = mix && p.nm != null, u = uni && p.nu != null;
         const alt = m ? p.nm : u ? p.nu : null;
         p.note = alt != null ? alt : p.note0; p.pts = alt != null ? invNote(alt) : p.pts0;
+        for (const e of p.ev) {   // notes par événement : même calcul que la note de saison quand il existe pour cet événement
+          if (e.note0 === undefined) e.note0 = e.note;
+          const ea = mix && e.nm != null ? e.nm : uni && e.nu != null ? e.nu : null;
+          e.note = ea != null ? ea : e.note0;
+        }
       }
       P.sort((a, b) => b.note - a.note);
     }
