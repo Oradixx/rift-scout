@@ -842,6 +842,45 @@ def match_leaguepedia(A, today):
     return out, L
 
 
+LR_ALIAS = {'Esports World Cup': 'EWC'}
+
+
+def lr_event_notes(y, A, p, lr_note, lr_k):
+    """Note LoL Ratings par compétition, à l'échelle de la note : note LoL Ratings de saison + écart de la compétition
+    (competition_points - season_points) × même facteur d'échelle. Compétitions de LoL Ratings (\"LEC Versus · saison
+    régulière\", \"LEC Versus · playoffs\") réunies par nom et reliées à un événement Rift Scout par sa ligue et son segment ;
+    joueurs reliés par le pseudo et le poste (un seul joueur de ce pseudo à ce poste)."""
+    lr_dir = os.environ.get('LOL_RATINGS', os.path.join(HERE, '..', '..', 'LoL-ratings'))
+    f = os.path.join(lr_dir, 'results', f'competitions_{y}.csv')
+    if not os.path.exists(f): f = os.path.join(HERE, f'lr_competitions_{y}.csv')
+    if not os.path.exists(f): return {}
+    C = pd.read_csv(f)
+    C['base'] = C.competition.str.split(' · ').str[0].map(lambda x: LR_ALIAS.get(x, x))
+    C['dw'] = (C.competition_points - C.season_points) * C.games
+    C = C.groupby(['player', 'role', 'base']).agg(dw=('dw', 'sum'), n=('games', 'sum')).reset_index()
+    C['delta'] = C.dw / C.n
+    # événement Rift Scout -> clé « ligue segment » (ou ligue seule)
+    k = p.drop_duplicates('event').set_index('event')
+    # nom exact de l'événement d'abord ; « ligue segment » ensuite ; « ligue » seule seulement si la ligue n'a qu'un événement
+    # (sinon une compétition annuelle, la LFL par exemple, serait collée sur son premier segment)
+    keys = {ev: ev for ev in k.index}
+    n_ev = k.groupby('league').size()
+    for ev, r in k.iterrows():
+        sp = str(r.split) if isinstance(r.split, str) and r.split not in ('nan', 'Season') else ''
+        if sp: keys.setdefault((r.league + ' ' + sp).strip(), ev)
+        if n_ev[r.league] == 1: keys.setdefault(r.league, ev)
+        keys.setdefault(PRETTY.get(r.league, r.league) + (' ' + sp if sp else ''), ev)
+    who = {}
+    for pid, r in A.iterrows(): who.setdefault((norm(r['name']), r.role), []).append(pid)
+    out = {}
+    for r in C.itertuples():
+        ev = keys.get(r.base); ids = who.get((norm(r.player), r.role), [])
+        if ev and len(ids) == 1 and ids[0] in lr_note.index and not pd.isna(lr_note[ids[0]]):
+            out[(ev, ids[0])] = float(lr_note[ids[0]] + r.delta * lr_k)
+    print(f'{y} : notes LoL Ratings par compétition reliées pour {len(out)} couples joueur-événement')
+    return out
+
+
 def next_rosters(S, A, teams):
     """Effectifs de la saison suivante (onglet Transferts). Équipes de la saison en cours : celles qui ont joué le dernier
     segment de leur ligue (une équipe invitée sur un seul segment, comme Los Ratones et Karmine Corp Blue en LEC Winter
@@ -911,13 +950,14 @@ def main():
         # niveaux de ligue) : log-loss +0,0024 en 2024 -> 2025, +0,0003 en 2025 -> 2026, -0,0001 en 2023 -> 2024 : pas mieux
         # que la note seule. Sans note LoL Ratings (petites ligues, peu de parties), la note mixte = la note.
         lr_path = os.path.join(HERE, f'lr_ratings_{y}.csv')
-        A['nm'] = np.nan
+        A['nm'] = np.nan; lr_note = None; lr_k = None
         if os.path.exists(lr_path):
             lr = pd.read_csv(lr_path).set_index('pid').points
             pts_lr = lr.reindex(A.index)
             com = pts_lr.notna() & (A.n >= 15)
             if com.sum() > 200:
-                lr_note = A.note[com].mean() + (pts_lr - pts_lr[com].mean()) * A.note[com].std() / pts_lr[com].std()
+                lr_k = A.note[com].std() / pts_lr[com].std()
+                lr_note = A.note[com].mean() + (pts_lr - pts_lr[com].mean()) * lr_k
                 A['nm'] = ((A.note + lr_note) / 2).clip(1, 99)
                 print(f'{y} : note mixte pour {int(A.nm.notna().sum())} joueurs')
         # Note unifiée (troisième calcul du bouton, pipeline/unified.py) : un seul modèle, joueur par joueur, où les
@@ -933,6 +973,12 @@ def main():
         sig_ = unified.NOISE_C / np.sqrt(A.n)
         A['nue'] = [to_note(m_ + k_ * (v + s), a, b) - to_note(m_ + k_ * v, a, b) if not pd.isna(v) else np.nan for v, s in zip(th, sig_)]
         print(f'{y} : note unifiée pour {int(A.nu.notna().sum())} joueurs ({U_["games"]} parties), marge médiane {A.nue.median():.1f}')
+        # Notes unifiée et mixte par événement (bouton de calcul, onglet classement filtré sur un événement, fiche).
+        # Unifiée : niveau de saison + écart propre à l'événement, ramené vers 0 (unified.TAU_EVENT, réglé par
+        # tools/check_event_unified.py : l'écart estimé sur une moitié des parties d'un événement prédit mieux l'autre moitié). Mixte : moitié note Rift Scout de l'événement, moitié note LoL
+        # Ratings de la même compétition (results/competitions_<année>.csv, saison régulière et playoffs réunis), ou de saison.
+        ev_d = unified.event_deltas(S, U_['theta'], U_['side'], unified.TAU_EVENT)
+        lr_ev = lr_event_notes(y, A, p, lr_note, lr_k) if lr_note is not None else {}
         ev_by = {k: v for k, v in E.groupby('pid')}
         champs = p.groupby(['pid', 'champion']).agg(n=('result', 'size'), w=('result', 'mean')).reset_index()
         ch_by = {k: v.sort_values('n', ascending=False).head(6) for k, v in champs.groupby('pid')}
@@ -972,6 +1018,11 @@ def main():
                     evs.append({'e': e.event, 'n': int(e.n), 'w': r1(e.win, 3), 'kda': r1((e.k + e.a) / max(e.d, 1), 2),
                                 'note': r1(to_note(e.pts, a, b)), 'team': e.team, 'd': str(e.end.date()),
                                 'sc': e.scope})
+                    th_p = U_['theta'].get(pid)
+                    if th_p is not None and not pd.isna(th_p):
+                        evs[-1]['nu'] = r1(to_note(m_ + k_ * (th_p + ev_d.get((e.event, pid), 0.0)), a, b))
+                    if lr_note is not None and not pd.isna(lr_note.get(pid, np.nan)):
+                        evs[-1]['nm'] = r1(min(99, max(1, (to_note(e.pts, a, b) + lr_ev.get((e.event, pid), lr_note[pid])) / 2)))
             sz = S['Sz'].loc[pid] if pid in S['Sz'].index else None
             players.append({
                 'id': pid.replace('oe:player:', ''), 'name': r['name'], 'team': r.team, 'tid': str(r.tid).replace('oe:team:', ''), 'league': r.league,
@@ -1016,7 +1067,12 @@ def main():
                           'roster': {ro: ros[ro].replace('oe:player:', '') for ro in ROLES if ro in ros.index and ros[ro] in A.index}})
         # équipe présente au dernier segment de sa ligue (sinon : invitée sur un seul segment ou reléguée en cours d'année,
         # comme Los Ratones et Karmine Corp Blue en LEC Winter 2026) ; le power ranking ne montre que celles-là
-        lg_q = p[p.scope == 'ligue']; last_ev = lg_q.sort_values('date').groupby('league').event.last()
+        # dernier segment = l'événement de ligue qui commence le plus tard parmi ceux qui réunissent au moins la moitié des
+        # équipes de la ligue (une finale à quatre, « VCS Finals », n'en est pas un)
+        lg_q = p[p.scope == 'ligue']
+        evs_ = lg_q.groupby(['league', 'event']).agg(start=('date', 'min'), teams=('tid', 'nunique')).reset_index()
+        evs_['all'] = evs_.league.map(lg_q.groupby('league').tid.nunique())
+        last_ev = evs_[evs_.teams >= 0.5 * evs_['all']].sort_values('start').groupby('league').event.last()
         fin = lg_q[lg_q.event == lg_q.league.map(last_ev)].groupby('league').tid.agg(lambda x: {str(v).replace('oe:team:', '') for v in x})
         for t_ in teams: t_['end'] = t_['tid'] in fin.get(t_['league'], set())
         out['seasons'][str(y)] = {

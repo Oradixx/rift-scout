@@ -26,8 +26,48 @@ DEFAULT = dict(tau=100.0, kappa=2.0, omega=0.0, lane_weight=0.0, half_life=None,
 # dans la marge, pour 68 % attendus). C'est la marge affichée. L'écart-type a posteriori (`se`) ne l'est pas : il ignore
 # le bruit des statistiques de départ et repose surtout sur TAU, ce que deux moitiés de saison ne peuvent pas juger.
 NOISE_C = 562.0
+# Écart propre à un événement (points) : tools/check_event_unified.py, parties de chaque événement partagées en deux moitiés,
+# saison refaite sur la moitié A seule, prédiction de la moitié B. Log-loss 2025 puis 2026 : sans écart 0,6221 et 0,6124 ;
+# 35 : 0,6215 et 0,6118 ; 100 : 0,6195 et 0,6095 ; 150 : 0,6194 et 0,6085 ; 250 : 0,6229 et 0,6098. On garde 150.
+TAU_EVENT = 150.0
 LANES = {'Top': ['Top'], 'Jungle': ['Jungle'], 'Mid': ['Mid'], 'Bot': ['ADC', 'Support']}
 JUNGLE_IN_LANE = 0.5     # duels de lane : part du jungler dans l'or à 15 minutes d'une lane (choix, pas une mesure)
+
+
+def event_deltas(S, theta, side, tau, games=None, gold_weight=0.5, iters=25):
+    """Note unifiée par événement : écart de chaque joueur à son niveau de saison (theta), estimé sur les seules parties de
+    l'événement (victoire et écart d'or), ramené vers 0 avec l'écart-type TAU_EVENT. games : sous-ensemble de parties
+    (validation). Renvoie {(événement, joueur) : écart en points}."""
+    p, t = S['p'], S['t']
+    q = p[['gameid', 'side', 'pid', 'event']].drop_duplicates(['gameid', 'pid'])
+    if games is not None: q = q[q.gameid.isin(games)]
+    b = t[t.side == 'Blue'].set_index('gameid'); r = t[t.side == 'Red'].set_index('gameid')
+    out = {}
+    for ev, qe in q.groupby('event'):
+        n5 = qe.groupby(['gameid', 'side']).size().unstack(fill_value=0).reindex(columns=['Blue', 'Red'], fill_value=0)
+        g_ok = n5.index[((n5.Blue == 5) & (n5.Red == 5)).values]
+        g_ok = [g_ for g_ in g_ok if g_ in b.index and g_ in r.index]
+        if not len(g_ok) or tau <= 0: continue
+        qe = qe[qe.gameid.isin(g_ok)]
+        pl = sorted(qe.pid.unique()); pi = pd.Series(np.arange(len(pl)), index=pl); gi = pd.Series(np.arange(len(g_ok)), index=g_ok)
+        sg = np.where(qe.side.values == 'Blue', 1.0, -1.0) / (5 * PTS_PER_LOGIT)
+        X = sparse.csr_matrix((sg, (gi[qe.gameid].values, pi[qe.pid].values)), shape=(len(g_ok), len(pl)))
+        off = X @ theta.reindex(pl).fillna(theta.median()).values + side
+        y = b.loc[g_ok].result.values.astype(float)
+        gd = ((b.loc[g_ok].totalgold.values - r.loc[g_ok].totalgold.values) / 1000.0).clip(-25, 25); okg = ~np.isnan(gd)
+        d = np.zeros(len(pl)); pen = 1 / tau ** 2; cg, s_ = 1.0, 1.0
+        for it in range(iters):
+            eta = off + X @ d; m = 1 / (1 + np.exp(-eta))
+            H = (X.T @ X.multiply((m * (1 - m))[:, None])).toarray() + pen * np.eye(len(pl)); gr = X.T @ (y - m) - pen * d
+            if gold_weight and okg.sum() > 5:
+                e2 = eta[okg]
+                if it: cg = float(np.dot(e2, gd[okg]) / np.dot(e2, e2)); s_ = float(np.std(gd[okg] - cg * e2)) or 1.0
+                lam = gold_weight * cg ** 2 / s_ ** 2; Xg = X[okg]
+                H += lam * (Xg.T @ Xg).toarray(); gr += lam * (Xg.T @ (gd[okg] / cg - e2))
+            st = np.linalg.lstsq(H, gr, rcond=None)[0]; d += st
+            if np.abs(st).max() < 1e-6: break
+        for x, i in pi.items(): out[(ev, x)] = float(d[i])
+    return out
 
 
 def fit(S, prior, tier_of, cfg=None, ind=None, base=None):
