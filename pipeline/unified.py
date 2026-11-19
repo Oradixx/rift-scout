@@ -26,10 +26,10 @@ DEFAULT = dict(tau=100.0, kappa=2.0, omega=0.0, lane_weight=0.0, half_life=None,
 # dans la marge, pour 68 % attendus). C'est la marge affichée. L'écart-type a posteriori (`se`) ne l'est pas : il ignore
 # le bruit des statistiques de départ et repose surtout sur TAU, ce que deux moitiés de saison ne peuvent pas juger.
 NOISE_C = 562.0
-# Écart propre à un événement (points) : tools/check_event_unified.py, parties d'un même événement partagées en deux moitiés.
-# Log-loss sur la moitié cachée, 2025 puis 2026 : sans écart 0,5985 et 0,5854 ; TAU_EVENT 25 à 50 : 0,5984 et 0,5854 ;
-# 100 : 0,5995 et 0,5862 ; 150 : 0,6022 et 0,5882. L'écart d'un événement est surtout du bruit : on garde 35.
-TAU_EVENT = 35.0
+# Écart propre à un événement (points) : tools/check_event_unified.py, parties de chaque événement partagées en deux moitiés,
+# saison refaite sur la moitié A seule, prédiction de la moitié B. Log-loss 2025 puis 2026 : sans écart 0,6221 et 0,6124 ;
+# 35 : 0,6215 et 0,6118 ; 100 : 0,6195 et 0,6095 ; 150 : 0,6194 et 0,6085 ; 250 : 0,6229 et 0,6098. On garde 150.
+TAU_EVENT = 150.0
 LANES = {'Top': ['Top'], 'Jungle': ['Jungle'], 'Mid': ['Mid'], 'Bot': ['ADC', 'Support']}
 JUNGLE_IN_LANE = 0.5     # duels de lane : part du jungler dans l'or à 15 minutes d'une lane (choix, pas une mesure)
 
@@ -64,7 +64,7 @@ def event_deltas(S, theta, side, tau, games=None, gold_weight=0.5, iters=25):
                 if it: cg = float(np.dot(e2, gd[okg]) / np.dot(e2, e2)); s_ = float(np.std(gd[okg] - cg * e2)) or 1.0
                 lam = gold_weight * cg ** 2 / s_ ** 2; Xg = X[okg]
                 H += lam * (Xg.T @ Xg).toarray(); gr += lam * (Xg.T @ (gd[okg] / cg - e2))
-            st = np.linalg.solve(H, gr); d += st
+            st = np.linalg.lstsq(H, gr, rcond=None)[0]; d += st
             if np.abs(st).max() < 1e-6: break
         for x, i in pi.items(): out[(ev, x)] = float(d[i])
     return out

@@ -861,11 +861,15 @@ def lr_event_notes(y, A, p, lr_note, lr_k):
     C['delta'] = C.dw / C.n
     # événement Rift Scout -> clé « ligue segment » (ou ligue seule)
     k = p.drop_duplicates('event').set_index('event')
-    keys = {}
+    # nom exact de l'événement d'abord ; « ligue segment » ensuite ; « ligue » seule seulement si la ligue n'a qu'un événement
+    # (sinon une compétition annuelle, la LFL par exemple, serait collée sur son premier segment)
+    keys = {ev: ev for ev in k.index}
+    n_ev = k.groupby('league').size()
     for ev, r in k.iterrows():
         sp = str(r.split) if isinstance(r.split, str) and r.split not in ('nan', 'Season') else ''
-        for key in ((r.league + ' ' + sp).strip(), r.league, ev):
-            keys.setdefault(key, ev)
+        if sp: keys.setdefault((r.league + ' ' + sp).strip(), ev)
+        if n_ev[r.league] == 1: keys.setdefault(r.league, ev)
+        keys.setdefault(PRETTY.get(r.league, r.league) + (' ' + sp if sp else ''), ev)
     who = {}
     for pid, r in A.iterrows(): who.setdefault((norm(r['name']), r.role), []).append(pid)
     out = {}
@@ -970,9 +974,8 @@ def main():
         A['nue'] = [to_note(m_ + k_ * (v + s), a, b) - to_note(m_ + k_ * v, a, b) if not pd.isna(v) else np.nan for v, s in zip(th, sig_)]
         print(f'{y} : note unifiée pour {int(A.nu.notna().sum())} joueurs ({U_["games"]} parties), marge médiane {A.nue.median():.1f}')
         # Notes unifiée et mixte par événement (bouton de calcul, onglet classement filtré sur un événement, fiche).
-        # Unifiée : niveau de saison + écart propre à l'événement, ramené vers 0 (unified.TAU_EVENT ; tools/check_event_unified.py :
-        # cet écart ne prédit pas mieux les autres parties du même événement, d'où un TAU_EVENT faible : la note unifiée d'un
-        # événement reste proche de la note unifiée de saison). Mixte : moitié note Rift Scout de l'événement, moitié note LoL
+        # Unifiée : niveau de saison + écart propre à l'événement, ramené vers 0 (unified.TAU_EVENT, réglé par
+        # tools/check_event_unified.py : l'écart estimé sur une moitié des parties d'un événement prédit mieux l'autre moitié). Mixte : moitié note Rift Scout de l'événement, moitié note LoL
         # Ratings de la même compétition (results/competitions_<année>.csv, saison régulière et playoffs réunis), ou de saison.
         ev_d = unified.event_deltas(S, U_['theta'], U_['side'], unified.TAU_EVENT)
         lr_ev = lr_event_notes(y, A, p, lr_note, lr_k) if lr_note is not None else {}
@@ -1064,7 +1067,12 @@ def main():
                           'roster': {ro: ros[ro].replace('oe:player:', '') for ro in ROLES if ro in ros.index and ros[ro] in A.index}})
         # équipe présente au dernier segment de sa ligue (sinon : invitée sur un seul segment ou reléguée en cours d'année,
         # comme Los Ratones et Karmine Corp Blue en LEC Winter 2026) ; le power ranking ne montre que celles-là
-        lg_q = p[p.scope == 'ligue']; last_ev = lg_q.sort_values('date').groupby('league').event.last()
+        # dernier segment = l'événement de ligue qui commence le plus tard parmi ceux qui réunissent au moins la moitié des
+        # équipes de la ligue (une finale à quatre, « VCS Finals », n'en est pas un)
+        lg_q = p[p.scope == 'ligue']
+        evs_ = lg_q.groupby(['league', 'event']).agg(start=('date', 'min'), teams=('tid', 'nunique')).reset_index()
+        evs_['all'] = evs_.league.map(lg_q.groupby('league').tid.nunique())
+        last_ev = evs_[evs_.teams >= 0.5 * evs_['all']].sort_values('start').groupby('league').event.last()
         fin = lg_q[lg_q.event == lg_q.league.map(last_ev)].groupby('league').tid.agg(lambda x: {str(v).replace('oe:team:', '') for v in x})
         for t_ in teams: t_['end'] = t_['tid'] in fin.get(t_['league'], set())
         out['seasons'][str(y)] = {
