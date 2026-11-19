@@ -626,7 +626,7 @@
     const curs = X.filter((x) => x.cur != null).map((x) => x.cur), exps = X.map((x) => x.exp);
     X.forEach((x) => { x.rc = x.cur != null ? rankOf(x.cur, curs) : null; x.re = rankOf(x.exp, exps); x.d = x.cur != null ? x.exp - x.cur : null; });
     $('#t-sub').textContent = `Effectif actuel et effectif annoncé pour la saison ${N.season}, ${lgName(lg)}. Le niveau d'un effectif est la moyenne des valeurs de ses cinq joueurs.`;
-    $('#t-count').innerHTML = `${X.length} équipes. Valeur d'un joueur : sa note attendue en ligue majeure la saison suivante, d'après sa note de saison (un joueur qui monte d'un niveau inférieur garde une part plus faible de sa note). Joueur sans note ou poste pas encore annoncé : ${fmt(def, 1)}, le 25<sup>e</sup> centile des titulaires actuels de ${h(lgName(lg))}.`;
+    $('#t-count').innerHTML = `${X.length} équipes. Le chiffre à côté de chaque joueur est sa valeur attendue en ligue majeure la saison suivante, celle qui entre dans la moyenne ; sa note de saison est indiquée à côté (un joueur qui monte d'un niveau inférieur n'en garde qu'un peu plus de la moitié de l'écart à la moyenne). Joueur sans note ou poste pas encore annoncé : ${fmt(def, 1)}, le 25<sup>e</sup> centile des titulaires actuels de ${h(lgName(lg))}.`;
     $('#t-rank').innerHTML = X.map((x) => {
       const t = x.t, mv = x.rc == null ? '<span class="flat">nouvelle dans la ligue</span>' : `<span class="${x.re < x.rc ? 'up' : x.re > x.rc ? 'down' : 'flat'}">${ord(x.rc)} → ${ord(x.re)}</span>`;
       return `<div class="trow"><span class="rank">${x.re}</span><span class="who"><b>${h(t.name)}</b></span>
@@ -635,7 +635,7 @@
     }).join('');
     const who = (x, cur, same) => {
       const p = typeof x === 'string' ? LP.get(x) : null, strong = !same && x ? ' in' : '';
-      if (p) return `<button class="pl2${strong}" data-p="${p.id}">${h(p.name)}</button> <span class="pn ${noteCls(p.note)}">${nInt(p.note)}</span>${p.tier > 0 ? ` <small>${TIER_IN[p.tier]}</small>` : ''}`;
+      if (p) { const v = tvalue(p); return `<button class="pl2${strong}" data-p="${p.id}">${h(p.name)}</button> <span class="pn ${noteCls(v)}" title="Valeur comptée dans le niveau de l'effectif">${fmt(v, 1)}</span> <small>note ${state.season === LAST ? '' : LAST + ' '}${nInt(p.note)}${p.tier > 0 ? ', ' + TIER_IN[p.tier] : ''}</small>`; }
       if (x && x.name) return `<span class="${strong.trim()}">${h(x.name)}</span> <small>sans note</small>`;
       if (typeof x === 'string') return '<small>joueur introuvable</small>';
       return cur ? '<span class="tbd">–</span>' : '<span class="tbd">pas encore annoncé</span>';
