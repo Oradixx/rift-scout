@@ -401,3 +401,7 @@ button.pl:hover{background:var(--cobalt-soft);color:var(--cobalt)}
   .chg-h .role,.chg-h .cg{display:none}
   .win{grid-template-columns:minmax(0,1fr) 62px 62px 70px;gap:4px 6px}
 }
+
+/* power ranking : équipe sans match contre une autre ligue */
+.tag-lg{color:var(--ink-3);border-bottom:1px dotted var(--ink-3)}
+#p-basis{margin-top:6px}
