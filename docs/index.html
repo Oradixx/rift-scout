@@ -128,6 +128,9 @@ h1,h2,h3,p{margin:0}
 .sheet header h2{font-family:var(--display);font-weight:900;font-size:46px;line-height:.95;text-transform:uppercase;margin-bottom:6px}
 .sheet header .meta{color:var(--ink-2)}
 .close{align-self:start;border:1px solid var(--line);background:var(--paper);border-radius:var(--r-s);padding:6px 10px;font-weight:600}
+.hbtns{display:flex;gap:8px;align-self:start}
+.hbtns .close{white-space:nowrap}
+.close:disabled{opacity:.6;cursor:progress}
 .sheet section{padding:18px 24px;border-bottom:1px solid var(--line)}
 .sheet h3{font-size:15px;font-weight:700;margin-bottom:10px}
 .split{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r-m);overflow:hidden}
@@ -233,6 +236,7 @@ ul.say.minus li::before{background:var(--rose)}
   .row .note{font-size:28px}
   .two{grid-template-columns:1fr}
   .sheet header{grid-template-columns:auto 1fr auto;padding:16px}
+  .hbtns{flex-direction:column}
   .sheet header .note{font-size:72px}
   .sheet header h2{font-size:32px}
   .sheet section{padding:16px}
@@ -934,7 +938,7 @@ button.pl:hover{background:var(--cobalt-soft);color:var(--cobalt)}
     const rankIn = S.players.filter((x) => x.role === p.role && x.tier === p.tier && x.n >= 15 && x.note > p.note).length + 1;
     const d = p.rc ? p.rc[0] - p.note : 0;
     let html = `<header><span class="num note ${noteCls(p.note)}">${nInt(p.note)}</span><div><h2 id="sheet-name">${h(p.name)}</h2>
-      <p class="meta">${p.role}, ${h(p.team)}, ${h(lgName(p.league))} (${h(p.region)})<br>${(p.age || p.cty) ? [p.age ? p.age + ' ans' : null, p.cty ? h(pays(p.cty)) : null, p.res ? 'résidence ' + h(resid(p.res)) : null].filter(Boolean).join(', ') + '<br>' : ''}${rankIn}<sup>${rankIn === 1 ? 'er' : 'e'}</sup> des ${grp}, saison ${state.season}${(p.nm != null || p.nu != null) ? '<br>' + ['Note Rift Scout ' + nInt(p.note0), p.nm != null ? 'note mixte ' + nInt(p.nm) : null, p.nu != null ? 'note unifiée ' + nInt(p.nu) + (p.nue != null ? ' (± ' + nInt(p.nue) + ')' : '') : null].filter(Boolean).join(', ') : ''}${p.now ? `<br>A ensuite joué pour ${h(p.now)} (tournoi ou intersaison)` : ''}${hasCT() ? '<br>' + (p.c ? (isFree(p) ? `<b class="down">Fin de contrat le ${cDate(p.c, true)}</b>` : `Sous contrat jusqu'au ${cDate(p.c, true)}`) : 'Contrat non renseigné dans la base de Riot') : ''}</p></div><button class="close" data-close>Fermer</button></header>`;
+      <p class="meta">${p.role}, ${h(p.team)}, ${h(lgName(p.league))} (${h(p.region)})<br>${(p.age || p.cty) ? [p.age ? p.age + ' ans' : null, p.cty ? h(pays(p.cty)) : null, p.res ? 'résidence ' + h(resid(p.res)) : null].filter(Boolean).join(', ') + '<br>' : ''}${rankIn}<sup>${rankIn === 1 ? 'er' : 'e'}</sup> des ${grp}, saison ${state.season}${(p.nm != null || p.nu != null) ? '<br>' + ['Note Rift Scout ' + nInt(p.note0), p.nm != null ? 'note mixte ' + nInt(p.nm) : null, p.nu != null ? 'note unifiée ' + nInt(p.nu) + (p.nue != null ? ' (± ' + nInt(p.nue) + ')' : '') : null].filter(Boolean).join(', ') : ''}${p.now ? `<br>A ensuite joué pour ${h(p.now)} (tournoi ou intersaison)` : ''}${hasCT() ? '<br>' + (p.c ? (isFree(p) ? `<b class="down">Fin de contrat le ${cDate(p.c, true)}</b>` : `Sous contrat jusqu'au ${cDate(p.c, true)}`) : 'Contrat non renseigné dans la base de Riot') : ''}</p></div><div class="hbtns"><button class="close" data-card>Télécharger l'image</button><button class="close" data-close>Fermer</button></div></header>`;
     html += `<section><div class="split">
       <div><small>Niveau de son équipe${p.tse ? ', à ± ' + fmt(p.tse, 1) + ' près' : ''}</small><span class="num">${nInt(p.team_lvl)}</span></div>
       <div><small>Écart individuel</small><span class="num ${p.ind >= 0 ? 'up' : 'down'}">${p.ind >= 0 ? '+' : ''}${fmt(p.note - p.team_lvl, 1)}</span></div>
@@ -971,9 +975,11 @@ button.pl:hover{background:var(--cobalt-soft);color:var(--cobalt)}
       html += `<section><h3>Joueurs au style le plus proche</h3><div class="simlist">${sims.map(([s, x]) => `<button data-p="${x.id}"><span class="num ${noteCls(x.note)}">${nInt(x.note)}</span><span>${h(x.name)} <small>${h(x.team)}, ${h(lgName(x.league))}</small></span><small>${fmt(s)} % de similarité</small></button>`).join('')}</div>
         <p style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">${tryBtn(p)}<button class="cta" data-scout="${p.id}">Chercher un remplaçant à ${h(p.name)}</button></p></section>`;
     }
-    showSheet(html);
+    showSheet(html, { kind: 'player', p, rankIn, grp, m, season: state.season, file: cardFile(p.name, state.season) });
   }
-  function showSheet(html) {
+  let card = null;   // données de la carte image de la fiche ouverte (voir « carte image »)
+  function showSheet(html, c) {
+    card = c || null;
     $('#sheet').innerHTML = html; $('#sheet').scrollTop = 0;
     $('#sheet-wrap').classList.add('open'); $('#sheet').focus();
   }
@@ -1322,6 +1328,7 @@ button.pl:hover{background:var(--cobalt-soft);color:var(--cobalt)}
     const n = from - to;
     return n === 0 ? ['même rang', 'flat'] : n > 0 ? [`${n} place${n > 1 ? 's' : ''} de mieux`, 'up'] : [`${-n} place${n < -1 ? 's' : ''} de moins`, 'down'];
   };
+  const ordTxt = (n) => (n === 1 ? '1er' : n + 'e');
   const pctPt = (x) => fmt(x * 100, 1) + ' %';
   const pts = (d) => (d > 0.0005 ? '+' : d < -0.0005 ? '−' : '') + fmt(Math.abs(d) * 100, 1) + (Math.abs(d) * 100 >= 1.95 ? ' points' : ' point');
   function openTeamSheet(i) {
@@ -1331,11 +1338,12 @@ button.pl:hover{background:var(--cobalt-soft);color:var(--cobalt)}
     // fiche d'un poste : valeur, et rang parmi les titulaires actuels du poste
     const info = (r, v, rank) => {
       const p = typeof v === 'string' ? m.LP.get(v) : null, val = m.slot(v);
-      if (p) return { id: p.id, p, val, html: `<button class="pl2" data-p="${p.id}">${h(p.name)}</button>`, sub: rank != null ? `${ord(rank)} des ${ROLE_PL[r]} ${de(h(LG))}` : '' };
-      if (v && v.name) return { val, html: h(v.name), sub: 'sans note' };
-      if (typeof v === 'string') return { val, html: '<span class="tbd">joueur introuvable</span>', sub: '' };
+      if (p) return { id: p.id, p, val, nm: p.name, html: `<button class="pl2" data-p="${p.id}">${h(p.name)}</button>`, sub: rank != null ? `${ord(rank)} des ${ROLE_PL[r]} ${de(h(LG))}` : '', subTxt: rank != null ? `${ordTxt(rank)} des ${ROLE_PL[r]} ${de(LG)}` : '' };
+      if (v && v.name) return { val, nm: v.name, html: h(v.name), sub: 'sans note', subTxt: 'sans note' };
+      if (typeof v === 'string') return { val, nm: 'joueur introuvable', gone: true, html: '<span class="tbd">joueur introuvable</span>', sub: '', subTxt: '' };
       return null;
     };
+    const cardRows = [];
     const rows = ROLES.map((r) => {
       const c = t.cur[r], keep = !t.nxt, n = keep ? c : t.nxt[r];
       const cv = typeof c === 'string' ? m.LP.get(c) : null;
@@ -1345,7 +1353,9 @@ button.pl:hover{background:var(--cobalt-soft);color:var(--cobalt)}
       const nInfo = n ? info(r, n, np ? rankOf(tvalue(np), others) : null) : null;
       const same = typeof n === 'string' && n === c;
       const cell = (o, empty, extra) => o ? `<span class="pc${extra || ''}">${o.html}<small>${o.sub}</small></span><b class="pn pv ${noteCls(o.val)}">${fmt(o.val, 1)}</b>` : `<span class="pc tbd">${empty}</span><b class="pv tbd">${empty === '–' ? '' : fmt(m.def, 1)}</b>`;
-      const chg = !cInfo || !nInfo || same ? '<span class="flat">—</span>' : `<span class="${dCls(nInfo.val - cInfo.val)}">${sgn(nInfo.val - cInfo.val)}</span>`;
+      const dv = !cInfo || !nInfo || same ? null : nInfo.val - cInfo.val;
+      const chg = dv == null ? '<span class="flat">—</span>' : `<span class="${dCls(dv)}">${sgn(dv)}</span>`;
+      cardRows.push({ r, cInfo, nInfo, same, dv });
       return `<div class="chg"><span class="role">${r}</span>${cell(cInfo, '–')}${cell(nInfo, 'pas encore annoncé', same ? '' : ' in')}<span class="cg">${chg}</span></div>`;
     }).join('');
     // rang parmi les équipes des ligues majeures : niveaux actuels pour le rang actuel, niveaux attendus pour le rang attendu
@@ -1357,14 +1367,15 @@ button.pl:hover{background:var(--cobalt-soft);color:var(--cobalt)}
     const mv = (from, to) => { if (from == null) return '<p class="tk-d flat">nouvelle dans la ligue</p>'; const [txt, cls] = places(from, to); return `<p class="tk-d ${cls}">${txt}</p>`; };
     // adversaires : les trois meilleures autres équipes de la ligue en niveau attendu (les trois suivantes si elle est dans le top 3)
     const opp = m.X.filter((y) => y !== x).slice(0, 3);
-    const chances = opp.map((o) => {
-      const p26 = x.cur != null ? winProb(x.cur, o.exp) : null, p27 = winProb(x.exp, o.exp);
+    const wins = opp.map((o) => ({ o, p26: x.cur != null ? winProb(x.cur, o.exp) : null, p27: winProb(x.exp, o.exp) }));
+    const chances = wins.map(({ o, p26, p27 }) => {
       return `<div class="win"><span class="pc"><b>${h(o.t.name)}</b><small>niveau attendu ${fmt(o.exp, 1)}</small></span><span class="wv">${p26 != null ? pctPt(p26) : '–'}</span><span class="wv"><b>${pctPt(p27)}</b></span><span class="wv ${p26 != null ? dCls((p27 - p26) * 100) : 'flat'}">${p26 != null ? pts(p27 - p26) : '–'}</span></div>`;
     }).join('');
     const [pl, pc] = gc != null ? places(gc, ge) : [null, 'flat'];
     const stateTxt = !t.tid ? 'nouvelle dans la ligue' : 'effectif ' + x.state;
+    const mention = `Une partie, côté neutre, force des effectifs seulement : ni forme, ni entente, ni draft. Adversaires avec leur effectif ${N.season} annoncé (actuel s'il ne l'est pas). Rangs par poste parmi les titulaires actuels de la ligue.`;
     showSheet(`<header class="tm-head"><div><h2 id="sheet-name">${h(t.name)}</h2>
-      <p class="meta">${h(LG)} (${h(t.region)}), ${stateTxt}<br>Effectif ${N.season} : ${ROLES.map((r) => h(t.nxt ? pseudo(t.nxt[r]) : '?')).join(' · ')}</p></div><button class="close" data-close>Fermer</button></header>
+      <p class="meta">${h(LG)} (${h(t.region)}), ${stateTxt}<br>Effectif ${N.season} : ${ROLES.map((r) => h(t.nxt ? pseudo(t.nxt[r]) : '?')).join(' · ')}</p></div><div class="hbtns"><button class="close" data-card>Télécharger l'image</button><button class="close" data-close>Fermer</button></div></header>
       <section><div class="split tk">
         <div>${pair(`Rang en ${h(LG)} ${LAST}`, x.rc != null ? ord(x.rc) : '–', `Rang attendu en ${N.season}`, ord(x.re))}${mv(x.rc, x.re)}</div>
         <div>${pair('Niveau actuel', x.cur != null ? fmt(x.cur, 1) : '–', 'Niveau attendu', fmt(x.exp, 1), noteCls(x.exp))}${x.d != null ? `<p class="tk-d ${dCls(x.d)}">${sgn(x.d)} point${Math.abs(x.d) >= 1.95 ? 's' : ''}</p>` : '<p class="tk-d flat">–</p>'}</div></div></section>
@@ -1377,7 +1388,260 @@ button.pl:hover{background:var(--cobalt-soft);color:var(--cobalt)}
       <section><h3>Chances de gagner une partie</h3>
         <div class="win win-h"><span class="pc">Contre</span><span class="wv">Effectif ${LAST}</span><span class="wv">Effectif ${N.season}</span><span class="wv">Écart</span></div>${chances}
         <p class="legend">Contre les trois meilleures autres équipes de ${h(LG)} en niveau attendu ${N.season}${x.re <= 3 ? ' (l\'équipe est dans le top 3 : la quatrième équipe complète la liste)' : ''}. « Effectif ${LAST} » : niveau actuel de l'équipe contre le niveau attendu de l'adversaire ; « effectif ${N.season} » : niveau attendu contre niveau attendu.</p></section>
-      <section><p class="legend" style="margin-top:0">Une partie, côté neutre, force des effectifs seulement : ni forme, ni entente, ni draft. Adversaires avec leur effectif ${N.season} annoncé (actuel s'il ne l'est pas). Rangs par poste parmi les titulaires actuels de la ligue. Effectifs annoncés : ${h(N.source)}.</p></section>`);
+      <section><p class="legend" style="margin-top:0">${mention} Effectifs annoncés : ${h(N.source)}.</p></section>`,
+      { kind: 'team', t, x, N, LG, LAST, stateTxt, cardRows, def: m.def, wins, gc, ge, nMaj: maj.length, inMaj, mention, pseudo, file: cardFile(t.name, N.season) });
+  }
+
+  /* ------------------------------------------------------------ carte image (bouton « Télécharger l'image » des fiches)
+     La carte est dessinée à la main dans un <canvas> (API Canvas 2D), jamais copiée depuis la page : pas de capture, pas de SVG
+     foreignObject (canvas souillé sous Safari). Chaque fiche passe ses valeurs à showSheet : la carte reprend les mêmes nombres. */
+  const CARD_W = 1080, CARD_PAD = 56, CARD_SCALE = 2;
+  const CALC_NAME = { rift: 'Rift Scout', mix: 'Mixte', uni: 'Unifiée' };
+  const SITE = 'Rift Scout · oradixx.github.io/rift-scout';
+  const cardFile = (who, season) => 'rift-scout-' + (who + '-' + season).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') + '.png';
+  const cardNoteC = (n) => ({ 't-gold': 'gold', 't-cob': 'cobalt', 't-mid': 'ink', 't-low': 'ink-3' }[noteCls(n)]);
+  const cardDeltaC = (cls) => ({ up: 'teal', down: 'rose', flat: 'ink-3' }[cls]);
+  /* couleurs lues au moment du clic : thème clair ou sombre et teinte du calcul actif */
+  function cardPalette() {
+    const cs = getComputedStyle(document.documentElement), C = {};
+    ['fog', 'paper', 'ink', 'ink-2', 'ink-3', 'line', 'line-2', 'cobalt', 'cobalt-soft', 'gold', 'rose', 'teal', 'n0', 'n1', 'n2', 'n3', 'n4', 'display', 'text'].forEach((k) => { C[k] = cs.getPropertyValue('--' + k).trim(); });
+    return C;
+  }
+  async function cardFonts() {
+    try {
+      await document.fonts.ready;
+      await Promise.all(['900 40px "Big Shoulders Display"', '800 40px "Big Shoulders Display"', '400 20px "Hanken Grotesk"', '600 20px "Hanken Grotesk"', '700 20px "Hanken Grotesk"'].map((f) => document.fonts.load(f)));
+    } catch (e) { /* polices indisponibles : la pile de repli de --display et --text prend le relais */ }
+  }
+  function fitText(ctx, s, max) {   // texte tronqué à une largeur, avec « … »
+    s = String(s);
+    if (ctx.measureText(s).width <= max) return s;
+    while (s.length > 1 && ctx.measureText(s + '…').width > max) s = s.slice(0, -1);
+    return s.trimEnd() + '…';
+  }
+  function wrapLines(ctx, s, max, maxLines) {   // retour à la ligne aux espaces ; la dernière ligne permise est tronquée
+    const lines = []; let cur = '';
+    for (const w of String(s).split(' ')) {
+      const t = cur ? cur + ' ' + w : w;
+      if (cur && ctx.measureText(t).width > max) { lines.push(cur); cur = w; } else cur = t;
+    }
+    if (cur) lines.push(cur);
+    return maxLines && lines.length > maxLines ? lines.slice(0, maxLines - 1).concat(fitText(ctx, lines.slice(maxLines - 1).join(' '), max)) : lines;
+  }
+  /* o : { px, w (graisse), disp (police des chiffres), c (clé de couleur ou couleur CSS), align, max (largeur de troncature) } */
+  function cardPen(ctx, C, H) {
+    const set = (o) => { ctx.font = `${o.w || 400} ${o.px || 24}px ${o.disp ? C.display : C.text}`; ctx.fillStyle = C[o.c || 'ink'] || o.c; ctx.textAlign = o.align || 'left'; ctx.textBaseline = 'alphabetic'; };
+    const P = {
+      ctx, C,
+      rect(x, y, w, h, c) { ctx.fillStyle = C[c] || c; ctx.fillRect(x, y, w, h); },
+      panel(x, y, w, h) {   // rectangle arrondi, fond papier, filet
+        const r = 10; ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
+        ctx.fillStyle = C.paper; ctx.fill(); ctx.strokeStyle = C.line; ctx.lineWidth = 1; ctx.stroke();
+      },
+      text(s, x, y, o) { set(o); const t = o.max ? fitText(ctx, s, o.max) : String(s); ctx.fillText(t, x, y); return ctx.measureText(t).width; },
+      lines(s, max, o, n) { set(o); return wrapLines(ctx, s, max, n); },
+      para(s, x, y, max, o, lh, n) { const L = P.lines(s, max, o, n); L.forEach((l, i) => P.text(l, x, y + i * lh, o)); return y + L.length * lh; },   // rend la ligne suivante
+      width(s, o) { set(o); return ctx.measureText(s).width; },
+      /* grand chiffre en police d'affichage, réduit pour tenir dans max ; suf : exposant (er, e) */
+      big(s, x, y, max, px, c, suf) {
+        let size = px; const o = () => ({ px: size, w: 800, disp: 1, c });
+        while (size > 36 && P.width(s, o()) + (suf ? size * 0.5 : 0) > max) size -= 4;
+        const w = P.text(s, x, y, o());
+        if (suf) P.text(suf, x + w + 2, y - size * 0.4, { px: size * 0.42, w: 800, disp: 1, c });
+        return size;
+      },
+      arrow(x, y, w, c) { ctx.strokeStyle = C[c]; ctx.lineWidth = 3; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + w, y); ctx.moveTo(x + w - 9, y - 9); ctx.lineTo(x + w, y); ctx.lineTo(x + w - 9, y + 9); ctx.stroke(); },
+      /* barre horizontale de note (échelle 30 à 99 comme la page), avec un repère vertical facultatif */
+      bar(x, y, w, n, ref) {
+        const f = (v) => Math.max(0, Math.min(1, (v - 30) / 69));
+        P.rect(x, y, w, 16, 'line-2'); P.rect(x, y, Math.max(2, w * f(n)), 16, C['n' + noteVar(n).slice(-2, -1)]);
+        if (ref != null) P.rect(x + w * f(ref) - 1.5, y - 5, 3, 26, 'ink');
+      },
+      fill() { P.rect(0, 0, CARD_W, H || 0, 'fog'); }
+    };
+    return P;
+  }
+  /* deux valeurs reliées par une flèche, dans un cadre ; a et b : { label, num, suf, c }, foot : { txt, c } */
+  function cardPair(P, x, y, w, a, b, foot) {
+    const col = (w - 48 - 52) / 2, BIG = 96;
+    P.panel(x, y, w, 236);
+    [[a, x + 24], [b, x + 24 + col + 52]].forEach(([v, vx]) => {
+      P.lines(v.label, col, { px: 19, c: 'ink-3' }, 2).forEach((l, i) => P.text(l, vx, y + 40 + i * 24, { px: 19, c: 'ink-3' }));
+      P.big(v.num, vx, y + 160, col - 4, BIG, v.c, v.suf);
+    });
+    P.arrow(x + 24 + col + 12, y + 160 - BIG * 0.35, 28, 'ink-3');
+    P.text(foot.txt, x + 24, y + 208, { px: 26, w: 700, c: foot.c, max: w - 48 });
+  }
+  const cardMove = (from, to) => { if (from == null) return { txt: 'nouvelle dans la ligue', c: 'ink-3' }; const [txt, cls] = places(from, to); return { txt, c: cardDeltaC(cls) }; };
+  /* bas de carte : mention, source, calcul utilisé et signature ; rend la hauteur totale de la carte */
+  function cardFoot(P, y, texts, calcTxt) {
+    const L = CARD_PAD, IW = CARD_W - 2 * L;
+    P.rect(L, y, IW, 1, 'line'); y += 36;
+    texts.forEach((t) => { y = P.para(t, L, y, IW, { px: 20, c: 'ink-2' }, 28) + 4; });
+    y += 14;
+    const sw = P.text(SITE, CARD_W - L, y, { px: 22, w: 700, c: 'cobalt', align: 'right' });
+    P.text(calcTxt, L, y, { px: 22, w: 600, c: 'ink-2', max: IW - sw - 24 });
+    return y + 48;
+  }
+  const cardStripe = (P) => P.rect(0, 0, CARD_W, 10, 'cobalt');
+
+  function drawTeamCard(P, M) {
+    const L = CARD_PAD, IW = CARD_W - 2 * L, { t, x, N, LG } = M, to = D.seasons[M.LAST].to;
+    P.fill();
+    // en-tête : nom, ligue, effectif annoncé, date des données
+    const MET = { px: 26, c: 'ink-2' };
+    const eff = P.lines(`Effectif ${N.season} : ${ROLES.map((r) => (t.nxt ? M.pseudo(t.nxt[r]) : '?')).join(' · ')}`, IW, MET, 2);
+    const head = [`${LG} (${t.region}), ${M.stateTxt}`, ...eff, `Données au ${cDate(to, true)}`];
+    const bandH = 10 + 36 + 70 + 18 + head.length * 36 + 26;
+    P.rect(0, 0, CARD_W, bandH, 'paper'); P.rect(0, bandH - 1, CARD_W, 1, 'line'); cardStripe(P);
+    P.text(t.name, L, 10 + 36 + 66, { px: 84, w: 900, disp: 1, max: IW });
+    head.forEach((l, i) => P.text(l, L, 10 + 36 + 70 + 18 + 26 + i * 36, i === head.length - 1 ? { px: 22, c: 'ink-3' } : MET));
+    let y = bandH;
+    const title = (s) => { y += 56; P.text(s, L, y, { px: 30, w: 700 }); y += 22; };
+    // rangs et niveaux
+    y += 32;
+    const pw = (IW - 24) / 2, mv = cardMove(x.rc, x.re), gap = x.d == null ? { txt: '–', c: 'ink-3' } : { txt: `${sgn(x.d)} point${Math.abs(x.d) >= 1.95 ? 's' : ''}`, c: cardDeltaC(dCls(x.d)) };
+    cardPair(P, L, y, pw, { label: `Rang en ${LG} ${M.LAST}`, num: x.rc != null ? String(x.rc) : '–', suf: x.rc != null ? (x.rc === 1 ? 'er' : 'e') : '', c: 'ink' },
+      { label: `Rang attendu en ${N.season}`, num: String(x.re), suf: x.re === 1 ? 'er' : 'e', c: 'ink' }, mv);
+    cardPair(P, L + pw + 24, y, pw, { label: 'Niveau actuel', num: x.cur != null ? fmt(x.cur, 1) : '–', c: 'ink' },
+      { label: 'Niveau attendu', num: fmt(x.exp, 1), c: cardNoteC(x.exp) }, gap);
+    y += 236;
+    // changements par poste
+    title('Changements de joueurs');
+    const W = [84, 262, 64, 262, 64, 116], gp = (IW - W.reduce((a, b) => a + b, 0)) / 5, cx = [];
+    W.reduce((px, w, i) => { cx[i] = px; return px + w + gp; }, L);
+    const H3 = { px: 19, w: 600, c: 'ink-3' }, right = (i) => cx[i] + W[i];
+    [['Poste', 0], ['Joueur actuel', 1], ['Valeur', 2, 1], ['Joueur attendu', 3], ['Valeur', 4, 1], ['Changement', 5, 1]].forEach(([s, i, r]) => P.text(s, r ? right(i) : cx[i], y + 4, r ? { ...H3, align: 'right' } : H3));
+    y += 22;
+    const cell = (o, i, yy, isNew, empty) => {
+      if (o) {
+        P.text(o.nm, cx[i], yy + 34, { px: 27, w: isNew ? 700 : 400, c: o.gone ? 'ink-3' : 'ink', max: W[i] });
+        if (o.subTxt) P.text(o.subTxt, cx[i], yy + 62, { px: 20, c: 'ink-3', max: W[i] });
+        P.text(fmt(o.val, 1), right(i + 1), yy + 36, { px: 34, w: 800, disp: 1, c: cardNoteC(o.val), align: 'right' });
+      } else {
+        P.text(empty, cx[i], yy + 34, { px: 27, c: 'ink-3', max: W[i] });
+        if (empty !== '–') P.text(fmt(M.def, 1), right(i + 1), yy + 36, { px: 34, w: 800, disp: 1, c: 'ink-3', align: 'right' });
+      }
+    };
+    M.cardRows.forEach((r) => {
+      P.rect(L, y, IW, 1, 'line-2');
+      P.text(r.r, cx[0], y + 34, { px: 21, w: 600, c: 'ink-3' });
+      cell(r.cInfo, 1, y, false, '–'); cell(r.nInfo, 3, y, !r.same, 'pas encore annoncé');
+      P.text(r.dv == null ? '—' : sgn(r.dv), right(5), y + 36, { px: 28, w: 700, c: r.dv == null ? 'ink-3' : cardDeltaC(dCls(r.dv)), align: 'right' });
+      y += 84;
+    });
+    // rang parmi les équipes des ligues majeures
+    title('Rang parmi les équipes des ligues majeures');
+    cardPair(P, L, y, pw, { label: 'Rang actuel', num: M.gc != null ? String(M.gc) : '–', suf: M.gc != null ? (M.gc === 1 ? 'er' : 'e') : '', c: 'ink' },
+      { label: `Rang attendu en ${N.season}`, num: String(M.ge), suf: M.ge === 1 ? 'er' : 'e', c: 'ink' }, cardMove(M.gc, M.ge));
+    P.para(`${M.inMaj ? '' : `${LG} n'est pas une ligue majeure : le rang est celui qu'aurait l'équipe parmi les ${fmt(M.nMaj)} équipes de ligue majeure. `}Parmi ${fmt(M.nMaj)} équipes de ligue majeure : niveaux actuels pour le rang actuel, niveaux attendus pour le rang attendu.`, L + pw + 24, y + 34, pw, { px: 20, c: 'ink-2' }, 28, 6);
+    y += 236;
+    // chances de gagner une partie
+    if (M.wins.length) {
+      title('Chances de gagner une partie');
+      const VR = [CARD_W - L - 340, CARD_W - L - 190, CARD_W - L], vr = (k) => VR[k];   // bords droits des trois colonnes de chiffres
+      P.text('Contre', L, y + 4, H3);
+      [`Effectif ${M.LAST}`, `Effectif ${N.season}`, 'Écart'].forEach((s, k) => P.text(s, vr(k), y + 4, { ...H3, align: 'right' }));
+      y += 22;
+      M.wins.forEach(({ o, p26, p27 }) => {
+        P.rect(L, y, IW, 1, 'line-2');
+        P.text(o.t.name, L, y + 34, { px: 27, w: 700, max: VR[0] - 120 - L });
+        P.text(`niveau attendu ${fmt(o.exp, 1)}`, L, y + 60, { px: 20, c: 'ink-3' });
+        P.text(p26 != null ? pctPt(p26) : '–', vr(0), y + 38, { px: 28, c: 'ink-2', align: 'right' });
+        P.text(pctPt(p27), vr(1), y + 38, { px: 28, w: 700, align: 'right' });
+        P.text(p26 != null ? pts(p27 - p26) : '–', vr(2), y + 38, { px: 28, w: 700, c: p26 != null ? cardDeltaC(dCls((p27 - p26) * 100)) : 'ink-3', align: 'right' });
+        y += 76;
+      });
+      y += 4;
+      P.para(`Contre les trois meilleures autres équipes de ${LG} en niveau attendu ${N.season}${x.re <= 3 ? ' (l\'équipe est dans le top 3 : la quatrième équipe complète la liste)' : ''}.`, L, y + 26, IW, { px: 20, c: 'ink-3' }, 28);
+      y += 54;
+    }
+    y += 24;
+    return cardFoot(P, y, [M.mention, `Effectifs annoncés : ${N.source}.`], `Calcul : ${CALC_NAME[state.calc]}`);
+  }
+
+  function drawPlayerCard(P, M) {
+    const L = CARD_PAD, IW = CARD_W - 2 * L, { p, m } = M, to = D.seasons[M.season].to;
+    P.fill();
+    // en-tête : note en très gros, puis nom, poste, équipe, ligue, rang
+    const NOTE = 220, nc = cardNoteC(p.note), ns = nInt(p.note) + '';
+    const nw = P.width(ns, { px: NOTE, w: 900, disp: 1 }), tx = L + nw + 44;
+    const info = [`${p.role}, ${p.team}`, `${lgName(p.league)} (${p.region}), saison ${M.season}`, `${ordTxt(M.rankIn)} des ${M.grp}`];
+    const bandH = 10 + 44 + Math.max(NOTE * 0.74, 80 + 18 + info.length * 36) + 40;
+    P.rect(0, 0, CARD_W, bandH, 'paper'); P.rect(0, bandH - 1, CARD_W, 1, 'line'); cardStripe(P);
+    P.text(ns, L, 10 + 44 + NOTE * 0.72, { px: NOTE, w: 900, disp: 1, c: nc });
+    P.text(p.name, tx, 10 + 44 + 66, { px: 84, w: 900, disp: 1, max: CARD_W - L - tx });
+    info.forEach((l, i) => P.text(l, tx, 10 + 44 + 66 + 18 + 26 + i * 36, { px: 26, c: i === 2 ? 'ink' : 'ink-2', w: i === 2 ? 600 : 400, max: CARD_W - L - tx }));
+    let y = bandH;
+    const title = (s) => { y += 56; P.text(s, L, y, { px: 30, w: 700 }); y += 22; };
+    // niveau de l'équipe, écart individuel, parties, victoires
+    y += 32;
+    const cw = IW / 4, cells = [['Niveau de son équipe', nInt(p.team_lvl) + '', 'ink'], ['Écart individuel', (p.ind >= 0 ? '+' : '') + fmt(p.note - p.team_lvl, 1), p.ind >= 0 ? 'teal' : 'rose'],
+      ['Parties jouées', p.n + '', 'ink'], ['Part de victoires', pctTxt(p.st.win), 'ink']];
+    P.panel(L, y, IW, 190);
+    cells.forEach(([lab, v, c], i) => {
+      const cxx = L + i * cw + 24;
+      if (i) P.rect(L + i * cw, y + 20, 1, 150, 'line-2');
+      P.lines(lab, cw - 40, { px: 20, c: 'ink-3' }, 2).forEach((l, k) => P.text(l, cxx, y + 42 + k * 25, { px: 20, c: 'ink-3' }));
+      P.big(v, cxx, y + 150, cw - 40, 92, c);
+    });
+    y += 190;
+    // facettes
+    title('Profil par facette');
+    const lx = L, bx = L + 250, bw = 560, nx = CARD_W - L;
+    FAC.forEach((f, i) => {
+      const v = p.f[i]; if (v == null) return;
+      P.text(fLabel(f, p.role), lx, y + 32, { px: 24, max: 236 });
+      P.bar(bx, y + 17, bw, v, m.f[i]);
+      P.text(nInt(v) + '', nx, y + 40, { px: 38, w: 800, disp: 1, c: cardNoteC(v), align: 'right' });
+      y += 52;
+    });
+    y = P.para(`Trait : médiane des ${M.grp}.`, L, y + 28, IW, { px: 20, c: 'ink-3' }, 28);
+    // événements entre ligues
+    const evs = p.ev.filter((e) => e.sc === 'monde' || e.sc === 'region').slice(0, 6);
+    if (evs.length) {
+      title('Notes des événements entre ligues');
+      evs.forEach((e) => {
+        P.text(e.e, lx, y + 30, { px: 24, w: 600, max: 236 });
+        P.text(`${e.n} parties, ${pctTxt(e.w)} vict.`, lx, y + 54, { px: 19, c: 'ink-3', max: 236 });
+        P.bar(bx, y + 22, bw, e.note, p.note);
+        P.text(nInt(e.note) + '', nx, y + 46, { px: 38, w: 800, disp: 1, c: cardNoteC(e.note), align: 'right' });
+        y += 66;
+      });
+      y = P.para('Trait : sa note sur la saison. Avec peu de parties, la note d\'un événement reste incertaine.', L, y + 28, IW, { px: 20, c: 'ink-3' }, 28);
+    }
+    y += 24;
+    return cardFoot(P, y, [], `Calcul : ${CALC_NAME[state.calc]} · données au ${cDate(to, true)}`);
+  }
+
+  function saveCanvas(cv, file) {
+    const fallback = () => {   // pas de toBlob, ou échec : l'image s'ouvre dans un nouvel onglet
+      const w = window.open('', '_blank'); if (!w) return;
+      const im = w.document.createElement('img'); im.src = cv.toDataURL('image/png'); im.alt = file; im.style.maxWidth = '100%';
+      w.document.title = file; w.document.body.style.margin = '0'; w.document.body.appendChild(im);
+    };
+    if (!cv.toBlob) return fallback();
+    try {
+      cv.toBlob((blob) => {
+        if (!blob) return fallback();
+        const url = URL.createObjectURL(blob), a = document.createElement('a');
+        a.href = url; a.download = file; document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 4000);
+      }, 'image/png');
+    } catch (e) { fallback(); }
+  }
+  async function downloadCard(btn) {
+    const c = card; if (!c || btn.disabled) return;
+    btn.disabled = true;
+    try {
+      await cardFonts();
+      const C = cardPalette(), draw = c.kind === 'team' ? drawTeamCard : drawPlayerCard;
+      const H = Math.ceil(draw(cardPen(document.createElement('canvas').getContext('2d'), C), c));   // première passe : mesure la hauteur
+      const cv = document.createElement('canvas'); cv.width = CARD_W * CARD_SCALE; cv.height = H * CARD_SCALE;
+      const ctx = cv.getContext('2d'); ctx.scale(CARD_SCALE, CARD_SCALE);
+      draw(cardPen(ctx, C, H), c);
+      saveCanvas(cv, c.file);
+    } finally { btn.disabled = false; }
   }
 
   /* ------------------------------------------------------------ méthode */
@@ -1412,6 +1676,7 @@ button.pl:hover{background:var(--cobalt-soft);color:var(--cobalt)}
       else if (b.dataset.calc) { state.calc = b.dataset.calc; try { localStorage.setItem('rs-calc', state.calc); } catch (e) { /* stockage indisponible */ } applyCalc(); load(); render(); }
       else if (b.dataset.season) { state.season = b.dataset.season; lgCache = {}; state.sc.plan = {}; state.sc.tid = null; state.sc.ref = null; $('#team-input').value = ''; load(); fillSelects(); render(); }
       else if (b.dataset.scout) { if (savedSeason) { savedSeason = null; lgCache = {}; fillSelects(); } const p = byId.get(b.dataset.scout); closeSheet(); state.view = 'scout'; state.sc.plan = {}; state.sc.role = p.role; state.sc.ref = p.id; const t = S.teams.find((x) => x.roster[p.role] === p.id); state.sc.tid = t ? t.tid : null; if (!t) $('#team-input').value = ''; render(); window.scrollTo(0, 0); }
+      else if (b.dataset.card !== undefined) downloadCard(b);
       else if (b.dataset.tm !== undefined) openTeamSheet(+b.dataset.tm);
       else if (b.dataset.p) { if (state.view === 'transfers') openLast(b.dataset.p); else openSheet(b.dataset.p, b.dataset.cmp); }
       else if (b.hasAttribute('data-close')) closeSheet();
