@@ -1075,6 +1075,25 @@ def main():
         last_ev = evs_[evs_.teams >= 0.5 * evs_['all']].sort_values('start').groupby('league').event.last()
         fin = lg_q[lg_q.event == lg_q.league.map(last_ev)].groupby('league').tid.agg(lambda x: {str(v).replace('oe:team:', '') for v in x})
         for t_ in teams: t_['end'] = t_['tid'] in fin.get(t_['league'], set())
+        # Power ranking « fin de saison » : niveau réestimé sur les parties jouées depuis le début du dernier segment de sa
+        # ligue (playoffs, qualifications et tournois qui suivent compris), même modèle que les notes d'événement (le niveau
+        # de saison ne sert que de point de départ, SD_EVENT). Une lecture de l'état en fin d'année, pas une meilleure
+        # prédiction : un niveau par trimestre ou la période récente des joueurs ne prédisent pas mieux la suite (PRODUCT.md).
+        # Et nombre de parties contre une équipe d'une autre ligue (0 : niveau situé par sa ligue seulement).
+        cut = evs_[evs_.event.isin(set(last_ev.values))].set_index('league').start
+        g_ = p.drop_duplicates(['gameid', 'tid'])[['gameid', 'tid', 'opp', 'date', 'side', 'result']].copy()
+        team_home = S["team_home"]; c_own = g_.tid.map(team_home).map(cut); c_opp = g_.opp.map(team_home).map(cut)
+        lim = pd.concat([c_own, c_opp], axis=1).max(axis=1)
+        g_['event'] = np.where(lim.notna() & (g_.date >= lim), 'fin', 'avant')
+        lv_ = event_levels(g_, R_full := S['R'], S['side'])
+        n_fin = g_[g_.event == 'fin'].groupby('tid').gameid.nunique()
+        h_ = g_.tid.map(team_home); ho_ = g_.opp.map(team_home)
+        n_x = g_[h_.notna() & ho_.notna() & (h_ != ho_)].groupby('tid').gameid.nunique()
+        for t_ in teams:
+            k_ = next((x for x in R_full.index if str(x).replace('oe:team:', '') == t_['tid']), None)
+            t_['nx'] = int(n_x.get(k_, 0)) if k_ is not None else 0
+            if k_ is not None and n_fin.get(k_, 0) >= 8 and ('fin', k_) in lv_:
+                t_['rc'] = [r1(to_note(lv_[('fin', k_)], a, b)), int(n_fin[k_]), str(cut.get(team_home.get(k_)).date()) if pd.notna(cut.get(team_home.get(k_))) else None]
         out['seasons'][str(y)] = {
             'players': players, 'teams': teams,
             'leagues': {l: r1(to_note(v, a, b)) for l, v in S['lvl'].items()},

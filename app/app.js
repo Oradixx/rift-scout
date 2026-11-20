@@ -48,7 +48,7 @@
   const cMatch = (p, v) => !v || !hasCT() || (v === 'free' ? isFree(p) : v === 'signed' ? !!p.c && !isFree(p) : !p.c);
 
   const TIER_IN = ['ligue majeure', 'deuxième niveau', 'troisième niveau'];
-  const state = { pw: { tier: '0', region: '', league: '', shown: 100 }, tr: { league: '' }, calc: 'rift', season: Object.keys(D.seasons).sort().pop(), view: 'rank', role: '', tier: '0', region: '', league: '', event: '', contract: '', basis: 'season', minG: 15, q: '', shown: 100,
+  const state = { pw: { tier: '0', region: '', league: '', shown: 100, basis: 'season' }, tr: { league: '' }, calc: 'rift', season: Object.keys(D.seasons).sort().pop(), view: 'rank', role: '', tier: '0', region: '', league: '', event: '', contract: '', basis: 'season', minG: 15, q: '', shown: 100,
     sc: { plan: {}, contract: '', maxAge: 0, res: '', tid: null, role: 'Mid', tier: '', region: '', league: '', minNote: 0, minG: 20, sort: 'score', shown: 60, ref: null, reach: true, mode: 'team',
       cr: { role: '', maxAge: 22, region: '', deep: false, minG: 15, contract: '', fresh: false, all: false, noAge: false, shown: 60 } } };
   let S, byId, med;
@@ -578,24 +578,29 @@
   /* Niveau d'équipe de la saison choisie (modèle de victoire, le même que « niveau de l'équipe » de la fiche) : il ne dépend pas
      du bouton Rift Scout / Mixte / Unifiée. */
   function renderPower() {
-    const f = state.pw;
+    const f = state.pw, endB = f.basis === 'end';
     $('#p-tier').value = f.tier; $('#p-region').value = f.region; $('#p-league').value = f.league;
+    document.querySelectorAll('#p-basis button').forEach((b) => b.setAttribute('aria-pressed', b.dataset.pbasis === f.basis));
+    const lvOf = (t) => (endB ? (t.rc ? t.rc[0] : null) : t.lvl);
     const Lall = S.teams.filter((t) => (f.tier === '' || t.tier === +f.tier) && (!f.region || t.region === f.region) && (!f.league || t.league === f.league));
-    const L = Lall.filter((t) => t.end !== false).sort((a, b) => b.lvl - a.lvl);   // présentes au dernier segment de leur ligue
-    const gone = Lall.length - L.length;
-    const inLg = {}; for (const t of S.teams) if (t.end !== false) (inLg[t.league] = inLg[t.league] || []).push(t.lvl);
-    $('#p-sub').textContent = `Le niveau d'une équipe vient du modèle de victoire de la saison ${state.season}, le même que le « niveau de l'équipe » de la fiche d'un joueur. Il est commun à toutes les ligues et ne dépend pas du choix Rift Scout, Mixte ou Unifiée.`;
-    $('#p-count').textContent = `${fmt(L.length)} équipe${L.length > 1 ? 's' : ''}, saison ${state.season}${gone ? `. ${fmt(gone)} autre${gone > 1 ? 's' : ''} absente${gone > 1 ? 's' : ''} du dernier segment de sa ligue (invitée ou partie en cours d'année), non classée${gone > 1 ? 's' : ''}` : ''}`;
+    const L = Lall.filter((t) => t.end !== false && lvOf(t) != null).sort((a, b) => lvOf(b) - lvOf(a));   // présentes au dernier segment de leur ligue
+    const gone = Lall.filter((t) => t.end === false).length, few = Lall.filter((t) => t.end !== false && lvOf(t) == null).length;
+    const inLg = {}; for (const t of S.teams) if (t.end !== false && lvOf(t) != null) (inLg[t.league] = inLg[t.league] || []).push(lvOf(t));
+    $('#p-sub').textContent = endB
+      ? `Niveau réestimé sur les parties jouées depuis le début du dernier split de chaque ligue (playoffs, qualifications et tournois qui ont suivi compris), le niveau de saison ne servant que de point de départ. C'est l'état des équipes en fin d'année, sur moins de parties : plus réactif, plus incertain, et il ne prédit pas mieux la suite que le niveau de saison. Ne dépend pas du choix Rift Scout, Mixte ou Unifiée.`
+      : `Le niveau d'une équipe vient du modèle de victoire de la saison ${state.season}, le même que le « niveau de l'équipe » de la fiche d'un joueur. Il est commun à toutes les ligues et ne dépend pas du choix Rift Scout, Mixte ou Unifiée.`;
+    $('#p-count').textContent = `${fmt(L.length)} équipe${L.length > 1 ? 's' : ''}, saison ${state.season}${gone ? `. ${fmt(gone)} autre${gone > 1 ? 's' : ''} absente${gone > 1 ? 's' : ''} du dernier segment de sa ligue (invitée ou partie en cours d'année), non classée${gone > 1 ? 's' : ''}` : ''}${few ? `. ${fmt(few)} avec moins de 8 parties en fin de saison, non classée${few > 1 ? 's' : ''}` : ''}. « Situé par sa ligue » : aucun match contre une équipe d'une autre ligue cette saison, son niveau face au reste du monde passe par celui de sa ligue.`;
     const el = $('#p-rows');
     if (!L.length) { el.innerHTML = '<p class="none">Aucune équipe ne correspond à ces filtres.</p>'; return; }
     const late = Date.parse(S.to) - 180 * 864e5;
     el.innerHTML = L.slice(0, f.shown).map((t, i) => {
       const lu = ROLES.map((r) => { const p = byId.get(t.roster[r]); return p ? `<button class="pl" data-p="${p.id}" title="${r}, note ${nInt(p.note)}"><small>${r}</small>${h(p.name)}</button>` : `<span class="pl"><small>${r}</small>–</span>`; }).join('');
-      const rk = inLg[t.league].filter((v) => v > t.lvl).length + 1;
+      const v = lvOf(t), rk = inLg[t.league].filter((x) => x > v).length + 1;
+      const extra = endB ? `${fmt(t.rc[1])} parties depuis le ${frDate(t.rc[2])}, saison ${nInt(t.lvl)}` : `${fmt(t.n)} parties, ${pctTxt(t.win)} de victoires${Date.parse(t.last) < late ? `, dernière partie le ${frDate(t.last)}` : ''}`;
       return `<div class="prow"><span class="rank">${i + 1}</span>
-        <span class="lvl"><span class="num note ${noteCls(t.lvl)}">${nInt(t.lvl)}</span>${t.se ? `<small>± ${fmt(t.se, 1)}</small>` : ''}</span>
-        <span class="who"><b>${h(t.name)}</b><small>${h(lgName(t.league))}${f.league ? '' : ', ' + ord(rk) + ' en ' + h(lgName(t.league))}</small>
-          <small>${fmt(t.n)} parties, ${pctTxt(t.win)} de victoires${Date.parse(t.last) < late ? `, dernière partie le ${frDate(t.last)}` : ''}</small></span>
+        <span class="lvl"><span class="num note ${noteCls(v)}">${nInt(v)}</span>${!endB && t.se ? `<small>± ${fmt(t.se, 1)}</small>` : ''}</span>
+        <span class="who"><b>${h(t.name)}</b><small>${h(lgName(t.league))}${f.league ? '' : ', ' + ord(rk) + ' en ' + h(lgName(t.league))}${t.nx === 0 ? ', <span class="tag-lg" title="Aucun match contre une équipe d\'une autre ligue cette saison">situé par sa ligue</span>' : ''}</small>
+          <small>${extra}</small></span>
         <span class="lu">${lu}</span></div>`;
     }).join('') + (L.length > f.shown ? '<button class="more" id="p-more">Afficher 100 équipes de plus</button>' : '');
   }
@@ -1036,6 +1041,7 @@
       else if (b.closest('#c-roles')) { state.sc.cr.role = b.dataset.role; state.sc.cr.shown = 60; renderScout(); }
       else if (b.dataset.lgmode) { state.basis = b.dataset.lgmode; state.shown = 100; renderRank(); }
       else if (b.id === 'p-more') { state.pw.shown += 100; renderPower(); }
+      else if (b.dataset.pbasis) { state.pw.basis = b.dataset.pbasis; state.pw.shown = 100; renderPower(); }
       else if (b.id === 'more') { state.shown += 100; renderRank(); }
       else if (b.id === 'scout-more') { state.sc.shown += 60; renderScout(); }
       else if (b.id === 'reset') { Object.assign(state, { role: '', tier: '0', region: '', league: '', event: '', contract: '', basis: 'season', minG: 15, q: '', shown: 100 }); syncFilters(); fillSelects(); renderRank(); }
