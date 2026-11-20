@@ -325,6 +325,9 @@
       html += `<section><h3>Joueurs au style le plus proche</h3><div class="simlist">${sims.map(([s, x]) => `<button data-p="${x.id}"><span class="num ${noteCls(x.note)}">${nInt(x.note)}</span><span>${h(x.name)} <small>${h(x.team)}, ${h(lgName(x.league))}</small></span><small>${fmt(s)} % de similarité</small></button>`).join('')}</div>
         <p style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">${tryBtn(p)}<button class="cta" data-scout="${p.id}">Chercher un remplaçant à ${h(p.name)}</button></p></section>`;
     }
+    showSheet(html);
+  }
+  function showSheet(html) {
     $('#sheet').innerHTML = html; $('#sheet').scrollTop = 0;
     $('#sheet-wrap').classList.add('open'); $('#sheet').focus();
   }
@@ -597,6 +600,8 @@
 
   /* ------------------------------------------------------------ transferts */
   const LAST = Object.keys(D.seasons).sort().pop();
+  /* 0,106 par point de moyenne des notes de saison (pente réglée par tools/bench_transfers.py sur les matchs de la saison suivante, 0,102 en 2024 → 2025 et 0,111 en 2025 → 2026), soit 0,147 par point de note attendue (droite des joueurs de ligue majeure, pente 0,722) */
+  const WIN_SLOPE = 0.147;
   /* note attendue en ligue majeure la saison suivante (droites D.next.lines : déjà en ligue majeure, ou montée d'un niveau
      inférieur ; elles tiennent compte du retour vers la moyenne) ; suit le bouton de calcul */
   const tvalue = (p) => { const l = D.next.lines ? D.next.lines[p.tier === 0 ? 'maj' : 'low'] : null; return l ? l.a + l.b * p.note : p.note; };
@@ -609,18 +614,14 @@
     for (const t of D.next.teams) { tier[t.league] = t.tier; cnt[t.league] = (cnt[t.league] || 0) + 1; }
     return Object.keys(tier).sort((a, b) => tier[a] - tier[b] || cnt[b] - cnt[a] || lgName(a).localeCompare(lgName(b)));
   }
-  function renderTransfers() {
+  /* Calcul d'une ligue de l'onglet, partagé avec la fiche d'équipe : mêmes valeurs, même valeur par défaut, mêmes rangs. */
+  function transferModel(lg) {
     const N = D.next, LP = new Map(D.seasons[LAST].players.map((p) => [p.id, p]));
-    const lgs = nextLeagues();
-    if (!lgs.includes(state.tr.league)) state.tr.league = lgs.includes('LEC') ? 'LEC' : lgs[0];
-    const lg = state.tr.league, tierOf = {}; N.teams.forEach((t) => { tierOf[t.league] = t.tier; });
-    $('#t-league').innerHTML = [0, 1, 2].map((k) => { const ls = lgs.filter((l) => tierOf[l] === k); return ls.length ? `<optgroup label="${TIERS[k]}">` + ls.map((l) => `<option value="${h(l)}"${l === lg ? ' selected' : ''}>${h(lgName(l))}${D.desc[l] && lgName(l) === l ? ' (' + h(D.desc[l]) + ')' : ''}</option>`).join('') + '</optgroup>' : ''; }).join('');
-    $('#t-src').innerHTML = `Effectifs annoncés : ${h(N.source)}. Effectif actuel : 12 dernières parties de chaque équipe.`;
-    const warn = $('#t-warn'); warn.hidden = state.season === LAST;
-    warn.textContent = state.season === LAST ? '' : `Cet onglet porte toujours sur la dernière saison (${LAST}), quelle que soit la saison choisie en haut de la page : ${LAST} pour l'effectif actuel, ${N.season} pour l'effectif annoncé.`;
     const T = N.teams.filter((t) => t.league === lg);
+    // titulaires actuels de la ligue, par poste, avec leur valeur
+    const starters = {}; for (const r of ROLES) starters[r] = T.map((t) => ({ t, p: LP.get(t.cur[r]) })).filter((s) => s.p).map((s) => ({ t: s.t, id: s.p.id, v: tvalue(s.p) }));
     // valeur par défaut : 25e centile des valeurs des titulaires actuels de la ligue
-    const known = []; for (const t of T) for (const r of ROLES) { const p = LP.get(t.cur[r]); if (p) known.push(tvalue(p)); }
+    const known = ROLES.flatMap((r) => starters[r].map((s) => s.v));
     const def = known.length ? quantile(known, 0.25) : 0;
     const slot = (x) => { const p = typeof x === 'string' ? LP.get(x) : null; return p ? tvalue(p) : def; };
     const level = (ros) => mean(ROLES.map((r) => slot(ros[r])));
@@ -630,11 +631,23 @@
     }).sort((a, b) => b.exp - a.exp);
     const curs = X.filter((x) => x.cur != null).map((x) => x.cur), exps = X.map((x) => x.exp);
     X.forEach((x) => { x.rc = x.cur != null ? rankOf(x.cur, curs) : null; x.re = rankOf(x.exp, exps); x.d = x.cur != null ? x.exp - x.cur : null; });
+    return { LP, T, X, def, slot, level, starters };
+  }
+  function renderTransfers() {
+    const N = D.next;
+    const lgs = nextLeagues();
+    if (!lgs.includes(state.tr.league)) state.tr.league = lgs.includes('LEC') ? 'LEC' : lgs[0];
+    const lg = state.tr.league, tierOf = {}; N.teams.forEach((t) => { tierOf[t.league] = t.tier; });
+    $('#t-league').innerHTML = [0, 1, 2].map((k) => { const ls = lgs.filter((l) => tierOf[l] === k); return ls.length ? `<optgroup label="${TIERS[k]}">` + ls.map((l) => `<option value="${h(l)}"${l === lg ? ' selected' : ''}>${h(lgName(l))}${D.desc[l] && lgName(l) === l ? ' (' + h(D.desc[l]) + ')' : ''}</option>`).join('') + '</optgroup>' : ''; }).join('');
+    $('#t-src').innerHTML = `Effectifs annoncés : ${h(N.source)}. Effectif actuel : 12 dernières parties de chaque équipe.`;
+    const warn = $('#t-warn'); warn.hidden = state.season === LAST;
+    warn.textContent = state.season === LAST ? '' : `Cet onglet porte toujours sur la dernière saison (${LAST}), quelle que soit la saison choisie en haut de la page : ${LAST} pour l'effectif actuel, ${N.season} pour l'effectif annoncé.`;
+    const { LP, X, def } = transferModel(lg);
     $('#t-sub').textContent = `Effectif actuel et effectif annoncé pour la saison ${N.season}, ${lgName(lg)}. Le niveau d'un effectif est la moyenne des valeurs de ses cinq joueurs.`;
     $('#t-count').innerHTML = `${X.length} équipes. Le chiffre à côté de chaque joueur est sa valeur attendue en ligue majeure la saison suivante, celle qui entre dans la moyenne ; sa note de saison est indiquée à côté (un joueur qui monte d'un niveau inférieur n'en garde qu'un peu plus de la moitié de l'écart à la moyenne). Joueur sans note ou poste pas encore annoncé : ${fmt(def, 1)}, le 25<sup>e</sup> centile des titulaires actuels de ${h(lgName(lg))}.`;
     $('#t-rank').innerHTML = X.map((x) => {
       const t = x.t, mv = x.rc == null ? '<span class="flat">nouvelle dans la ligue</span>' : `<span class="${x.re < x.rc ? 'up' : x.re > x.rc ? 'down' : 'flat'}">${ord(x.rc)} → ${ord(x.re)}</span>`;
-      return `<div class="trow"><span class="rank">${x.re}</span><span class="who"><b>${h(t.name)}</b></span>
+      return `<div class="trow"><span class="rank">${x.re}</span><span class="who"><b><button class="pl2 tm" data-tm="${N.teams.indexOf(t)}">${h(t.name)}</button></b></span>
         <span class="num note ${noteCls(x.exp)}">${fmt(x.exp, 1)}</span><span class="trend r ${x.d == null ? 'flat' : dCls(x.d)}">${x.d == null ? '–' : sgn(x.d)}</span>
         <span class="mv">${mv}</span><span class="st">${x.state}${t.nxt ? '' : '<small>effectif actuel conservé</small>'}</span></div>`;
     }).join('');
@@ -647,13 +660,78 @@
     };
     $('#t-cards').innerHTML = X.map((x) => {
       const t = x.t;
-      return `<section class="tcard"><header><h3>${h(t.name)}</h3><span class="tlvl">${x.cur != null ? fmt(x.cur, 1) + ' → ' : ''}<b class="${noteCls(x.exp)}">${fmt(x.exp, 1)}</b>${x.d != null ? ` <em class="${dCls(x.d)}">${sgn(x.d)}</em>` : ''}</span></header>
+      return `<section class="tcard"><header><h3><button class="pl2 tm" data-tm="${N.teams.indexOf(t)}">${h(t.name)}</button></h3><span class="tlvl">${x.cur != null ? fmt(x.cur, 1) + ' → ' : ''}<b class="${noteCls(x.exp)}">${fmt(x.exp, 1)}</b>${x.d != null ? ` <em class="${dCls(x.d)}">${sgn(x.d)}</em>` : ''}</span></header>
         <p class="legend">${t.tid ? (t.nxt ? x.state : 'effectif pas encore annoncé') : 'nouvelle dans la ligue'}</p>
         ${ROLES.map((r) => {
           const c = t.cur[r], n = t.nxt ? t.nxt[r] : c, same = !t.nxt || (typeof n === 'string' && n === c);
           return `<div class="tline"><span class="role">${r}</span><span>${c ? who(c, true, true) : '<span class="tbd">–</span>'}</span><span class="arrow" aria-hidden="true">→</span><span>${who(n, !t.nxt, same)}</span></div>`;
         }).join('')}</section>`;
     }).join('');
+  }
+
+  /* ------------------------------------------------------------ fiche d'équipe (onglet Transferts) */
+  const winProb = (a, b) => 1 / (1 + Math.exp(-WIN_SLOPE * (a - b)));
+  const de = (n) => (/^[AEIOUYÉ]/.test(n) ? "d'" : 'de ') + n;
+  const places = (from, to) => {   // from : rang actuel, to : rang attendu
+    const n = from - to;
+    return n === 0 ? ['même rang', 'flat'] : n > 0 ? [`${n} place${n > 1 ? 's' : ''} de mieux`, 'up'] : [`${-n} place${n < -1 ? 's' : ''} de moins`, 'down'];
+  };
+  const pctPt = (x) => fmt(x * 100, 1) + ' %';
+  const pts = (d) => (d > 0.0005 ? '+' : d < -0.0005 ? '−' : '') + fmt(Math.abs(d) * 100, 1) + (Math.abs(d) * 100 >= 1.95 ? ' points' : ' point');
+  function openTeamSheet(i) {
+    const N = D.next, t = N.teams[i]; if (!t) return;
+    const m = transferModel(t.league), x = m.X.find((y) => y.t === t), LG = lgName(t.league);
+    const pseudo = (v) => { const p = typeof v === 'string' ? m.LP.get(v) : null; return p ? p.name : v && v.name ? v.name : '?'; };
+    // fiche d'un poste : valeur, et rang parmi les titulaires actuels du poste
+    const info = (r, v, rank) => {
+      const p = typeof v === 'string' ? m.LP.get(v) : null, val = m.slot(v);
+      if (p) return { id: p.id, p, val, html: `<button class="pl2" data-p="${p.id}">${h(p.name)}</button>`, sub: rank != null ? `${ord(rank)} des ${ROLE_PL[r]} ${de(h(LG))}` : '' };
+      if (v && v.name) return { val, html: h(v.name), sub: 'sans note' };
+      if (typeof v === 'string') return { val, html: '<span class="tbd">joueur introuvable</span>', sub: '' };
+      return null;
+    };
+    const rows = ROLES.map((r) => {
+      const c = t.cur[r], keep = !t.nxt, n = keep ? c : t.nxt[r];
+      const cv = typeof c === 'string' ? m.LP.get(c) : null;
+      const cInfo = c ? info(r, c, cv ? rankOf(tvalue(cv), m.starters[r].map((s) => s.v)) : null) : null;
+      const np = typeof n === 'string' ? m.LP.get(n) : null;
+      const others = np ? m.starters[r].filter((s) => s.t !== t && s.id !== np.id).map((s) => s.v) : null;
+      const nInfo = n ? info(r, n, np ? rankOf(tvalue(np), others) : null) : null;
+      const same = typeof n === 'string' && n === c;
+      const cell = (o, empty, extra) => o ? `<span class="pc${extra || ''}">${o.html}<small>${o.sub}</small></span><b class="pn pv ${noteCls(o.val)}">${fmt(o.val, 1)}</b>` : `<span class="pc tbd">${empty}</span><b class="pv tbd">${empty === '–' ? '' : fmt(m.def, 1)}</b>`;
+      const chg = !cInfo || !nInfo || same ? '<span class="flat">—</span>' : `<span class="${dCls(nInfo.val - cInfo.val)}">${sgn(nInfo.val - cInfo.val)}</span>`;
+      return `<div class="chg"><span class="role">${r}</span>${cell(cInfo, '–')}${cell(nInfo, 'pas encore annoncé', same ? '' : ' in')}<span class="cg">${chg}</span></div>`;
+    }).join('');
+    // rang parmi les équipes des ligues majeures : niveaux actuels pour le rang actuel, niveaux attendus pour le rang attendu
+    const tierOf = (l) => N.teams.find((y) => y.league === l).tier;
+    const maj = nextLeagues().filter((l) => tierOf(l) === 0).flatMap((l) => transferModel(l).X);
+    const mc = maj.filter((y) => y.cur != null).map((y) => y.cur), me = maj.map((y) => y.exp);
+    const inMaj = t.tier === 0, gc = x.cur != null ? rankOf(x.cur, mc) : null, ge = rankOf(x.exp, me);
+    const pair = (l1, a, l2, b, cls) => `<div class="tk-pair"><div><small>${l1}</small><span class="num">${a}</span></div><span class="arrow" aria-hidden="true">→</span><div><small>${l2}</small><span class="num ${cls || ''}">${b}</span></div></div>`;
+    const mv = (from, to) => { if (from == null) return '<p class="tk-d flat">nouvelle dans la ligue</p>'; const [txt, cls] = places(from, to); return `<p class="tk-d ${cls}">${txt}</p>`; };
+    // adversaires : les trois meilleures autres équipes de la ligue en niveau attendu (les trois suivantes si elle est dans le top 3)
+    const opp = m.X.filter((y) => y !== x).slice(0, 3);
+    const chances = opp.map((o) => {
+      const p26 = x.cur != null ? winProb(x.cur, o.exp) : null, p27 = winProb(x.exp, o.exp);
+      return `<div class="win"><span class="pc"><b>${h(o.t.name)}</b><small>niveau attendu ${fmt(o.exp, 1)}</small></span><span class="wv">${p26 != null ? pctPt(p26) : '–'}</span><span class="wv"><b>${pctPt(p27)}</b></span><span class="wv ${p26 != null ? dCls((p27 - p26) * 100) : 'flat'}">${p26 != null ? pts(p27 - p26) : '–'}</span></div>`;
+    }).join('');
+    const [pl, pc] = gc != null ? places(gc, ge) : [null, 'flat'];
+    const stateTxt = !t.tid ? 'nouvelle dans la ligue' : 'effectif ' + x.state;
+    showSheet(`<header class="tm-head"><div><h2 id="sheet-name">${h(t.name)}</h2>
+      <p class="meta">${h(LG)} (${h(t.region)}), ${stateTxt}<br>Effectif ${N.season} : ${ROLES.map((r) => h(t.nxt ? pseudo(t.nxt[r]) : '?')).join(' · ')}</p></div><button class="close" data-close>Fermer</button></header>
+      <section><div class="split tk">
+        <div>${pair(`Rang en ${h(LG)} ${LAST}`, x.rc != null ? ord(x.rc) : '–', `Rang attendu en ${N.season}`, ord(x.re))}${mv(x.rc, x.re)}</div>
+        <div>${pair('Niveau actuel', x.cur != null ? fmt(x.cur, 1) : '–', 'Niveau attendu', fmt(x.exp, 1), noteCls(x.exp))}${x.d != null ? `<p class="tk-d ${dCls(x.d)}">${sgn(x.d)} point${Math.abs(x.d) >= 1.95 ? 's' : ''}</p>` : '<p class="tk-d flat">–</p>'}</div></div></section>
+      <section><h3>Changements de joueurs</h3>
+        <div class="chg chg-h"><span class="role">Poste</span><span class="pc">Joueur actuel</span><span class="pv">Valeur</span><span class="pc">Joueur attendu</span><span class="pv">Valeur</span><span class="cg">Changement</span></div>${rows}
+        <p class="legend">La valeur est la note attendue en ligue majeure la saison suivante, celle qui entre dans le niveau de l'effectif. Joueur sans note ou poste pas annoncé : ${fmt(m.def, 1)}, le 25<sup>e</sup> centile des titulaires actuels de ${h(LG)}.${t.nxt ? '' : ' Effectif ' + N.season + ' pas annoncé : l\'effectif actuel est conservé pour le calcul.'}</p></section>
+      <section><h3>Rang parmi les équipes des ligues majeures</h3>
+        <div class="split tk tk1"><div>${pair('Rang actuel', gc != null ? ord(gc) : '–', `Rang attendu en ${N.season}`, ord(ge))}${gc != null ? mv(gc, ge) : mv(null)}</div></div>
+        <p class="legend">${inMaj ? '' : `${h(LG)} n'est pas une ligue majeure : le rang est celui qu'aurait l'équipe parmi les ${fmt(maj.length)} équipes de ligue majeure. `}Parmi ${fmt(maj.length)} équipes de ligue majeure : niveaux actuels pour le rang actuel, niveaux attendus pour le rang attendu, chaque ligue avec sa propre valeur par défaut. Les niveaux sont sur l'échelle commune à toutes les ligues.</p></section>
+      <section><h3>Chances de gagner une partie</h3>
+        <div class="win win-h"><span class="pc">Contre</span><span class="wv">Effectif ${LAST}</span><span class="wv">Effectif ${N.season}</span><span class="wv">Écart</span></div>${chances}
+        <p class="legend">Contre les trois meilleures autres équipes de ${h(LG)} en niveau attendu ${N.season}${x.re <= 3 ? ' (l\'équipe est dans le top 3 : la quatrième équipe complète la liste)' : ''}. « Effectif ${LAST} » : niveau actuel de l'équipe contre le niveau attendu de l'adversaire ; « effectif ${N.season} » : niveau attendu contre niveau attendu.</p></section>
+      <section><p class="legend" style="margin-top:0">Une partie, côté neutre, force des effectifs seulement : ni forme, ni entente, ni draft. Adversaires avec leur effectif ${N.season} annoncé (actuel s'il ne l'est pas). Rangs par poste parmi les titulaires actuels de la ligue. Effectifs annoncés : ${h(N.source)}.</p></section>`);
   }
 
   /* ------------------------------------------------------------ méthode */
@@ -688,6 +766,7 @@
       else if (b.dataset.calc) { state.calc = b.dataset.calc; try { localStorage.setItem('rs-calc', state.calc); } catch (e) { /* stockage indisponible */ } applyCalc(); load(); render(); }
       else if (b.dataset.season) { state.season = b.dataset.season; lgCache = {}; state.sc.plan = {}; state.sc.tid = null; state.sc.ref = null; $('#team-input').value = ''; load(); fillSelects(); render(); }
       else if (b.dataset.scout) { if (savedSeason) { savedSeason = null; lgCache = {}; fillSelects(); } const p = byId.get(b.dataset.scout); closeSheet(); state.view = 'scout'; state.sc.plan = {}; state.sc.role = p.role; state.sc.ref = p.id; const t = S.teams.find((x) => x.roster[p.role] === p.id); state.sc.tid = t ? t.tid : null; if (!t) $('#team-input').value = ''; render(); window.scrollTo(0, 0); }
+      else if (b.dataset.tm !== undefined) openTeamSheet(+b.dataset.tm);
       else if (b.dataset.p) { if (state.view === 'transfers') openLast(b.dataset.p); else openSheet(b.dataset.p, b.dataset.cmp); }
       else if (b.hasAttribute('data-close')) closeSheet();
       else if (b.dataset.tid) { $('#suggest').hidden = true; setTeam(b.dataset.tid); }

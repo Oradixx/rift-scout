@@ -356,3 +356,44 @@ button.pl:hover{background:var(--cobalt-soft);color:var(--cobalt)}
   .trow .st small{display:inline;margin-left:6px}
 }
 #view-power .work>*,#view-transfers .work>*{min-width:0}
+
+/* ---------- fiche d'équipe (onglet Transferts) */
+.tm{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:inherit}
+.tcard h3 .tm{display:inline}
+.sheet header.tm-head{grid-template-columns:1fr auto;align-items:start}
+.sheet header.tm-head h2{overflow-wrap:anywhere}
+.sheet header.tm-head .meta{line-height:1.5}
+.split.tk{grid-template-columns:1fr 1fr}
+.split.tk1{grid-template-columns:1fr}
+.tk>div{padding:14px 16px}
+.tk-pair{display:flex;align-items:flex-end;gap:10px}
+.tk-pair>div{min-width:0;flex:1 1 0;padding:0}
+.tk-pair small{line-height:1.25;min-height:2.5em}
+.tk-pair .num{font-size:58px;margin-top:6px}
+.tk-pair .num sup{font-size:.45em;vertical-align:top;margin-left:1px}
+.tk-pair .arrow{color:var(--ink-3);font-size:22px;padding-bottom:6px;flex:none}
+.tk-d{margin-top:10px;font-weight:700;font-size:14px}
+.chg,.win{display:grid;gap:4px 10px;align-items:start;padding:8px 0;border-top:1px solid var(--line-2);font-size:14px}
+.chg{grid-template-columns:54px minmax(0,1fr) 44px minmax(0,1fr) 44px 64px}
+.chg .role{font-size:12.5px;font-weight:600;color:var(--ink-3);padding-top:2px}
+.chg .pc,.win .pc{min-width:0;overflow-wrap:anywhere}
+.chg .pc small,.win .pc small{display:block;color:var(--ink-3);font-size:12.5px}
+.chg .pc.in small{font-weight:400}
+.chg .pv{text-align:right;font-variant-numeric:tabular-nums;padding-top:1px}
+.chg .cg{text-align:right;font-weight:700;font-variant-numeric:tabular-nums}
+.chg-h,.win-h{border-top:0;padding-top:0;font-size:12.5px;color:var(--ink-3);font-weight:600}
+.chg-h .pv,.chg-h .cg{font-weight:600}
+.win{grid-template-columns:minmax(0,1fr) 76px 76px 84px}
+.win .wv{text-align:right;font-variant-numeric:tabular-nums}
+@media (max-width:720px){
+  .split.tk{grid-template-columns:1fr}
+  .tk-pair .num{font-size:48px}
+  .sheet header.tm-head{grid-template-columns:1fr auto}
+  .chg{grid-template-columns:minmax(0,1fr) 40px minmax(0,1fr) 40px;grid-template-areas:"role role role cg" "c cv n nv";padding:10px 0}
+  .chg .role{grid-area:role;padding-top:0}
+  .chg .cg{grid-area:cg}
+  .chg>:nth-child(2){grid-area:c} .chg>:nth-child(3){grid-area:cv} .chg>:nth-child(4){grid-area:n} .chg>:nth-child(5){grid-area:nv}
+  .chg-h{grid-template-areas:"c cv n nv"}
+  .chg-h .role,.chg-h .cg{display:none}
+  .win{grid-template-columns:minmax(0,1fr) 62px 62px 70px;gap:4px 6px}
+}
