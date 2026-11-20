@@ -118,6 +118,9 @@ h1,h2,h3,p{margin:0}
 .sheet header h2{font-family:var(--display);font-weight:900;font-size:46px;line-height:.95;text-transform:uppercase;margin-bottom:6px}
 .sheet header .meta{color:var(--ink-2)}
 .close{align-self:start;border:1px solid var(--line);background:var(--paper);border-radius:var(--r-s);padding:6px 10px;font-weight:600}
+.hbtns{display:flex;gap:8px;align-self:start}
+.hbtns .close{white-space:nowrap}
+.close:disabled{opacity:.6;cursor:progress}
 .sheet section{padding:18px 24px;border-bottom:1px solid var(--line)}
 .sheet h3{font-size:15px;font-weight:700;margin-bottom:10px}
 .split{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r-m);overflow:hidden}
@@ -223,6 +226,7 @@ ul.say.minus li::before{background:var(--rose)}
   .row .note{font-size:28px}
   .two{grid-template-columns:1fr}
   .sheet header{grid-template-columns:auto 1fr auto;padding:16px}
+  .hbtns{flex-direction:column}
   .sheet header .note{font-size:72px}
   .sheet header h2{font-size:32px}
   .sheet section{padding:16px}
