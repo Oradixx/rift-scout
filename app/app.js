@@ -199,7 +199,7 @@
   }
   function scopeLabel() {
     const parts = [];
-    if (state.basis === 'recent') parts.push((state.event ? `joueurs de ${state.event}` : state.league ? lgName(state.league) : '') + (state.event || state.league ? ', ' : '') + 'période récente');
+    if (state.basis === 'recent') parts.push((state.event ? `joueurs de ${state.event}` : state.league ? lgName(state.league) : '') + (state.event || state.league ? ', ' : '') + recentLbl().toLowerCase());
     else if (state.event) parts.push(state.basis === 'only' ? state.event : `joueurs de ${state.event}, sur toute la saison`);
     else if (state.league) parts.push(state.basis === 'only' ? `${lgName(state.league)}, parties de ${lgName(state.league)} seulement` : lgName(state.league));
     else if (state.region) parts.push(state.region);
@@ -221,7 +221,10 @@
     $('#five-sub').textContent = `Saison ${state.season} : ${fmt(S.games)} parties, du ${frDate(S.from)} au ${frDate(S.to)}. Chaque joueur est noté de 1 à 100 sur la même échelle, quelle que soit sa ligue.`;
   }
   function frDate(d) { return new Date(d + 'T12:00:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' }); }
+  /* « Période récente » pour la saison en cours, « Fin de saison » pour une saison terminée (même calcul) */
+  const recentLbl = () => (state.season === Object.keys(D.seasons).sort().pop() ? 'Période récente' : 'Fin de saison');
   function renderRank() {
+    const rb = document.querySelector('[data-lgmode=recent]'); if (rb) rb.textContent = recentLbl();
     renderFive();
     const L = filtered(false);
     const el = $('#rows');
@@ -240,7 +243,7 @@
       html += `<button class="row" data-p="${p.id}"><span class="rank">${i + 1}</span><span class="num note ${noteCls(n)}">${nInt(n)}</span>
         <span class="who"><b>${h(p.name)}</b><small>${teamLine(p)}${ageTxt(p)} ${cShort(p)}</small></span>
         <span class="pos">${p.role}</span>${strip(p)}
-        <span class="trend ${tc} r trend-cell" title="${p._e ? 'Écart avec sa note sur toute la saison' : 'Période récente (dernier split et ce qui a suivi) par rapport à la saison'}">${!p._e && !p.rc ? '–' : (d > 0 ? '+' : '') + fmt(d, 1)}</span>
+        <span class="trend ${tc} r trend-cell" title="${p._e ? 'Écart avec sa note sur toute la saison' : recentLbl() + ' (dernier split et ce qui a suivi) par rapport à la saison'}">${!p._e && !p.rc ? '–' : (d > 0 ? '+' : '') + fmt(d, 1)}</span>
         <span class="r games">${p._e ? p._e.n : p.n}</span></button>`;
     });
     if (L.length > state.shown) html += `<button class="more" id="more">Afficher 100 joueurs de plus</button>`;
@@ -292,9 +295,9 @@
     html += `<section><div class="split">
       <div><small>Niveau de son équipe${p.tse ? ', à ± ' + fmt(p.tse, 1) + ' près' : ''}</small><span class="num">${nInt(p.team_lvl)}</span></div>
       <div><small>Écart individuel</small><span class="num ${p.ind >= 0 ? 'up' : 'down'}">${p.ind >= 0 ? '+' : ''}${fmt(p.note - p.team_lvl, 1)}</span></div>
-      <div><small>Période récente${p.rc ? ', ' + p.rc[1] + ' parties' : ''}</small><span class="num ${d >= 1.5 ? 'up' : d <= -1.5 ? 'down' : ''}">${p.rc ? nInt(p.rc[0]) : '–'}</span></div>
+      <div><small>${recentLbl()}${p.rc ? ', ' + p.rc[1] + ' parties' : ''}</small><span class="num ${d >= 1.5 ? 'up' : d <= -1.5 ? 'down' : ''}">${p.rc ? nInt(p.rc[0]) : '–'}</span></div>
       <div><small>Parties jouées, ${pctTxt(p.st.win)} de victoires</small><span class="num">${p.n}</span></div></div>
-      <p class="legend" style="margin-top:10px">${p.rc ? `Période récente : ${h(p.rc[3])} et ce qui a suivi, depuis le ${frDate(p.rc[2])}. ` : ''}Sur ses 15 dernières parties : ${nInt(p.form)} (indicatif : sur 15 parties, la note varie beaucoup et prédit la suite moins bien que la note de saison).</p>
+      <p class="legend" style="margin-top:10px">${p.rc ? `${recentLbl()} : ${h(p.rc[3])} et ce qui a suivi, depuis le ${frDate(p.rc[2])}. ` : ''}Sur ses 15 dernières parties : ${nInt(p.form)} (indicatif : sur 15 parties, la note varie beaucoup et prédit la suite moins bien que la note de saison).</p>
       ${p.tr && Object.keys(p.tr).length > 1 ? `<p class="legend" style="margin-top:10px">Par niveau de ligue : ${Object.keys(p.tr).sort().map((k) => `${TIER_IN[k]} <b class="${noteCls(p.tr[k][0])}">${nInt(p.tr[k][0])}</b> (${p.tr[k][1]} parties, ${h(p.tr[k][2])})`).join(' ; ')}</p>` : ''}
       <div class="tags">${arch ? `<span class="tag gold">${arch}</span>` : ''}${styleTags(p).map((t) => `<span class="tag">${t}</span>`).join('')}</div></section>`;
     if (ins.plus.length || ins.minus.length) html += `<section><div class="two"><div><h3>Forces</h3>${ins.plus.length ? `<ul class="say">${ins.plus.map((x) => `<li>${x}</li>`).join('')}</ul>` : '<p class="legend">Rien qui ressorte nettement par rapport à son poste.</p>'}</div>
