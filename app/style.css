@@ -405,3 +405,9 @@ button.pl:hover{background:var(--cobalt-soft);color:var(--cobalt)}
 /* power ranking : équipe sans match contre une autre ligue */
 .tag-lg{color:var(--ink-3);border-bottom:1px dotted var(--ink-3)}
 #p-basis{margin-top:6px}
+
+.filters [hidden]{display:none}
+.row .notecell{display:flex;flex-direction:column;align-items:flex-start;gap:3px}
+.row .marge{font-size:12px;line-height:1;color:var(--ink-3);white-space:nowrap}
+#rank-legend{margin:0;padding:10px 16px;border-bottom:1px solid var(--line-2)}
+#rank-legend[hidden]{display:none}

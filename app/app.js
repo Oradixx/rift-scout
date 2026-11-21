@@ -48,7 +48,7 @@
   const cMatch = (p, v) => !v || !hasCT() || (v === 'free' ? isFree(p) : v === 'signed' ? !!p.c && !isFree(p) : !p.c);
 
   const TIER_IN = ['ligue majeure', 'deuxième niveau', 'troisième niveau'];
-  const state = { pw: { tier: '0', region: '', league: '', shown: 100, basis: 'season' }, tr: { league: '' }, calc: 'rift', season: Object.keys(D.seasons).sort().pop(), view: 'rank', role: '', tier: '0', region: '', league: '', event: '', contract: '', basis: 'season', minG: 15, q: '', shown: 100,
+  const state = { pw: { tier: '0', region: '', league: '', shown: 100, basis: 'season' }, tr: { league: '' }, calc: 'rift', season: Object.keys(D.seasons).sort().pop(), view: 'rank', role: '', tier: '0', region: '', league: '', event: '', contract: '', basis: 'season', sortBy: 'note', minG: 15, q: '', shown: 100,
     sc: { plan: {}, contract: '', maxAge: 0, res: '', tid: null, role: 'Mid', tier: '', region: '', league: '', minNote: 0, minG: 20, sort: 'score', shown: 60, ref: null, reach: true, mode: 'team',
       cr: { role: '', maxAge: 22, region: '', deep: false, minG: 15, contract: '', fresh: false, all: false, noAge: false, shown: 60 } } };
   let S, byId, med;
@@ -223,10 +223,24 @@
   function frDate(d) { return new Date(d + 'T12:00:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' }); }
   /* « Période récente » pour la saison en cours, « Fin de saison » pour une saison terminée (même calcul) */
   const recentLbl = () => (state.season === Object.keys(D.seasons).sort().pop() ? 'Période récente' : 'Fin de saison');
+  /* Tri par note prudente : la note moins sa marge due au nombre de parties (ne, ou nue en mode unifié). Seulement pour la note de
+     saison ; une ligne notée sur les seules parties d'un niveau de ligue (note Rift Scout) a la marge de la saison, élargie en
+     proportion de 1/racine(parties). Le meilleur cinq ne change pas. */
+  const prudentOn = () => state.sortBy === 'prudent' && state.basis === 'season';
+  function margeOf(p) {
+    if (p._e && p._e.tierOnly) return p.ne == null ? null : p.ne * Math.sqrt(p.n / p._e.n);
+    return state.calc === 'uni' && p.nue != null ? p.nue : p.ne;
+  }
+  const prudentVal = (p) => { const m = margeOf(p); return (p._e ? p._e.note : p.note) - (m == null ? 0 : m); };
   function renderRank() {
     const rb = document.querySelector('[data-lgmode=recent]'); if (rb) rb.textContent = recentLbl();
     renderFive();
-    const L = filtered(false);
+    const pru = prudentOn();
+    const sb = $('#sort-by'); sb.hidden = state.basis !== 'season';
+    sb.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', b.dataset.sortby === state.sortBy));
+    $('#rank-legend').hidden = !pru;
+    let L = filtered(false);
+    if (pru) L = L.map((p) => [prudentVal(p), p]).sort((x, y) => y[0] - x[0]).map((x) => x[1]);
     const el = $('#rows');
     const who = state.event ? ` ayant joué ${state.event}` : state.league ? ` ayant joué en ${lgName(state.league)} cette saison` : '';
     const on = state.basis === 'recent' ? 'leur dernier split et ce qui a suivi' : state.basis === 'only' && state.event ? state.event : state.basis === 'only' && state.league ? 'leurs seules parties de ' + lgName(state.league) : 'toute la saison';
@@ -240,7 +254,9 @@
       // affichée ici : elle prédit la suite moins bien que la note de saison (log-loss +0,037 sur août-novembre 2026).
       const d = p._e ? p._e.note - p.note : p.rc ? p.rc[0] - p.note : 0;
       const tc = d >= 1.5 ? 'up' : d <= -1.5 ? 'down' : 'flat';
-      html += `<button class="row" data-p="${p.id}"><span class="rank">${i + 1}</span><span class="num note ${noteCls(n)}">${nInt(n)}</span>
+      const mg = pru ? margeOf(p) : null;
+      const noteHtml = `<span class="num note ${noteCls(n)}">${nInt(n)}</span>`;
+      html += `<button class="row" data-p="${p.id}"><span class="rank">${i + 1}</span>${mg == null ? noteHtml : `<span class="notecell">${noteHtml}<small class="marge" title="Marge due au nombre de parties : un écart-type, en points de note">± ${fmt(mg, 1)}</small></span>`}
         <span class="who"><b>${h(p.name)}</b><small>${teamLine(p)}${ageTxt(p)} ${cShort(p)}</small></span>
         <span class="pos">${p.role}</span>${strip(p)}
         <span class="trend ${tc} r trend-cell" title="${p._e ? 'Écart avec sa note sur toute la saison' : recentLbl() + ' (dernier split et ce qui a suivi) par rapport à la saison'}">${!p._e && !p.rc ? '–' : (d > 0 ? '+' : '') + fmt(d, 1)}</span>
@@ -1042,12 +1058,13 @@
       else if (b.dataset.scmode) { state.sc.mode = b.dataset.scmode; renderScout(); }
       else if (b.id === 'crack-more') { state.sc.cr.shown += 60; renderScout(); }
       else if (b.closest('#c-roles')) { state.sc.cr.role = b.dataset.role; state.sc.cr.shown = 60; renderScout(); }
+      else if (b.dataset.sortby) { state.sortBy = b.dataset.sortby; state.shown = 100; renderRank(); }
       else if (b.dataset.lgmode) { state.basis = b.dataset.lgmode; state.shown = 100; renderRank(); }
       else if (b.id === 'p-more') { state.pw.shown += 100; renderPower(); }
       else if (b.dataset.pbasis) { state.pw.basis = b.dataset.pbasis; state.pw.shown = 100; renderPower(); }
       else if (b.id === 'more') { state.shown += 100; renderRank(); }
       else if (b.id === 'scout-more') { state.sc.shown += 60; renderScout(); }
-      else if (b.id === 'reset') { Object.assign(state, { role: '', tier: '0', region: '', league: '', event: '', contract: '', basis: 'season', minG: 15, q: '', shown: 100 }); syncFilters(); fillSelects(); renderRank(); }
+      else if (b.id === 'reset') { Object.assign(state, { role: '', tier: '0', region: '', league: '', event: '', contract: '', basis: 'season', sortBy: 'note', minG: 15, q: '', shown: 100 }); syncFilters(); fillSelects(); renderRank(); }
       else if (b.id === 'clear-team') { state.sc.plan = {}; state.sc.tid = null; state.sc.ref = null; $('#team-input').value = ''; renderScout(); }
       else if (b.closest('#f-roles')) { state.role = b.dataset.role; state.shown = 100; syncFilters(); renderRank(); }
       else if (b.closest('#s-roles') || b.closest('#lineup')) { state.sc.role = b.dataset.role; state.sc.ref = null; state.sc.shown = 60; renderScout(); }

@@ -35,6 +35,8 @@
         <div class="wide"><span class="count" id="count"></span></div>
         <div class="field wide" id="lg-mode"><span>Noter les joueurs sur</span>
           <div class="seg seg-wide"><button data-lgmode="season">Toute la saison</button><button data-lgmode="recent" title="Dernier split de ligue de chaque joueur et tout ce qu'il a joué ensuite">Période récente</button><button data-lgmode="only" id="lg-mode-only" hidden>Cette ligue seulement</button></div></div>
+        <div class="field wide" id="sort-by"><span>Trier par</span>
+          <div class="seg seg-wide"><button data-sortby="note">Note</button><button data-sortby="prudent" title="La note moins sa marge due au nombre de parties : un joueur qui a peu joué descend">Note prudente</button></div></div>
         <div class="field wide"><span>Poste</span>
           <div class="roles" id="f-roles">
             <button data-role="">Tous</button><button data-role="Top">Top</button><button data-role="Jungle">Jungle</button>
@@ -54,6 +56,7 @@
         <div class="thead"><span>Rang</span><span>Note</span><span>Joueur</span><span>Poste</span>
           <span class="strip-head" title="Lane, début de partie, teamfight, dégâts, farm et or, vision, survie, objectifs"><span>Lane</span><span>Déb.</span><span>TF</span><span>Dég.</span><span>Or</span><span>Vis.</span><span>Surv.</span><span>Obj.</span></span>
           <span class="r" id="th-trend">Récent</span><span class="r">Parties</span></div>
+        <p class="legend" id="rank-legend" hidden>Trié par note prudente : la note moins sa marge due au nombre de parties. Un joueur qui a peu joué descend ; entre deux joueurs à la marge comparable, l'ordre ne change pas.</p>
         <div id="rows"></div>
       </div>
     </div>
@@ -208,6 +211,7 @@
         <li><b>Objectifs</b> : pour moitié, la part des objectifs de l'équipe (dragons, barons, tours…) sur lesquels le joueur est présent ; pour moitié, les objectifs pris par l'équipe.</li>
         <li><b>Grands matchs</b> : écart entre ses parties de playoffs ou de tournoi entre ligues, et ses autres parties. Les coupes et qualifications d'une seule ligue ou région n'y comptent pas.</li>
         <li><b>Style de jeu</b> : part de l'or et des dégâts, activité avant 15 minutes, prise de risque, vision, farm, type de champions joués. Il sert à mesurer la ressemblance entre deux joueurs, pas leur niveau.</li>
+        <li><b>Note prudente</b> : le réglage « Trier par » du classement permet de classer sur la note moins sa marge. La marge est de combien la note bougerait avec d'autres parties de la même saison (un écart-type) ; elle se mesure en refaisant tout le calcul sur deux moitiés de saison tirées au hasard. Pour la note Rift Scout, elle vaut 448 / √parties points avant conversion en note ; la marge d'une saison laisse 64 à 74 % des joueurs de l'autre saison dans la marge, pour 68 % attendus. Elle ne s'applique qu'à la note de saison. Idée reprise de PandaSkill, qui classe sur une note prudente.</li>
       </ul>
       <h2>Rift Scout, mixte ou unifiée</h2>
       <p>Le bouton en haut de la page choisit le calcul de la note de saison et des notes par événement. Les facettes et les notes de ligue, de niveau et de période récente restent celles de Rift Scout. Pour un événement, la note mixte prend la moitié de la note Rift Scout de l'événement et la moitié de la note LoL Ratings de la même compétition (sa note de saison s'il n'en a pas). La note unifiée d'un événement part de la note unifiée de saison et s'en écarte selon les résultats et l'écart d'or des seules parties de l'événement. Le réglage de cet écart a été choisi en partageant les parties de chaque événement en deux moitiés : l'écart mesuré sur une moitié prédit mieux l'autre moitié que la note de saison seule, en 2025 et en 2026, à condition de le ramener vers la note de saison (au-delà, il ajoute surtout du bruit). Dans l'onglet Transferts, les droites de la note attendue ont été mesurées sur les notes Rift Scout ; en mode mixte ou unifié elles sont appliquées telles quelles.</p>
