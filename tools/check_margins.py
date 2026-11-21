@@ -36,10 +36,10 @@ def halves(year, seed=0):
         try: S = B.season(year, B.META['prior'][str(year)])
         finally: B.load = _load
         o = U.fit(S, B.META['prior'][str(year)], B.tier_of, {'with_se': False}, S['A'].Z)
-        out.append(pd.DataFrame({'theta': o['theta'], 'n': S['A'].n.reindex(o['theta'].index)}))
+        out.append(pd.DataFrame({'theta': o['theta'], 'n': S['A'].n.reindex(o['theta'].index)}).join(S['A'].pts.rename('pts')))
     j = out[0].join(out[1], lsuffix='_a', rsuffix='_b', how='inner')
     j = j[(j.n_a >= 10) & (j.n_b >= 10)]
-    return pd.DataFrame({'d': j.theta_a - j.theta_b, 'v': 1 / j.n_a + 1 / j.n_b})
+    return pd.DataFrame({'d': j.theta_a - j.theta_b, 'dp': j.pts_a - j.pts_b, 'v': 1 / j.n_a + 1 / j.n_b})
 
 
 if __name__ == '__main__':
@@ -52,3 +52,9 @@ if __name__ == '__main__':
         print(f'  avec le C de {o} : {(z.abs() < 1).mean():.0%} à moins d\'une marge (68 % attendus), '
               f'{(z.abs() < 1.96).mean():.0%} à moins de 1,96 (95 %) ; écart-type {z.std():.2f} (1 attendu)')
     print(f'C retenu (moyenne) : {np.mean(list(C.values())):.0f} ; pour 40 parties, marge de {np.mean(list(C.values())) / np.sqrt(40):.0f} points')
+    # même mesure pour la note Rift Scout (points avant conversion en note) : unified.NOISE_C_RS
+    Cp = {y: float(np.sqrt(np.mean(h.dp ** 2 / h.v))) for y, h in H.items()}
+    for y, h in H.items():
+        o = 2026 if y == 2025 else 2025; z = h.dp / (Cp[o] * np.sqrt(h.v))
+        print(f'Rift Scout {y} : C = {Cp[y]:.0f} ; avec le C de {o} : {(z.abs() < 1).mean():.0%} à moins d\'une marge, {(z.abs() < 1.96).mean():.0%} à moins de 1,96')
+    print(f'Rift Scout, C retenu : {np.mean(list(Cp.values())):.0f}')

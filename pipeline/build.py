@@ -97,8 +97,18 @@ WEIGHTS_HAND = {r: dict(w) for r, w in WEIGHTS.items()}
 _ADJ = {'carry': 2.0, 'vision': 2.0, 'safe': 0.5}
 WEIGHTS = {r: {f: v * _ADJ.get(f, 1.0) for f, v in w.items()} for r, w in WEIGHTS_HAND.items()}
 WEIGHTS = {r: {f: round(v / sum(w.values()), 4) for f, v in w.items()} for r, w in WEIGHTS.items()}
-TL_STATS = {'nwd_pm', 'obj_part'}
-CHAMP_ADJ = ['nwd_pm', 'obj_part', 'dpm', 'damageshare', 'dmg_per_gold', 'kshare', 'cspm', 'earned gpm', 'earnedgoldshare', 'vspm', 'wcpm', 'cwpm', 'wpm',
+# Kills gratuits (chronologies : kill ou assistance que l'équipe adverse ne rend pas dans la foulée, part de ses kills et
+# assistances), idée reprise de PandaSkill. Poids dans « Teamfight » ; 0 = non utilisé. Jugé sur les transferts (novembre
+# 2026, chronologies 2025 seulement, donc la seule paire 2025 -> 2026) : poids 0,5 -0,00014 [-0,00038 ; +0,00008], poids 1
+# -0,00021 [-0,00056 ; +0,00012] : rien de mesurable, laissé à 0.
+FREE_KILL_W = 0.0
+# Bruit de mesure de la note Rift Scout : NOISE_C_RS / racine(parties), en points (tools/check_margins.py : saison refaite
+# sur deux moitiés de matchs, C = 424 en 2025 et 472 en 2026 ; le C d'une saison laisse 74 % et 64 % des joueurs de l'autre
+# à moins d'une marge, pour 68 % attendus). Sert au tri prudent du classement (note moins une marge).
+NOISE_C_RS = 448.0
+if FREE_KILL_W: FACETS['fight'] = {**FACETS['fight'], 'free_kr': FREE_KILL_W}
+TL_STATS = {'nwd_pm', 'obj_part', 'free_kr'}
+CHAMP_ADJ = ['nwd_pm', 'obj_part', 'free_kr', 'dpm', 'damageshare', 'dmg_per_gold', 'kshare', 'cspm', 'earned gpm', 'earnedgoldshare', 'vspm', 'wcpm', 'cwpm', 'wpm',
              'golddiffat15', 'xpdiffat15', 'csdiffat15', 'golddiffat10', 'duo_gd15', 'kp', 'lkda', 'nd_pm', 'nd_share', 'ka15', 'nd15',
              'ka_late', 'nd_late', 'p15', 'fbp']
 STYLE = ['earnedgoldshare', 'damageshare', 'kshare', 'ka15', 'p15', 'dth_pm', 'dtshare', 'vspm', 'cspm', 'champ_carry', 'champ_tank',
@@ -202,15 +212,16 @@ def load(year):
     p['role'] = p.position.map(ROLE)
     # mesures tirées des chronologies Leaguepedia, quand elles existent pour cette saison (même partie, même joueur)
     tl_path = os.path.join(HERE, f'lp_timeline_{year}.csv.gz')
-    tl_cols = ['worthless', 'obj_ka', 'team_obj', 'jg_prox', 'ejg_prox', 'jg_top', 'jg_mid', 'jg_bot', 'roam', 'gank_d15']
+    tl_cols = ['worthless', 'obj_ka', 'team_obj', 'ka', 'free_ka', 'jg_prox', 'ejg_prox', 'jg_top', 'jg_mid', 'jg_bot', 'roam', 'gank_d15']
     if os.path.exists(tl_path):
         tl = pd.read_csv(tl_path, usecols=['gameid', 'pid', 'jg_ok'] + tl_cols).rename(columns={'pid': 'participantid'}).drop_duplicates(['gameid', 'participantid'])
         # rares parties où le jungler n'est pas à sa place habituelle dans le fichier : les mesures de position n'y sont pas fiables
         tl.loc[tl.jg_ok == 0, ['jg_prox', 'ejg_prox', 'jg_top', 'jg_mid', 'jg_bot', 'roam', 'gank_d15']] = np.nan
-        tl = tl.drop(columns='jg_ok')
+        tl = tl.drop(columns='jg_ok').rename(columns={'ka': 'tl_ka'})
         p = p.merge(tl, on=['gameid', 'participantid'], how='left')
     else:
         for c in tl_cols: p[c] = np.nan
+        p = p.rename(columns={'ka': 'tl_ka'})
     return p, t
 
 
@@ -320,6 +331,7 @@ def features(p, t):
     p['nd15'] = -p.deathsat15
     p['nwd_pm'] = -p.worthless / mins                       # NaN sans chronologie
     p['obj_part'] = (p.obj_ka / p.team_obj.replace(0, np.nan))
+    p['free_kr'] = p.free_ka / p.tl_ka.where(p.tl_ka >= 3)          # NaN sans chronologie ou avec moins de 3 kills et assistances
     p['fbp'] = ((p.firstbloodkill.fillna(0) + p.firstbloodassist.fillna(0)) > 0).astype(float).where(p.firstbloodkill.notna())
     p['ka_late'] = (p.kills + p.assists - p.ka15) / late
     p['nd_late'] = -(p.deaths - p.deathsat15) / late
@@ -943,6 +955,7 @@ def main():
         st_by = {k: v for k, v in stint_table(S).groupby('pid') if len(v) > 1}
         A = A[A.n >= MIN_GAMES].copy()
         A['note'] = [to_note(v, a, b) for v in A.pts]
+        A['ne'] = [to_note(v + NOISE_C_RS / math.sqrt(k), a, b) - to_note(v, a, b) for v, k in zip(A.pts, A.n)]
         # Note mixte (bouton « Mixte » de la page) : moitié note Rift Scout, moitié note de LoL Ratings (régression sur l'écart d'or
         # joueur par joueur, pipeline/lr_ratings_<année>.csv, repris de results/ratings_<année>.csv du dépôt LoL-ratings). Les
         # points de LoL Ratings sont ramenés à l'échelle de la note (même moyenne et même écart-type sur les joueurs communs,
@@ -1027,7 +1040,7 @@ def main():
             players.append({
                 'id': pid.replace('oe:player:', ''), 'name': r['name'], 'team': r.team, 'tid': str(r.tid).replace('oe:team:', ''), 'league': r.league,
                 'region': META['region'].get(r.league, 'Autre'), 'tier': int(r.tier), 'role': r.role, 'n': int(r.n),
-                'note': r1(r.note), 'nm': r1(r.nm), 'nu': r1(r.nu), 'nue': r1(r.nue), 'pts': r1(r.pts, 0), 'team_lvl': r1(to_note(r['T'], a, b)), 'ind': r1(r.I, 2),
+                'note': r1(r.note), 'ne': r1(r['ne']), 'nm': r1(r.nm), 'nu': r1(r.nu), 'nue': r1(r.nue), 'pts': r1(r.pts, 0), 'team_lvl': r1(to_note(r['T'], a, b)), 'ind': r1(r.I, 2),
                 'form': r1(to_note(form.get(pid, r.pts), a, b)), 'last': str(r.last_date.date()),
                 'rc': [r1(to_note(recent.pts[pid], a, b)), int(recent.n[pid]), str(recent.start[pid].date()), recent.ev[pid]] if pid in recent.index else None,
                 'f': [r1(to_note(r['p_' + f], a, b)) if not pd.isna(r['p_' + f]) else None for f in fac],
