@@ -106,6 +106,11 @@ FREE_KILL_W = 0.0
 # sur deux moitiés de matchs, C = 424 en 2025 et 472 en 2026 ; le C d'une saison laisse 74 % et 64 % des joueurs de l'autre
 # à moins d'une marge, pour 68 % attendus). Sert au tri prudent du classement (note moins une marge).
 NOISE_C_RS = 448.0
+# Décalage de la droite « montée » (note attendue en ligue majeure d'un joueur qui monte, onglets Transferts et Cracks), en
+# points. Les équipes avec des joueurs montés finissent un peu sous leur niveau attendu (−0,4 point, −1,9 en LEC avec deux
+# montés) ; à −1 le power ranking attendu reste aussi bien rangé (tools/bench_rosters.py, corrélation de rang 0,746 contre
+# 0,746, erreur 2,791 contre 2,799), au-delà il range moins bien. Choisi à −1 sur demande (avis général : GIANTX trop haut).
+LOW_SHIFT = -1.0
 if FREE_KILL_W: FACETS['fight'] = {**FACETS['fight'], 'free_kr': FREE_KILL_W}
 TL_STATS = {'nwd_pm', 'obj_part', 'free_kr'}
 CHAMP_ADJ = ['nwd_pm', 'obj_part', 'free_kr', 'dpm', 'damageshare', 'dmg_per_gold', 'kshare', 'cspm', 'earned gpm', 'earnedgoldshare', 'vspm', 'wcpm', 'cwpm', 'wpm',
@@ -1131,7 +1136,7 @@ def main():
         x, z = j.pts.map(lambda v: to_note(v, a, b)), j.pts_1.map(lambda v: to_note(v, a, b))
         lines = {}
         for k, m in (('maj', j.league.map(tier_of) == 0), ('low', j.league.map(tier_of) > 0)):
-            sl_, ic_ = np.polyfit(x[m], z[m], 1); lines[k] = {'a': r1(ic_, 2), 'b': r1(sl_, 3), 'n': int(m.sum())}
+            sl_, ic_ = np.polyfit(x[m], z[m], 1); lines[k] = {'a': r1(ic_ + (LOW_SHIFT if k == 'low' else 0), 2), 'b': r1(sl_, 3), 'n': int(m.sum())}
         out['proj'] = lines['low']
         if 'next' in out: out['next']['lines'] = lines
         print('note attendue la saison suivante : majeure', lines['maj'], '| montée', lines['low'])
