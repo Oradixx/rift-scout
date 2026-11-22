@@ -68,7 +68,7 @@ def expected(d, lg, calc):
         q = P0.get(p['id']); v = L['maj']['a'] + L['maj']['b'] * note(p)
         return v + (L['prev'] * (note(q) - note(p)) if L['prev'] and q and q['tier'] == 0 and q['n'] >= 15 else 0)
     T = [t for t in N['teams'] if t['league'] == lg]
-    known = [tv(P1[t['cur'][r]]) for t in T for r in ROLES if isinstance(t['cur'][r], str) and t['cur'][r] in P1]
+    known = [tv(P1[t['cur'][r]]) for t in T for r in ROLES if t['cur'].get(r) in P1]   # équipe nouvelle : cur vide
     dflt = float(np.quantile(known, 0.25)) if known else 0.0
     slot = lambda x: tv(P1[x]) if isinstance(x, str) and x in P1 else dflt
     return sorted(((round(float(np.mean([slot((t['nxt'] or t['cur'])[r]) for r in ROLES])), 1), t['name']) for t in T), reverse=True)
