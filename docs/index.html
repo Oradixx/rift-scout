@@ -765,6 +765,8 @@ button.pl:hover{background:var(--cobalt-soft);color:var(--cobalt)}
       med[k] = { f: m, note: median(arr.map((p) => p.note)) };
     }
   }
+  /* signe de l'écart à son équipe : part individuelle exacte en Rift Scout, note du calcul choisi moins niveau d'équipe sinon */
+  const gapInd = (p) => (state.calc === 'rift' ? p.ind : p.note - p.team_lvl);
   function median(a) { if (!a.length) return null; a = a.slice().sort((x, y) => x - y); const m = a.length >> 1; return a.length % 2 ? a[m] : (a[m - 1] + a[m]) / 2; }
 
   /* couleur d'une note : du gris au cobalt, or au-dessus de 90 */
@@ -989,7 +991,7 @@ button.pl:hover{background:var(--cobalt-soft);color:var(--cobalt)}
       <p class="meta">${p.role}, ${h(p.team)}, ${h(lgName(p.league))} (${h(p.region)})<br>${(p.age || p.cty) ? [p.age ? p.age + ' ans' : null, p.cty ? h(pays(p.cty)) : null, p.res ? 'résidence ' + h(resid(p.res)) : null].filter(Boolean).join(', ') + '<br>' : ''}${rankIn}<sup>${rankIn === 1 ? 'er' : 'e'}</sup> des ${grp}, saison ${state.season}${(p.nm != null || p.nu != null) ? '<br>' + ['Note Rift Scout ' + nInt(p.note0), p.nm != null ? 'note mixte ' + nInt(p.nm) : null, p.nu != null ? 'note unifiée ' + nInt(p.nu) + (p.nue != null ? ' (± ' + nInt(p.nue) + ')' : '') : null].filter(Boolean).join(', ') : ''}${p.now ? `<br>A ensuite joué pour ${h(p.now)} (tournoi ou intersaison)` : ''}${hasCT() ? '<br>' + (p.c ? (isFree(p) ? `<b class="down">Fin de contrat le ${cDate(p.c, true)}</b>` : `Sous contrat jusqu'au ${cDate(p.c, true)}`) : 'Contrat non renseigné dans la base de Riot') : ''}</p></div><div class="hbtns"><button class="close" data-card>Télécharger l'image</button><button class="close" data-close>Fermer</button></div></header>`;
     html += `<section><div class="split">
       <div><small>Niveau de son équipe${p.tse ? ', à ± ' + fmt(p.tse, 1) + ' près' : ''}</small><span class="num">${nInt(p.team_lvl)}</span></div>
-      <div><small>Écart individuel</small><span class="num ${p.note >= p.team_lvl ? 'up' : 'down'}">${p.note >= p.team_lvl ? '+' : '−'}${fmt(Math.abs(p.note - p.team_lvl), 1)}</span></div>
+      <div><small>Écart individuel</small><span class="num ${gapInd(p) >= 0 ? 'up' : 'down'}">${gapInd(p) >= 0 ? '+' : ''}${fmt(p.note - p.team_lvl, 1)}</span></div>
       <div><small>${recentLbl()}${p.rc ? ', ' + p.rc[1] + ' parties' : ''}</small><span class="num ${d >= 1.5 ? 'up' : d <= -1.5 ? 'down' : ''}">${p.rc ? nInt(p.rc[0]) : '–'}</span></div>
       <div><small>Parties jouées, ${pctTxt(p.st.win)} de victoires</small><span class="num">${p.n}</span></div></div>
       <p class="legend" style="margin-top:10px">${p.rc ? `${recentLbl()} : ${h(p.rc[3])} et ce qui a suivi, depuis le ${frDate(p.rc[2])}. ` : ''}Sur ses 15 dernières parties : ${nInt(p.form)} (indicatif : sur 15 parties, la note varie beaucoup et prédit la suite moins bien que la note de saison).</p>
@@ -1181,7 +1183,7 @@ button.pl:hover{background:var(--cobalt-soft);color:var(--cobalt)}
     brief.innerHTML = txt;
     // candidats
     // niveau de ligue choisi : un joueur qui y a joué sans que ce soit son niveau principal est proposé avec sa note sur ces seules parties
-    const stint = (p) => { if (sc.tier === '' || sc.league || p.tier === +sc.tier) return p; const v = p.tr && p.tr[sc.tier]; return v ? Object.assign({}, p, { note: v[0], n: v[1], team: v[2], league: v[3], region: D.region[v[3]] || p.region, tier: +sc.tier, _tr: true }) : p; };
+    const stint = (p) => { if (sc.tier === '' || sc.league || p.tier === +sc.tier) return p; const v = p.tr && p.tr[sc.tier]; return v ? Object.assign({}, p, { note: v[0], note0: v._rs ?? v[0], n: v[1], team: v[2], league: v[3], region: D.region[v[3]] || p.region, tier: +sc.tier, _tr: true }) : p; };   // note0 : la même note de niveau en Rift Scout, pour le profil par facette
     let C = S.players.map(stint).filter((p) => p.role === sc.role && p.n >= sc.minG && p.note >= sc.minNote && (!t || p.tid !== t.tid) && (!inc || p.id !== inc.id) && (!t || !sc.reach || p.team_lvl <= t.lvl + 1) && cMatch(p, sc.contract) &&
       (!sc.maxAge || !hasAge() || (p.age && p.age <= sc.maxAge)) && (!hasMeta() || !sc.res || p.res === sc.res) &&
       (sc.tier === '' || p.tier === +sc.tier) && (!sc.region || p.region === sc.region) && (!sc.league || p.league === sc.league));
@@ -1650,7 +1652,7 @@ button.pl:hover{background:var(--cobalt-soft);color:var(--cobalt)}
     const title = (s) => { y += 56; P.text(s, L, y, { px: 30, w: 700 }); y += 22; };
     // niveau de l'équipe, écart individuel, parties, victoires
     y += 32;
-    const cw = IW / 4, cells = [['Niveau de son équipe', nInt(p.team_lvl) + '', 'ink'], ['Écart individuel', (p.note >= p.team_lvl ? '+' : '−') + fmt(Math.abs(p.note - p.team_lvl), 1), p.note >= p.team_lvl ? 'teal' : 'rose'],
+    const cw = IW / 4, cells = [['Niveau de son équipe', nInt(p.team_lvl) + '', 'ink'], ['Écart individuel', (gapInd(p) >= 0 ? '+' : '') + fmt(p.note - p.team_lvl, 1), gapInd(p) >= 0 ? 'teal' : 'rose'],
       ['Parties jouées', p.n + '', 'ink'], ['Part de victoires', pctTxt(p.st.win), 'ink']];
     P.panel(L, y, IW, 190);
     cells.forEach(([lab, v, c], i) => {
