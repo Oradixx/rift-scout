@@ -35,6 +35,10 @@ if old:
             med, big = diff[len(diff) // 2], sum(x > 5 for x in diff) / len(diff)
             print(f'{y} : par rapport à la page publiée, écart médian {med:.1f}, {big:.0%} des joueurs à plus de 5 points')
             if med > 2 or big > 0.10: err.append(f'{y} : les notes ont bougé en bloc (écart médian {med:.1f}, {big:.0%} à plus de 5 points)')
+# trois calculs de la note : chaque note existe dans les trois, aucune droite d'un seul calcul dans la page (tools/check_modes.py)
+sys.path.insert(0, os.path.join(HERE, '..', 'tools'))
+from check_modes import mode_errors
+err += mode_errors(d, open(os.path.join(HERE, '..', 'app', 'app.js'), encoding='utf-8').read())
 if err:
     print('\n'.join('ERREUR ' + e for e in err)); sys.exit(1)
 print('vérification passée')

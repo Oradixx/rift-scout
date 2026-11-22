@@ -1,0 +1,4 @@
+Rappel Rift Scout (hook du dépôt, à chaque demande) : trois calculs de la note, Rift Scout, Mixte et Unifiée.
+- Tout changement du calcul, d'une estimation ou de l'interface s'essaie dans les trois calculs, chacun sur ses propres notes : tools/bench_next_modes.py (note attendue, montées, saison d'avant), tools/bench_transfers.py (Mixte et Unifiée inclus), puis tools/check_modes.py et la page ouverte dans les trois calculs.
+- Ne jamais mélanger les calculs : une note de joueur (saison, événement, niveau de ligue, ligue, équipe, forme, période récente) ne se compare qu'à une note du même calcul ; une droite ou une constante réglée sur des notes existe pour chacun des trois calculs. Seules exceptions : profil par facette (facettes, weakside, strongside : Rift Scout, comparés à note0), niveau d'équipe (modèle de victoire des équipes, commun) et statistiques.
+- Annoncer les résultats pour chacun des trois calculs.
