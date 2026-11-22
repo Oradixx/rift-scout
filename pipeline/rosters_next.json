@@ -1,6 +1,6 @@
 {
   "season": "2027",
-  "source": "Sheep Esports, suivi des effectifs (relevé à la main le 18 novembre 2026)",
+  "source": "Sheep Esports, suivi des effectifs (relevé à la main : LEC le 18 novembre 2026, LCK et LCS le 22 novembre 2026 ; un joueur marqué « ??? » (rumeur) est compté comme annoncé)",
   "note": "Effectifs annoncés pour la saison suivante, par ligue puis par équipe (nom d'équipe de la saison en cours). null = poste pas encore annoncé. Une équipe absente garde son effectif actuel, signalé comme non annoncé. Pseudos seulement.",
   "leagues": {
     "LEC": {
@@ -14,6 +14,27 @@
       "Natus Vincere":  {"Top": "Zest",        "Jungle": "Rhilech",  "Mid": "Karis",      "ADC": "Supa",      "Support": "Parus"},
       "Team Vitality":  {"Top": null,          "Jungle": "Sheo",     "Mid": "Guti",     "ADC": "Jopa",      "Support": null},
       "Shifters":       {"Top": null,          "Jungle": null,       "Mid": null,       "ADC": null,        "Support": null}
+    },
+    "LCK": {
+      "DN SOOPers":         {"Top": "DuDu",       "Jungle": "Cuzz",    "Mid": "Ucal",     "ADC": "Deokdam",  "Support": "Bluffing"},
+      "Dplus Kia":          {"Top": "Doran",      "Jungle": "Kanavi",  "Mid": "ShowMaker", "ADC": "Smash",    "Support": "Delight"},
+      "Gen.G":              {"Top": "Siwoo",      "Jungle": "Sharvel", "Mid": "Chovy",    "ADC": "Ruler",    "Support": "Cloud"},
+      "HANJIN BRION":       {"Top": "Casting",    "Jungle": "Gideon",  "Mid": "Roamer",   "ADC": "Teddy",    "Support": "Namgung"},
+      "Hanwha Life Esports": {"Top": "Kiin",       "Jungle": "Canyon",  "Mid": "Zeka",     "ADC": "Gumayusi", "Support": "Career"},
+      "Kiwoom DRX":         {"Top": "Haetae",     "Jungle": "Lucid",   "Mid": "Scout",    "ADC": "Viper",    "Support": "Duro"},
+      "KT Rolster":         {"Top": "PerfecT",    "Jungle": "Raptor",  "Mid": "Bdd",      "ADC": "Taeyoon",  "Support": "Kellin"},
+      "Nongshim RedForce":  {"Top": "Kingen",     "Jungle": "Pyosik",  "Mid": "Calix",    "ADC": "Deft",     "Support": "Andil"},
+      "T1":                 {"Top": "Zeus",       "Jungle": "Oner",    "Mid": "Faker",    "ADC": "Peyz",     "Support": "Keria"},
+      "BNK FEARX":          {"Top": "Thanatos",   "Jungle": "Vincenzo", "Mid": "VicLa",    "ADC": "Noah",     "Support": null}
+    },
+    "LCS": {
+      "Cloud9":           {"Top": "Frog",       "Jungle": "Blaber",  "Mid": "Loki",     "ADC": "Yeon",     "Support": "CoreJJ"},
+      "FlyQuest":         {"Top": "Zamudo",     "Jungle": "Yukino",  "Mid": "Hwichan",  "ADC": "Zven",     "Support": "Cryogen"},
+      "Shopify Rebellion": {"Top": "Clear",      "Jungle": "Gryffinn", "Mid": "Quad",     "ADC": "Massu",    "Support": "Vulcan"},
+      "Team Liquid":      {"Top": "Morgan",     "Jungle": "Josedeodo", "Mid": "Quid",     "ADC": "FBI",      "Support": "Ackerman"},
+      "LYON":             {"Top": "Naak Nako",  "Jungle": "Inspired", "Mid": "Saint",    "ADC": "Berserker", "Support": null},
+      "OpTic Gaming":     {"Top": null,         "Jungle": "KryRa",   "Mid": null,       "ADC": null,       "Support": null},
+      "Sentinels":        {"Top": null,         "Jungle": "HamBak",  "Mid": "DARKWINGS", "ADC": "Rahel",    "Support": "Huhi"}
     }
   }
 }
