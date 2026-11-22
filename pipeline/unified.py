@@ -70,6 +70,41 @@ def event_deltas(S, theta, side, tau, games=None, gold_weight=0.5, iters=25):
     return out
 
 
+def subset_deltas(S, theta, side, tau, rows, gold_weight=0.5, iters=25):
+    """Note unifiée sur un sous-ensemble des parties de chaque joueur (niveau de ligue, ligue, équipe, forme, période récente) :
+    écart à son niveau de saison (theta), estimé sur ces seules parties (victoire et écart d'or), les neuf autres joueurs à
+    leur niveau de saison, ramené vers 0 avec l'écart-type tau. rows : parties (gameid, pid, key). Renvoie {(key, joueur) :
+    écart en points}. Même observation que event_deltas, mais joueur par joueur : un sous-ensemble propre à chaque joueur
+    (sa forme, son équipe) ne réunit pas les dix joueurs d'une partie."""
+    p, t = S['p'], S['t']
+    q = p[['gameid', 'side', 'pid']].drop_duplicates(['gameid', 'pid'])
+    n5 = q.groupby(['gameid', 'side']).size().unstack(fill_value=0).reindex(columns=['Blue', 'Red'], fill_value=0)
+    b = t[t.side == 'Blue'].set_index('gameid'); r = t[t.side == 'Red'].set_index('gameid')
+    ok = n5.index[((n5.Blue == 5) & (n5.Red == 5)).values]; ok = ok[ok.isin(b.index) & ok.isin(r.index)]
+    q = q[q.gameid.isin(ok)]
+    sg = np.where(q.side.values == 'Blue', 1.0, -1.0) / (5 * PTS_PER_LOGIT)
+    off = pd.Series(sg * theta.reindex(q.pid).fillna(theta.median()).values, index=q.gameid.values).groupby(level=0).sum().reindex(ok) + side
+    y = b.loc[ok].result.astype(float); gd = ((b.loc[ok].totalgold - r.loc[ok].totalgold) / 1000.0).clip(-25, 25)
+    okg = gd.notna().values; e0 = off.values[okg]
+    cg = float(np.dot(e0, gd.values[okg]) / np.dot(e0, e0)); s_ = float(np.std(gd.values[okg] - cg * e0)) or 1.0
+    lam = gold_weight * cg ** 2 / s_ ** 2 if gold_weight else 0.0
+    R = rows[['gameid', 'pid', 'key']].drop_duplicates(['gameid', 'pid', 'key']); R = R[R.gameid.isin(ok)]
+    sd = q.set_index(['gameid', 'pid']).side.reindex(pd.MultiIndex.from_arrays([R.gameid, R.pid])).values
+    s = np.where(sd == 'Blue', 1.0, -1.0) / (5 * PTS_PER_LOGIT)
+    grp, keys = pd.MultiIndex.from_arrays([R.key, R.pid]).factorize()
+    o, yy, g2 = off.reindex(R.gameid).values, y.reindex(R.gameid).values, gd.reindex(R.gameid).values
+    hg = ~np.isnan(g2); g2 = np.nan_to_num(g2); k = len(keys)
+    d = np.zeros(k); pen = 1 / tau ** 2
+    for _ in range(iters):
+        eta = o + s * d[grp]; m = 1 / (1 + np.exp(-eta))
+        gr = np.bincount(grp, s * (yy - m), k) - pen * d; H = np.bincount(grp, s * s * m * (1 - m), k) + pen
+        if lam:
+            gr += lam * np.bincount(grp, np.where(hg, s * (g2 / cg - eta), 0.0), k); H += lam * np.bincount(grp, np.where(hg, s * s, 0.0), k)
+        st = gr / H; d += st
+        if np.abs(st).max() < 1e-6: break
+    return {kp: float(v) for kp, v in zip(keys, d)}
+
+
 def fit(S, prior, tier_of, cfg=None, ind=None, base=None):
     """S : une saison calculée par build.season ; prior : niveaux de ligue de départ ; tier_of : niveau d'une ligue ;
     ind : point de départ de chaque joueur en écarts-types de son poste (par défaut la part individuelle `I`) ;

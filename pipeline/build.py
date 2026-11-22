@@ -117,9 +117,10 @@ LOW_SHIFT = -1.0
 # compte pas (trop dur à juger). Par calcul de la note (tools/bench_next_modes.py, novembre 2026, poids réglé sur l'autre
 # paire de saisons ; erreur par joueur en points, 2024 -> 2025 puis 2025 -> 2026) : Rift Scout 4,91 -> 4,87 et 5,49 -> 5,15,
 # Mixte 4,92 -> 4,91 et 4,85 -> 4,57 ; power ranking attendu à peu près inchangé (corrélation de rang 0,784 -> 0,775 et
-# 0,757 -> 0,754, erreur 2,96 -> 2,95 et 2,91 -> 2,90). Unifiée : moins bien en 2024 -> 2025 (5,11 -> 5,19), pas appliqué.
-# Poids retenu : celui des deux paires réunies (0,245 et 0,226 ; réglé sur une seule paire, de 0,13 à 0,38).
-PREV_WEIGHT = {'note': 0.25, 'nm': 0.23, 'nu': 0.0}
+# 0,757 -> 0,754, erreur 2,96 -> 2,95 et 2,91 -> 2,90). Unifiée : 5,11 -> 5,19 (moins bien) et 5,27 -> 5,01, power ranking
+# 0,738 -> 0,744 et 2,90 -> 2,90 ; appliqué aussi, sur demande (22 novembre 2026), malgré la paire 2024 -> 2025.
+# Poids retenu : celui des deux paires réunies (0,245, 0,226 et 0,240 ; réglé sur une seule paire, de 0,09 à 0,43).
+PREV_WEIGHT = {'note': 0.25, 'nm': 0.23, 'nu': 0.24}
 if FREE_KILL_W: FACETS['fight'] = {**FACETS['fight'], 'free_kr': FREE_KILL_W}
 TL_STATS = {'nwd_pm', 'obj_part', 'free_kr'}
 CHAMP_ADJ = ['nwd_pm', 'obj_part', 'free_kr', 'dpm', 'damageshare', 'dmg_per_gold', 'kshare', 'cspm', 'earned gpm', 'earnedgoldshare', 'vspm', 'wcpm', 'cwpm', 'wpm',
@@ -726,11 +727,32 @@ def event_table(S):
     return E
 
 
+def subset_rows(S, kind):
+    """Parties de chaque note partielle d'un joueur, colonne `key` = le sous-ensemble : 'tier' (niveau de ligue, saison
+    régulière et playoffs), 'league' (ligue), 'stint' (équipe, toutes compétitions, version remaniée comprise), 'form' (15
+    dernières parties), 'recent' (dernier split de ligue et ce qui a suivi, 8 parties au moins). Seule définition de ces
+    sous-ensembles : les notes Rift Scout (tier_table, league_table, stint_table, form_table, recent_table) et leurs
+    versions mixte et unifiée (mode_subnotes) en partent toutes."""
+    p = S['p']
+    if kind == 'tier': return p[p.scope == 'ligue'].assign(tier=lambda d: d.league.map(tier_of), key=lambda d: d.league.map(tier_of))
+    if kind == 'league': return p[p.scope == 'ligue'].assign(key=lambda d: d.league)
+    if kind == 'stint':
+        p = p.assign(tid=p.tid.str.replace(REMANIEE, '', regex=False)); return p.assign(key=p.tid)
+    if kind == 'form': return p.sort_values('date').groupby('pid').tail(15).assign(key='form')
+    if kind == 'recent':
+        lg = p[p.scope == 'ligue']
+        last_ev = lg.sort_values('date').groupby('pid').event.last()
+        start = lg[lg.event == lg.pid.map(last_ev)].groupby('pid').date.min()
+        q = p[p.date >= p.pid.map(start)]; n = q.groupby('pid').size()
+        return q[q.pid.isin(n[n >= 8].index)].assign(key='recent')
+    raise ValueError(kind)
+
+
 def tier_table(S):
     """note d'un joueur sur ses seules parties de ligue d'un niveau donné (majeur, deuxième, troisième) : pour ceux qui
     font des allers-retours entre une équipe première et une équipe réserve, ou qui changent de niveau en cours d'année."""
-    p, A = S['p'], S['A']
-    q = p[p.scope == 'ligue'].assign(tier=lambda d: d.league.map(tier_of))
+    A = S['A']
+    q = subset_rows(S, 'tier')
     g = q.groupby(['pid', 'tier'])
     T = g.agg(n=('c', 'size'), csum=('c', 'sum'), cn=('c', 'count'), T=('R_own', 'mean')).reset_index()
     # équipe et ligue affichées : le couple le plus joué à ce niveau (pas l'équipe de la dernière partie avec la ligue la plus fréquente)
@@ -745,8 +767,8 @@ def tier_table(S):
 def league_table(S):
     """note d'un joueur sur les seules parties d'une ligue (saison régulière et playoffs, hors tournois et coupes) :
     même calcul que la note de saison, restreint à ces parties."""
-    p, A = S['p'], S['A']
-    q = p[p.scope == 'ligue']
+    A = S['A']
+    q = subset_rows(S, 'league')
     g = q.groupby(['pid', 'league'])
     L = g.agg(n=('c', 'size'), csum=('c', 'sum'), cn=('c', 'count'), T=('R_own', 'mean'), win=('result', 'mean'), team=('teamname', 'last')).reset_index()
     L = L[(L.n >= 5) & L.pid.isin(A.index)]
@@ -757,9 +779,8 @@ def league_table(S):
 
 def stint_table(S):
     """note d'un joueur avec chacune de ses équipes de la saison (toutes compétitions) : même calcul que la note de saison."""
-    p, A = S['p'], S['A']
-    dom = p[p.scope == 'ligue']
-    p = p.assign(tid=p.tid.str.replace(REMANIEE, '', regex=False)); dom = p[p.scope == 'ligue']   # une équipe et sa version remaniée = un seul passage
+    A = S['A']
+    p = subset_rows(S, 'stint'); dom = p[p.scope == 'ligue']   # une équipe et sa version remaniée = un seul passage
     lg = dom.groupby(['pid', 'tid']).league.agg(lambda x: ', '.join(x.value_counts().index)).rename('lg')   # ses ligues avec cette équipe, la principale d'abord
     g = p.groupby(['pid', 'tid'])
     T = g.agg(n=('c', 'size'), csum=('c', 'sum'), cn=('c', 'count'), T=('R_own', 'mean'), win=('result', 'mean'), team=('teamname', 'last'),
@@ -790,12 +811,12 @@ def window_notes(S, q, sd=None, k_ind=None):
     return pd.Series(out, dtype=float)
 
 
-def form_table(S, last_n=15):
+def form_table(S):
     """Forme : note sur les 15 dernières parties."""
-    return window_notes(S, S['p'].sort_values('date').groupby('pid').tail(last_n))
+    return window_notes(S, subset_rows(S, 'form'))
 
 
-def recent_table(S, min_games=8):
+def recent_table(S):
     """Période récente : pour chaque joueur, son dernier split de ligue (saison régulière et playoffs) et tout ce qu'il a
     joué ensuite (tournois, coupes). Une seule valeur par joueur : la note sur ces parties, leur nombre, la date de départ
     et le nom du split."""
@@ -803,9 +824,8 @@ def recent_table(S, min_games=8):
     lg = p[p.scope == 'ligue']
     last_ev = lg.sort_values('date').groupby('pid').event.last()
     start = lg[lg.event == lg.pid.map(last_ev)].groupby('pid').date.min()
-    q = p[p.date >= p.pid.map(start)]
-    n = q.groupby('pid').size()
-    pts = window_notes(S, q[q.pid.isin(n[n >= min_games].index)], sd=SD_RECENT, k_ind=K_RECENT_IND)
+    q = subset_rows(S, 'recent'); n = q.groupby('pid').size()
+    pts = window_notes(S, q, sd=SD_RECENT, k_ind=K_RECENT_IND)
     return pd.DataFrame({'pts': pts, 'n': n.reindex(pts.index), 'start': start.reindex(pts.index), 'ev': last_ev.reindex(pts.index)})
 
 
@@ -907,6 +927,35 @@ def lr_event_notes(y, A, p, lr_note, lr_k):
     return out
 
 
+def mode_subnotes(S, kind, rs_note, theta, side, to_uni, lr_note, lr_ev, d_all=None):
+    """Versions mixte et unifiée d'une note partielle (sous-ensembles de subset_rows), pour que chaque note de la page suive
+    le calcul choisi. rs_note : {(clé, joueur) : note Rift Scout du sous-ensemble} ; to_uni : niveau unifié en points -> note.
+    Mixte : moitié note Rift Scout du sous-ensemble, moitié note LoL Ratings de ses compétitions (au prorata des parties ;
+    note LoL Ratings de saison pour une compétition non reliée), comme les notes d'événement. Unifiée : niveau unifié de
+    saison + écart propre à ces parties (unified.subset_deltas, ramené vers 0 avec unified.TAU_EVENT, comme les événements).
+    Niveau de ligue, ligue et équipe : écart compté par rapport au même écart mesuré sur toutes les parties du joueur (d_all),
+    comme leur note Rift Scout, qui refait le calcul de saison sur ces parties : sur toutes ses parties, on retombe sur la
+    note de saison (sans ce recentrage, jusqu'à 6 points d'écart en unifiée). Forme et période récente : comme les événements.
+    Renvoie {(clé, joueur) : (mixte, unifiée)}, None quand ce calcul n'a pas de note pour le joueur (la page affiche alors la
+    note Rift Scout, comme pour la note de saison)."""
+    q = subset_rows(S, kind)
+    q = q[pd.MultiIndex.from_arrays([q.key, q.pid]).isin(list(rs_note))]
+    d = unified.subset_deltas(S, theta, side, unified.TAU_EVENT, q[['gameid', 'pid', 'key']])
+    if d_all is not None: d = {kp: v - d_all.get(('all', kp[1]), 0.0) for kp, v in d.items()}
+    lr = {}
+    if lr_note is not None:
+        c = q.groupby(['key', 'pid', 'event']).size().rename('k').reset_index()
+        c['lr'] = [lr_ev.get((e, x), lr_note.get(x, np.nan)) for e, x in zip(c.event, c.pid)]
+        c = c.dropna(subset=['lr']); c['w'] = c.lr * c.k
+        g = c.groupby(['key', 'pid'])[['w', 'k']].sum(); lr = (g.w / g.k).to_dict()
+    out = {}
+    for kp, v in rs_note.items():
+        nm = min(99.0, max(1.0, (v + lr[kp]) / 2)) if kp in lr else None
+        nu = to_uni(theta[kp[1]] + d[kp]) if kp in d and kp[1] in theta.index and not pd.isna(theta[kp[1]]) else None
+        out[kp] = (nm, nu)
+    return out
+
+
 def next_rosters(S, A, teams):
     """Effectifs de la saison suivante (onglet Transferts). Équipes de la saison en cours : celles qui ont joué le dernier
     segment de leur ligue (une équipe invitée sur un seul segment, comme Los Ratones et Karmine Corp Blue en LEC Winter
@@ -965,9 +1014,10 @@ def main():
     for y, S in runs.items():
         A, p = S['A'], S['p']
         E = event_table(S); form = form_table(S); recent = recent_table(S)
-        lg_by = {k: v for k, v in league_table(S).groupby('pid')}
-        tr_by = {k: v for k, v in tier_table(S).groupby('pid')}
-        st_by = {k: v for k, v in stint_table(S).groupby('pid') if len(v) > 1}
+        LT, TT, ST = league_table(S), tier_table(S), stint_table(S)
+        lg_by = {k: v for k, v in LT.groupby('pid')}
+        tr_by = {k: v for k, v in TT.groupby('pid')}
+        st_by = {k: v for k, v in ST.groupby('pid') if len(v) > 1}
         A = A[A.n >= MIN_GAMES].copy()
         A['note'] = [to_note(v, a, b) for v in A.pts]
         A['ne'] = [to_note(v + NOISE_C_RS / math.sqrt(k), a, b) - to_note(v, a, b) for v, k in zip(A.pts, A.n)]
@@ -1009,6 +1059,18 @@ def main():
         ev_d = unified.event_deltas(S, U_['theta'], U_['side'], unified.TAU_EVENT)
         lr_ev = lr_event_notes(y, A, p, lr_note, lr_k) if lr_note is not None else {}
         ev_by = {k: v for k, v in E.groupby('pid')}
+        # Notes partielles (niveau de ligue, ligue, équipe, forme, période récente) dans les trois calculs : la page n'affiche
+        # ni ne compare jamais une note Rift Scout avec une note mixte ou unifiée (tools/check_modes.py, pipeline/check.py).
+        tn_ = lambda v: to_note(v, a, b)
+        rs_sub = {'tier': {(x.tier, x.pid): tn_(x.pts) for x in TT.itertuples()}, 'league': {(x.league, x.pid): tn_(x.pts) for x in LT.itertuples()},
+                  'stint': {(x.tid, x.pid): tn_(x.pts) for x in ST.itertuples()}, 'form': {('form', k): tn_(v) for k, v in form.items() if k in A.index},
+                  'recent': {('recent', k): tn_(v) for k, v in recent.pts.items()}}
+        to_uni = lambda v: to_note(m_ + k_ * v, a, b)
+        d_all = unified.subset_deltas(S, U_['theta'], U_['side'], unified.TAU_EVENT, p.assign(key='all'))
+        sub = {kd: mode_subnotes(S, kd, rs_sub[kd], U_['theta'], U_['side'], to_uni, lr_note, lr_ev, d_all if kd in ('tier', 'league', 'stint') else None)
+               for kd in rs_sub}
+        M = lambda kd, key, pid: [r1(v) if v is not None else None for v in sub[kd].get((key, pid), (None, None))]
+        print(f'{y} : notes partielles mixte et unifiée', {kd: sum(v[1] is not None for v in d_.values()) for kd, d_ in sub.items()})
         champs = p.groupby(['pid', 'champion']).agg(n=('result', 'size'), w=('result', 'mean')).reset_index()
         ch_by = {k: v.sort_values('n', ascending=False).head(6) for k, v in champs.groupby('pid')}
         fac = list(FACETS)
@@ -1057,8 +1119,8 @@ def main():
                 'id': pid.replace('oe:player:', ''), 'name': r['name'], 'team': r.team, 'tid': str(r.tid).replace('oe:team:', ''), 'league': r.league,
                 'region': META['region'].get(r.league, 'Autre'), 'tier': int(r.tier), 'role': r.role, 'n': int(r.n),
                 'note': r1(r.note), 'ne': r1(r['ne']), 'nm': r1(r.nm), 'nu': r1(r.nu), 'nue': r1(r.nue), 'pts': r1(r.pts, 0), 'team_lvl': r1(to_note(r['T'], a, b)), 'ind': r1(r.I, 2),
-                'form': r1(to_note(form.get(pid, r.pts), a, b)), 'last': str(r.last_date.date()),
-                'rc': [r1(to_note(recent.pts[pid], a, b)), int(recent.n[pid]), str(recent.start[pid].date()), recent.ev[pid]] if pid in recent.index else None,
+                'form': r1(to_note(form.get(pid, r.pts), a, b)), 'fm': M('form', 'form', pid), 'last': str(r.last_date.date()),
+                'rc': [r1(to_note(recent.pts[pid], a, b)), int(recent.n[pid]), str(recent.start[pid].date()), recent.ev[pid], *M('recent', 'recent', pid)] if pid in recent.index else None,
                 'f': [r1(to_note(r['p_' + f], a, b)) if not pd.isna(r['p_' + f]) else None for f in fac],
                 'fp': [r1(r['pc_' + f], 3) for f in fac], 'fi': [r1(r['pi_' + f], 2) for f in fac], 'pc': r1(r.pc_note, 3),
                 'wi': r1(r.pi_weak, 2), 'si': r1(r.pi_strong, 2),
@@ -1072,11 +1134,11 @@ def main():
                        'vspm': r1(r.vspm, 2), 'dpg': r1(r.dpg, 2), 'fb': r1(r.fb, 3),
                        'wd': r1(r.wd_share, 3), 'jgp': r1(r.jgp, 3) if r.wdn >= 10 else None, 'objp': r1(r.objp, 3) if r.wdn >= 10 else None, 'tl': int(r.wdn)},
                 'now': r.team_last if str(r.tid_last).replace(REMANIEE, '') != str(r.tid).replace(REMANIEE, '') else None, 'off': int(r.off_role),
-                'tm': [[t_.team, t_.lg if isinstance(t_.lg, str) else None, int(t_.n), r1(to_note(t_.pts, a, b)), str(t_.start.date()), str(t_.end.date()), r1(t_.win, 3)]
+                'tm': [[t_.team, t_.lg if isinstance(t_.lg, str) else None, int(t_.n), r1(to_note(t_.pts, a, b)), str(t_.start.date()), str(t_.end.date()), r1(t_.win, 3), *M('stint', t_.tid, pid)]
                        for t_ in st_by[pid].itertuples()] if pid in st_by else None,
-                'tr': {str(int(x.tier)): [r1(to_note(x.pts, a, b)), int(x.n), x.team, x.league] for x in tr_by[pid].itertuples()} if pid in tr_by else {},
+                'tr': {str(int(x.tier)): [r1(to_note(x.pts, a, b)), int(x.n), x.team, x.league, *M('tier', x.tier, pid)] for x in tr_by[pid].itertuples()} if pid in tr_by else {},
                 'tse': r1(float(S['R_se'].get(r.tid, np.nan)) * b),
-                'lg': {l.league: [r1(to_note(l.pts, a, b)), int(l.n), l.team, r1(l.win, 3)] for l in lg_by[pid].itertuples()} if pid in lg_by else {},
+                'lg': {l.league: [r1(to_note(l.pts, a, b)), int(l.n), l.team, r1(l.win, 3), *M('league', l.league, pid)] for l in lg_by[pid].itertuples()} if pid in lg_by else {},
                 'c': contracts.get(pid), 'age': ages.get(pid), 'cty': meta.get(pid, {}).get('cty'), 'res': meta.get(pid, {}).get('res'), 'ev': evs,
                 'ch': [[c.champion, int(c.n), r1(c.w, 2)] for _, c in ch_by.get(pid, pd.DataFrame()).iterrows()],
             })
@@ -1140,7 +1202,7 @@ def main():
     # LOW_SHIFT, poids de la saison d'avant PREV_WEIGHT.
     # Onglet Transferts (tools/bench_rosters.py : power ranking attendu mieux ordonné qu'avec les notes brutes ou l'ancienne
     # conversion des Cracks, sur 2024 -> 2025 et 2025 -> 2026, droites réglées sur l'autre paire). La droite « montée » Rift
-    # Scout sert aussi à l'onglet Cracks (`proj`, toujours en notes Rift Scout) : jugée sur les joueurs montés de 2023 -> 2024,
+    # Scout sert aussi à l'onglet Cracks (`proj`, une droite par calcul, comme ici) : jugée sur les joueurs montés de 2023 -> 2024,
     # 2024 -> 2025 et 2025 -> 2026 (droite réglée sur les deux autres paires), elle se trompe moins sur les trois paires (écart
     # quadratique 4,5, 6,1 et 4,8 points) que l'ancienne droite des joueurs ayant joué aux deux niveaux la même saison (5,9,
     # 6,3 et 5,1). Cette dernière surestimait les mieux notés : +4,5, +1,9 et +3,0 points de trop à partir de 75.
@@ -1157,7 +1219,7 @@ def main():
                 L[k] = {'a': r1(ic_ + (LOW_SHIFT if k == 'low' else 0), 2), 'b': r1(sl_, 3), 'n': int(m.sum())}
             L['prev'] = PREV_WEIGHT[col]
             lines[calc] = L
-        out['proj'] = lines['rift']['low']
+        out['proj'] = {calc: L['low'] for calc, L in lines.items()}   # onglet Cracks : droite « montée » de chaque calcul
         if 'next' in out: out['next']['lines'] = lines
         for calc, L in lines.items(): print(f'note attendue la saison suivante ({calc}) : majeure', L['maj'], '| montée', L['low'], '| saison d\'avant', L['prev'])
     json.dump(out, open(OUT, 'w', encoding='utf-8'), ensure_ascii=False, separators=(',', ':'))

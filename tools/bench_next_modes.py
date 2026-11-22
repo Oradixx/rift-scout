@@ -49,7 +49,7 @@ def main():
         out['c'] = float((r * d).sum() / (d * d).sum()); out['r'], out['d'] = r, d
         return out
 
-    rows, prow = [], []
+    rows, prow, lrow = [], [], []
     for y in (2024, 2025):
         S1 = SE[y + 1]; lg1 = pd.Series(S1['team_recent']).combine_first(pd.Series(S1['team_home'])); R1 = pd.Series(S1['R']).map(to_note)
         ros = BR.opening(S1)
@@ -61,6 +61,10 @@ def main():
             e_rs = g.z - (FR['maj'][0] + FR['maj'][1] * g.x); e0 = g.z - (F['maj'][0] + F['maj'][1] * g.x); e1 = e0 - F['c'] * (g.xm - g.x)
             prow.append({'calcul': mode, 'paire': f'{y}->{y + 1}', 'joueurs': len(g), 'poids (autre paire)': F['c'], 'droites Rift Scout': np.sqrt((e_rs ** 2).mean()),
                          'droites du calcul': np.sqrt((e0 ** 2).mean()), "+ saison d'avant": np.sqrt((e1 ** 2).mean())})
+            gl = j[j.tier > 0]   # joueurs montés (droite « montée », celle de l'onglet Cracks)
+            el_rs = gl.z - (FR['low'][0] + B.LOW_SHIFT + FR['low'][1] * gl.x); el = gl.z - (F['low'][0] + B.LOW_SHIFT + F['low'][1] * gl.x)
+            lrow.append({'calcul': mode, 'paire': f'{y}->{y + 1}', 'joueurs montés': len(gl), 'droite Rift Scout': np.sqrt((el_rs ** 2).mean()),
+                         'droite du calcul': np.sqrt((el ** 2).mean()), 'biais (calcul)': el.mean(), 'erreur médiane (calcul)': el.abs().median()})
             notes = NO[(mode, y)].reindex(A0.index)
             xm = NO[(mode, y - 1)].where((RA[y - 1].n >= 15) & (RA[y - 1].tier == 0)).reindex(A0.index); has = (~low) & xm.notna()
 
@@ -81,6 +85,8 @@ def main():
     with pd.option_context('display.width', 200):
         print('erreur par joueur (points), joueurs avec une saison d\'avant en ligue majeure')
         print(pd.DataFrame(prow).round(3).to_string(index=False))
+        print('joueurs montés, droite « montée » (abaissée de LOW_SHIFT) :')
+        print(pd.DataFrame(lrow).round(3).to_string(index=False))
         R = pd.DataFrame(rows)
         print(R.pivot_table(index=['calcul', 'variante'], columns='paire', values=['rang', 'erreur']).round(3).to_string())
         print(R.groupby(['calcul', 'variante'])[['rang', 'erreur']].mean().round(3).to_string())
