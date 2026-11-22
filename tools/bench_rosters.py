@@ -72,7 +72,7 @@ def run(y):
     Lw = next_lines(2025 if y == 2024 else 2024)
     print(f'  droites réglées sur l\'autre paire : majeure {Lw["maj"][0]:.1f} + {Lw["maj"][1]:.2f} x ({Lw["maj"][2]} joueurs), '
           f'montée {Lw["low"][0]:.1f} + {Lw["low"][1]:.2f} x ({Lw["low"][2]})')
-    nx = pd.Series(np.where(A0.tier == 0, Lw['maj'][0] + Lw['maj'][1] * notes, Lw['low'][0] + Lw['low'][1] * notes), index=notes.index)
+    nx = pd.Series(np.where(A0.tier == 0, Lw['maj'][0] + Lw['maj'][1] * notes, Lw['low'][0] + B.LOW_SHIFT + Lw['low'][1] * notes), index=notes.index)
     fill_n = lg.map(ros.stack().map(nx).groupby(lg.reindex(ros.stack().index.get_level_values(0)).values).quantile(0.25))
     out['droites saison suivante (autre paire), inconnu = 25e centile'] = ros.apply(lambda c: c.map(nx)).apply(lambda c: c.fillna(fill_n)).mean(axis=1)
     # variantes : saison N-1 mêlée à N au prorata des parties (N-1 comptée alpha fois), avec ou sans conversion

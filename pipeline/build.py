@@ -106,6 +106,11 @@ FREE_KILL_W = 0.0
 # sur deux moitiés de matchs, C = 424 en 2025 et 472 en 2026 ; le C d'une saison laisse 74 % et 64 % des joueurs de l'autre
 # à moins d'une marge, pour 68 % attendus). Sert au tri prudent du classement (note moins une marge).
 NOISE_C_RS = 448.0
+# Décalage de la droite « montée » (note attendue en ligue majeure d'un joueur qui monte, onglets Transferts et Cracks), en
+# points. Les équipes avec des joueurs montés finissent un peu sous leur niveau attendu (−0,4 point, −1,9 en LEC avec deux
+# montés) ; à −1 le power ranking attendu reste aussi bien rangé (tools/bench_rosters.py, corrélation de rang 0,746 contre
+# 0,746, erreur 2,791 contre 2,799), au-delà il range moins bien. Choisi à −1 sur demande (avis général : GIANTX trop haut).
+LOW_SHIFT = -1.0
 if FREE_KILL_W: FACETS['fight'] = {**FACETS['fight'], 'free_kr': FREE_KILL_W}
 TL_STATS = {'nwd_pm', 'obj_part', 'free_kr'}
 CHAMP_ADJ = ['nwd_pm', 'obj_part', 'free_kr', 'dpm', 'damageshare', 'dmg_per_gold', 'kshare', 'cspm', 'earned gpm', 'earnedgoldshare', 'vspm', 'wcpm', 'cwpm', 'wpm',
@@ -1116,28 +1121,24 @@ def main():
         if y == SEASONS[-1]:
             nx = next_rosters(S, A, teams)
             if nx: out['next'] = nx
-    # note projetée en ligue majeure pour un joueur de deuxième niveau (onglet Cracks) : droite ajustée sur les joueurs qui ont
-    # joué aux deux niveaux la même saison (au moins 15 parties de chaque côté). Validée sur les joueurs montés de 2025 à 2026 :
-    # erreur absolue médiane 4,1 points contre 7,8 en prenant la note de deuxième niveau telle quelle.
-    pr = [(v['tr']['1'][0], v['tr']['0'][0]) for ss in out['seasons'].values() for v in ss['players']
-          if '0' in v['tr'] and '1' in v['tr'] and v['tr']['0'][1] >= 15 and v['tr']['1'][1] >= 15]
-    if len(pr) >= 30:
-        x = np.array(pr); sl, ic = np.polyfit(x[:, 0], x[:, 1], 1)
-        out['proj'] = {'a': r1(ic, 3), 'b': r1(sl, 4), 'n': len(pr)}
-        print('projection deuxième niveau -> ligue majeure :', round(ic, 1), '+', round(sl, 2), 'x note, sur', len(pr), 'joueurs')
-    # Onglet Transferts : note attendue en ligue majeure la saison suivante, d'après la note de saison. Une droite pour les
-    # joueurs déjà en ligue majeure, une pour ceux qui montent (tools/bench_rosters.py : power ranking attendu mieux ordonné
-    # qu'avec les notes brutes ou la conversion de l'onglet Cracks, sur 2024 -> 2025 et 2025 -> 2026, droites réglées sur
-    # l'autre paire). Réglées ici sur la dernière paire de saisons calculée.
-    if 'next' in out and len(SEASONS) >= 2:
+    # Note attendue en ligue majeure la saison suivante, d'après la note de saison. Une droite pour les joueurs déjà en ligue
+    # majeure, une pour ceux qui montent (au moins 15 parties de chaque côté), réglées sur la dernière paire de saisons calculée.
+    # Onglet Transferts (tools/bench_rosters.py : power ranking attendu mieux ordonné qu'avec les notes brutes ou l'ancienne
+    # conversion des Cracks, sur 2024 -> 2025 et 2025 -> 2026, droites réglées sur l'autre paire). La droite « montée » sert
+    # aussi à l'onglet Cracks (`proj`) : jugée sur les joueurs montés de 2023 -> 2024, 2024 -> 2025 et 2025 -> 2026 (droite
+    # réglée sur les deux autres paires), elle se trompe moins sur les trois paires (écart quadratique 4,5, 6,1 et 4,8 points)
+    # que l'ancienne droite des joueurs ayant joué aux deux niveaux la même saison (5,9, 6,3 et 5,1). Cette dernière
+    # surestimait les mieux notés : +4,5, +1,9 et +3,0 points de trop à partir de 75.
+    if len(SEASONS) >= 2:
         A0, A1 = runs[SEASONS[-2]]['A'], runs[SEASONS[-1]]['A']
         j = A0[A0.n >= 15].join(A1[(A1.n >= 15)][['pts', 'league']], rsuffix='_1', how='inner')
         j = j[j.league_1.map(tier_of) == 0]
         x, z = j.pts.map(lambda v: to_note(v, a, b)), j.pts_1.map(lambda v: to_note(v, a, b))
         lines = {}
         for k, m in (('maj', j.league.map(tier_of) == 0), ('low', j.league.map(tier_of) > 0)):
-            sl_, ic_ = np.polyfit(x[m], z[m], 1); lines[k] = {'a': r1(ic_, 2), 'b': r1(sl_, 3), 'n': int(m.sum())}
-        out['next']['lines'] = lines
+            sl_, ic_ = np.polyfit(x[m], z[m], 1); lines[k] = {'a': r1(ic_ + (LOW_SHIFT if k == 'low' else 0), 2), 'b': r1(sl_, 3), 'n': int(m.sum())}
+        out['proj'] = lines['low']
+        if 'next' in out: out['next']['lines'] = lines
         print('note attendue la saison suivante : majeure', lines['maj'], '| montée', lines['low'])
     json.dump(out, open(OUT, 'w', encoding='utf-8'), ensure_ascii=False, separators=(',', ':'))
     print('écrit', OUT, os.path.getsize(OUT) // 1000, 'Ko')
