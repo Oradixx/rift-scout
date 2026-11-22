@@ -552,7 +552,8 @@
       let est = cand[0] === '1' && D.proj ? D.proj.a + D.proj.b * v[0] : v[0];
       // parties déjà jouées en ligue majeure cette saison : mélangées à l'estimation, partie pour partie (le meilleur poids sur la saison suivante)
       if (maj) est = (est * v[1] + maj[0] * maj[1]) / (v[1] + maj[1]);
-      const cmp = (L) => { L = L.filter((x) => x.id !== p.id); const a = L.filter((x) => x.note < est).length; return { a, N: L.length, share: L.length ? a / L.length : 0 }; };
+      // titulaires comparés sur leur note Rift Scout, comme l'estimation (pas de note mixte ou unifiée par niveau de ligue)
+      const cmp = (L) => { L = L.filter((x) => x.id !== p.id); const a = L.filter((x) => x.note0 < est).length; return { a, N: L.length, share: L.length ? a / L.length : 0 }; };
       const own = cmp(ref.own), all = cmp(ref.all);
       const verdict = own.share >= 0.5 ? 2 : own.share >= 0.25 ? 1 : 0;
       if (!c.all && !verdict) continue;
@@ -628,9 +629,18 @@
   const LAST = Object.keys(D.seasons).sort().pop();
   /* 0,106 par point de moyenne des notes de saison (pente réglée par tools/bench_transfers.py sur les matchs de la saison suivante, 0,102 en 2024 → 2025 et 0,111 en 2025 → 2026), soit 0,147 par point de note attendue (droite des joueurs de ligue majeure, pente 0,722) */
   const WIN_SLOPE = 0.147;
-  /* note attendue en ligue majeure la saison suivante (droites D.next.lines : déjà en ligue majeure, ou montée d'un niveau
-     inférieur ; elles tiennent compte du retour vers la moyenne) ; suit le bouton de calcul */
-  const tvalue = (p) => { const l = D.next.lines ? D.next.lines[p.tier === 0 ? 'maj' : 'low'] : null; return l ? l.a + l.b * p.note : p.note; };
+  /* note attendue en ligue majeure la saison suivante (droites D.next.lines du calcul choisi par le bouton, réglées sur ses
+     propres notes : déjà en ligue majeure, ou montée d'un niveau inférieur ; elles tiennent compte du retour vers la moyenne).
+     Joueur déjà en ligue majeure dont la saison d'avant (15 parties ou plus) s'est aussi jouée en ligue majeure : la valeur
+     bouge de prev × l'écart entre les deux saisons, dans le même calcul (prev = 0 en unifiée). */
+  const PREVS = D.seasons[String(+LAST - 1)] ? new Map(D.seasons[String(+LAST - 1)].players.map((p) => [p.id, p])) : new Map();
+  const tlines = () => (D.next.lines ? D.next.lines[state.calc] || D.next.lines.rift : null);
+  const tprev = (p) => { const L = tlines(), q = L && L.prev && p.tier === 0 ? PREVS.get(p.id) : null; return q && q.tier === 0 && q.n >= 15 ? q : null; };
+  const tvalue = (p) => {
+    const L = tlines(); if (!L) return p.note;
+    if (p.tier > 0) return L.low.a + L.low.b * p.note;
+    const q = tprev(p); return L.maj.a + L.maj.b * p.note + (q ? L.prev * (q.note - p.note) : 0);
+  };
   /* erreur de la note attendue (un écart-type) : 5,3 points, mesurée sur les joueurs de 2023 à 2025 jugés sur leur saison suivante,
      droite réglée sur les autres paires ; aussi grande pour un joueur qui monte que pour un joueur déjà en ligue majeure, quel que
      soit son nombre de parties ; 67 % des joueurs à moins de 5,3 points */
@@ -674,7 +684,7 @@
     warn.textContent = state.season === LAST ? '' : `Cet onglet porte toujours sur la dernière saison (${LAST}), quelle que soit la saison choisie en haut de la page : ${LAST} pour l'effectif actuel, ${N.season} pour l'effectif annoncé.`;
     const { LP, X, def } = transferModel(lg);
     $('#t-sub').textContent = `Effectif actuel et effectif annoncé pour la saison ${N.season}, ${lgName(lg)}. Le niveau d'un effectif est la moyenne des valeurs de ses cinq joueurs.`;
-    $('#t-count').innerHTML = `${X.length} équipes. Le chiffre à côté de chaque joueur est sa valeur attendue en ligue majeure la saison suivante, celle qui entre dans la moyenne : une estimation, juste à ± ${TV_ERR} points près deux fois sur trois. Sa note de saison est indiquée à côté (un joueur qui monte d'un niveau inférieur n'en garde qu'un peu plus de la moitié de l'écart à la moyenne), puis celle de la saison d'avant, qui ne compte pas : elle ne rend pas l'estimation plus juste. Joueur sans note ou poste pas encore annoncé : ${fmt(def, 1)}, le 25<sup>e</sup> centile des titulaires actuels de ${h(lgName(lg))}.`;
+    $('#t-count').innerHTML = `${X.length} équipes. Le chiffre à côté de chaque joueur est sa valeur attendue en ligue majeure la saison suivante, celle qui entre dans la moyenne : une estimation, juste à ± ${TV_ERR} points près deux fois sur trois. Sa note de saison est indiquée à côté (un joueur qui monte d'un niveau inférieur n'en garde qu'un peu plus de la moitié de l'écart à la moyenne), puis celle de la saison d'avant. ${tlines() && tlines().prev ? `Elle compte pour un joueur déjà en ligue majeure qui y jouait aussi la saison d'avant (15 parties ou plus) : sa valeur bouge de ${fmt(tlines().prev * 100, 0)} % de l'écart entre les deux saisons. Une saison d'avant jouée en ligue inférieure ne compte pas.` : 'Avec la note unifiée, elle ne compte pas : elle ne rend pas l\'estimation plus juste.'} Joueur sans note ou poste pas encore annoncé : ${fmt(def, 1)}, le 25<sup>e</sup> centile des titulaires actuels de ${h(lgName(lg))}.`;
     $('#t-rank').innerHTML = X.map((x) => {
       const t = x.t, mv = x.rc == null ? '<span class="flat">nouvelle dans la ligue</span>' : `<span class="${x.re < x.rc ? 'up' : x.re > x.rc ? 'down' : 'flat'}">${ord(x.rc)} → ${ord(x.re)}</span>`;
       return `<div class="trow"><span class="rank">${x.re}</span><span class="who"><b><button class="pl2 tm" data-tm="${N.teams.indexOf(t)}">${h(t.name)}</button></b></span>

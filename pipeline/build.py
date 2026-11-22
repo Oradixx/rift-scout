@@ -111,6 +111,15 @@ NOISE_C_RS = 448.0
 # montés) ; à −1 le power ranking attendu reste aussi bien rangé (tools/bench_rosters.py, corrélation de rang 0,746 contre
 # 0,746, erreur 2,791 contre 2,799), au-delà il range moins bien. Choisi à −1 sur demande (avis général : GIANTX trop haut).
 LOW_SHIFT = -1.0
+# Poids de la saison d'avant dans la note attendue d'un joueur déjà en ligue majeure dont la saison d'avant (15 parties ou
+# plus) s'est aussi jouée en ligue majeure : valeur de la droite + poids × (note d'avant − note). Sans constante : les
+# joueurs établis ne sont pas relevés en bloc, les écarts sont redistribués. Une saison d'avant jouée en ligue inférieure ne
+# compte pas (trop dur à juger). Par calcul de la note (tools/bench_next_modes.py, novembre 2026, poids réglé sur l'autre
+# paire de saisons ; erreur par joueur en points, 2024 -> 2025 puis 2025 -> 2026) : Rift Scout 4,91 -> 4,87 et 5,49 -> 5,15,
+# Mixte 4,92 -> 4,91 et 4,85 -> 4,57 ; power ranking attendu à peu près inchangé (corrélation de rang 0,784 -> 0,775 et
+# 0,757 -> 0,754, erreur 2,96 -> 2,95 et 2,91 -> 2,90). Unifiée : moins bien en 2024 -> 2025 (5,11 -> 5,19), pas appliqué.
+# Poids retenu : celui des deux paires réunies (0,245 et 0,226 ; réglé sur une seule paire, de 0,13 à 0,38).
+PREV_WEIGHT = {'note': 0.25, 'nm': 0.23, 'nu': 0.0}
 if FREE_KILL_W: FACETS['fight'] = {**FACETS['fight'], 'free_kr': FREE_KILL_W}
 TL_STATS = {'nwd_pm', 'obj_part', 'free_kr'}
 CHAMP_ADJ = ['nwd_pm', 'obj_part', 'free_kr', 'dpm', 'damageshare', 'dmg_per_gold', 'kshare', 'cspm', 'earned gpm', 'earnedgoldshare', 'vspm', 'wcpm', 'cwpm', 'wpm',
@@ -952,6 +961,7 @@ def main():
     a, b = SCALE_A, SCALE_B
     print(f'échelle fixe ; recalculée aujourd\'hui, la médiane des ligues majeures vaudrait {a + b * med:.1f} (cible 80) et le sommet {a + b * top:.1f} (cible 97,5)')
     out['scale'] = {'a': a, 'b': b}
+    finals = {}   # notes finales de chaque saison (Rift Scout, mixte, unifiée), pour les droites de la saison suivante
     for y, S in runs.items():
         A, p = S['A'], S['p']
         E = event_table(S); form = form_table(S); recent = recent_table(S)
@@ -990,6 +1000,7 @@ def main():
         A['nu'] = [to_note(m_ + k_ * v, a, b) if not pd.isna(v) else np.nan for v in th]
         sig_ = unified.NOISE_C / np.sqrt(A.n)
         A['nue'] = [to_note(m_ + k_ * (v + s), a, b) - to_note(m_ + k_ * v, a, b) if not pd.isna(v) else np.nan for v, s in zip(th, sig_)]
+        finals[y] = A
         print(f'{y} : note unifiée pour {int(A.nu.notna().sum())} joueurs ({U_["games"]} parties), marge médiane {A.nue.median():.1f}')
         # Notes unifiée et mixte par événement (bouton de calcul, onglet classement filtré sur un événement, fiche).
         # Unifiée : niveau de saison + écart propre à l'événement, ramené vers 0 (unified.TAU_EVENT, réglé par
@@ -1122,24 +1133,33 @@ def main():
             nx = next_rosters(S, A, teams)
             if nx: out['next'] = nx
     # Note attendue en ligue majeure la saison suivante, d'après la note de saison. Une droite pour les joueurs déjà en ligue
-    # majeure, une pour ceux qui montent (au moins 15 parties de chaque côté), réglées sur la dernière paire de saisons calculée.
+    # majeure, une pour ceux qui montent (au moins 15 parties de chaque côté), réglées sur la dernière paire de saisons calculée,
+    # pour chacun des trois calculs de la note (Rift Scout, mixte, unifiée : chacun sur ses propres notes ; droites propres à
+    # chaque calcul contre droites Rift Scout appliquées aux autres notes, tools/bench_next_modes.py : corrélation de rang
+    # 0,754 -> 0,757 en mixte, 0,729 -> 0,738 en unifiée, erreur 2,93 -> 2,91 et 2,90 -> 2,90). Droite des montées abaissée de
+    # LOW_SHIFT, poids de la saison d'avant PREV_WEIGHT.
     # Onglet Transferts (tools/bench_rosters.py : power ranking attendu mieux ordonné qu'avec les notes brutes ou l'ancienne
-    # conversion des Cracks, sur 2024 -> 2025 et 2025 -> 2026, droites réglées sur l'autre paire). La droite « montée » sert
-    # aussi à l'onglet Cracks (`proj`) : jugée sur les joueurs montés de 2023 -> 2024, 2024 -> 2025 et 2025 -> 2026 (droite
-    # réglée sur les deux autres paires), elle se trompe moins sur les trois paires (écart quadratique 4,5, 6,1 et 4,8 points)
-    # que l'ancienne droite des joueurs ayant joué aux deux niveaux la même saison (5,9, 6,3 et 5,1). Cette dernière
-    # surestimait les mieux notés : +4,5, +1,9 et +3,0 points de trop à partir de 75.
+    # conversion des Cracks, sur 2024 -> 2025 et 2025 -> 2026, droites réglées sur l'autre paire). La droite « montée » Rift
+    # Scout sert aussi à l'onglet Cracks (`proj`, toujours en notes Rift Scout) : jugée sur les joueurs montés de 2023 -> 2024,
+    # 2024 -> 2025 et 2025 -> 2026 (droite réglée sur les deux autres paires), elle se trompe moins sur les trois paires (écart
+    # quadratique 4,5, 6,1 et 4,8 points) que l'ancienne droite des joueurs ayant joué aux deux niveaux la même saison (5,9,
+    # 6,3 et 5,1). Cette dernière surestimait les mieux notés : +4,5, +1,9 et +3,0 points de trop à partir de 75.
     if len(SEASONS) >= 2:
-        A0, A1 = runs[SEASONS[-2]]['A'], runs[SEASONS[-1]]['A']
-        j = A0[A0.n >= 15].join(A1[(A1.n >= 15)][['pts', 'league']], rsuffix='_1', how='inner')
+        A0, A1 = finals[SEASONS[-2]], finals[SEASONS[-1]]
+        j = A0[A0.n >= 15].join(A1[A1.n >= 15][['note', 'nm', 'nu', 'league']], rsuffix='_1', how='inner')
         j = j[j.league_1.map(tier_of) == 0]
-        x, z = j.pts.map(lambda v: to_note(v, a, b)), j.pts_1.map(lambda v: to_note(v, a, b))
         lines = {}
-        for k, m in (('maj', j.league.map(tier_of) == 0), ('low', j.league.map(tier_of) > 0)):
-            sl_, ic_ = np.polyfit(x[m], z[m], 1); lines[k] = {'a': r1(ic_ + (LOW_SHIFT if k == 'low' else 0), 2), 'b': r1(sl_, 3), 'n': int(m.sum())}
-        out['proj'] = lines['low']
+        for calc, col in (('rift', 'note'), ('mix', 'nm'), ('uni', 'nu')):
+            x, z = j[col].fillna(j.note), j[col + '_1'].fillna(j.note_1)   # sans note mixte ou unifiée, la page affiche la note
+            L = {}
+            for k, m in (('maj', j.league.map(tier_of) == 0), ('low', j.league.map(tier_of) > 0)):
+                sl_, ic_ = np.polyfit(x[m], z[m], 1)
+                L[k] = {'a': r1(ic_ + (LOW_SHIFT if k == 'low' else 0), 2), 'b': r1(sl_, 3), 'n': int(m.sum())}
+            L['prev'] = PREV_WEIGHT[col]
+            lines[calc] = L
+        out['proj'] = lines['rift']['low']
         if 'next' in out: out['next']['lines'] = lines
-        print('note attendue la saison suivante : majeure', lines['maj'], '| montée', lines['low'])
+        for calc, L in lines.items(): print(f'note attendue la saison suivante ({calc}) : majeure', L['maj'], '| montée', L['low'], '| saison d\'avant', L['prev'])
     json.dump(out, open(OUT, 'w', encoding='utf-8'), ensure_ascii=False, separators=(',', ':'))
     print('écrit', OUT, os.path.getsize(OUT) // 1000, 'Ko')
     return runs, out
