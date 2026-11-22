@@ -548,7 +548,7 @@
       if ((c.region && region !== c.region) || (c.fresh && maj)) continue;
       const key = region + p.role, ref = refs[key] || (refs[key] = majorRef(region, p.role));
       // titulaires de la ligue majeure de sa région, puis de toutes les ligues majeures (lui-même exclu s'il y est devenu titulaire)
-      // note estimée en ligue majeure (droite ajustée sur les joueurs des deux niveaux la même saison) ; le troisième niveau n'a pas de projection
+      // note estimée en ligue majeure la saison suivante (droite « montée » de l'onglet Transferts, D.proj) ; le troisième niveau n'a pas de projection
       let est = cand[0] === '1' && D.proj ? D.proj.a + D.proj.b * v[0] : v[0];
       // parties déjà jouées en ligue majeure cette saison : mélangées à l'estimation, partie pour partie (le meilleur poids sur la saison suivante)
       if (maj) est = (est * v[1] + maj[0] * maj[1]) / (v[1] + maj[1]);
@@ -575,7 +575,7 @@
     rows.innerHTML = L.slice(0, c.shown).map((x, i) => {
       const p = x.p, N = x.own.N, ins = insights(p).plus.slice(0, 2).map((s) => s.replace(/<b>(.*?)<\/b>.*/, '$1'));
       const where = h(lgName(x.lgRef || ''));
-      const face = (x.tier === 1 ? `Estimé à <b>${nInt(x.est)}</b> en ligue majeure : ` : 'Pas d\'estimation depuis le troisième niveau : ') + (!N ? '' : x.own.a === 0 ? `derrière les ${N} titulaires de ${where}` : x.own.a === N ? `devant les ${N} titulaires de ${where}` : `devant ${x.own.a} des ${N} titulaires de ${where}`) +
+      const face = (x.tier === 1 ? `Estimé à <b>${nInt(x.est)}</b> en ligue majeure la saison suivante : ` : 'Pas d\'estimation depuis le troisième niveau : ') + (!N ? '' : x.own.a === 0 ? `derrière les ${N} titulaires de ${where}` : x.own.a === N ? `devant les ${N} titulaires de ${where}` : `devant ${x.own.a} des ${N} titulaires de ${where}`) +
         (x.all.N ? `${N ? ', et ' : ''}${x.all.a} des ${x.all.N} de toutes les ligues majeures` : '');
       const tag = x.verdict === 2 ? '<span class="tag gold">Niveau titulaire</span>' : x.verdict === 1 ? '<span class="tag">Mérite un essai</span>' : '<span class="tag mute">À suivre</span>';
       return `<button class="row" data-p="${p.id}"><span class="rank">${i + 1}</span><span class="num note ${noteCls(x.note)}">${nInt(x.note)}</span>
@@ -631,6 +631,10 @@
   /* note attendue en ligue majeure la saison suivante (droites D.next.lines : déjà en ligue majeure, ou montée d'un niveau
      inférieur ; elles tiennent compte du retour vers la moyenne) ; suit le bouton de calcul */
   const tvalue = (p) => { const l = D.next.lines ? D.next.lines[p.tier === 0 ? 'maj' : 'low'] : null; return l ? l.a + l.b * p.note : p.note; };
+  /* erreur de la note attendue (un écart-type) : 5,3 points, mesurée sur les joueurs de 2023 à 2025 jugés sur leur saison suivante,
+     droite réglée sur les autres paires ; aussi grande pour un joueur qui monte que pour un joueur déjà en ligue majeure, quel que
+     soit son nombre de parties ; 67 % des joueurs à moins de 5,3 points */
+  const TV_ERR = 5;
   function quantile(a, q) { a = a.slice().sort((x, y) => x - y); const i = (a.length - 1) * q, lo = Math.floor(i); return a[lo] + (a[Math.min(lo + 1, a.length - 1)] - a[lo]) * (i - lo); }
   const rankOf = (v, all) => all.filter((x) => x > v).length + 1;
   const dCls = (d) => (d > 0.05 ? 'up' : d < -0.05 ? 'down' : 'flat');
@@ -670,16 +674,20 @@
     warn.textContent = state.season === LAST ? '' : `Cet onglet porte toujours sur la dernière saison (${LAST}), quelle que soit la saison choisie en haut de la page : ${LAST} pour l'effectif actuel, ${N.season} pour l'effectif annoncé.`;
     const { LP, X, def } = transferModel(lg);
     $('#t-sub').textContent = `Effectif actuel et effectif annoncé pour la saison ${N.season}, ${lgName(lg)}. Le niveau d'un effectif est la moyenne des valeurs de ses cinq joueurs.`;
-    $('#t-count').innerHTML = `${X.length} équipes. Le chiffre à côté de chaque joueur est sa valeur attendue en ligue majeure la saison suivante, celle qui entre dans la moyenne ; sa note de saison est indiquée à côté (un joueur qui monte d'un niveau inférieur n'en garde qu'un peu plus de la moitié de l'écart à la moyenne). Joueur sans note ou poste pas encore annoncé : ${fmt(def, 1)}, le 25<sup>e</sup> centile des titulaires actuels de ${h(lgName(lg))}.`;
+    $('#t-count').innerHTML = `${X.length} équipes. Le chiffre à côté de chaque joueur est sa valeur attendue en ligue majeure la saison suivante, celle qui entre dans la moyenne : une estimation, juste à ± ${TV_ERR} points près deux fois sur trois. Sa note de saison est indiquée à côté (un joueur qui monte d'un niveau inférieur n'en garde qu'un peu plus de la moitié de l'écart à la moyenne), puis celle de la saison d'avant, qui ne compte pas : elle ne rend pas l'estimation plus juste. Joueur sans note ou poste pas encore annoncé : ${fmt(def, 1)}, le 25<sup>e</sup> centile des titulaires actuels de ${h(lgName(lg))}.`;
     $('#t-rank').innerHTML = X.map((x) => {
       const t = x.t, mv = x.rc == null ? '<span class="flat">nouvelle dans la ligue</span>' : `<span class="${x.re < x.rc ? 'up' : x.re > x.rc ? 'down' : 'flat'}">${ord(x.rc)} → ${ord(x.re)}</span>`;
       return `<div class="trow"><span class="rank">${x.re}</span><span class="who"><b><button class="pl2 tm" data-tm="${N.teams.indexOf(t)}">${h(t.name)}</button></b></span>
         <span class="num note ${noteCls(x.exp)}">${fmt(x.exp, 1)}</span><span class="trend r ${x.d == null ? 'flat' : dCls(x.d)}">${x.d == null ? '–' : sgn(x.d)}</span>
         <span class="mv">${mv}</span><span class="st">${x.state}${t.nxt ? '' : '<small>effectif actuel conservé</small>'}</span></div>`;
     }).join('');
+    const PY = String(+LAST - 1), PP = D.seasons[PY] ? new Map(D.seasons[PY].players.map((p) => [p.id, p])) : null;
     const who = (x, cur, same) => {
       const p = typeof x === 'string' ? LP.get(x) : null, strong = !same && x ? ' in' : '';
-      if (p) { const v = tvalue(p); return `<button class="pl2${strong}" data-p="${p.id}">${h(p.name)}</button> <span class="pn ${noteCls(v)}" title="Valeur comptée dans le niveau de l'effectif">${fmt(v, 1)}</span> <small>note ${state.season === LAST ? '' : LAST + ' '}${nInt(p.note)}${p.tier > 0 ? ', ' + TIER_IN[p.tier] : ''}</small>`; }
+      if (p) {
+        const v = tvalue(p), q = PP && PP.get(p.id);
+        return `<button class="pl2${strong}" data-p="${p.id}">${h(p.name)}</button> <span class="pn ${noteCls(v)}" title="Valeur comptée dans le niveau de l'effectif, à ± ${TV_ERR} points près deux fois sur trois">${fmt(v, 1)}</span> <small>note ${state.season === LAST ? '' : LAST + ' '}${nInt(p.note)}${p.tier > 0 ? ', ' + TIER_IN[p.tier] : ''}${q ? ` ; ${PY} : ${nInt(q.note)}` : ''}</small>`;
+      }
       if (x && x.name) return `<span class="${strong.trim()}">${h(x.name)}</span> <small>sans note</small>`;
       if (typeof x === 'string') return '<small>joueur introuvable</small>';
       return cur ? '<span class="tbd">–</span>' : '<span class="tbd">pas encore annoncé</span>';
